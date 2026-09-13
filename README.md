@@ -17,14 +17,40 @@ HTTPS、名前付き作業領域、複数ファイル、CSV/TSV が含まれま�
 ## 必要な環境
 
 - JDK 25
-- Gradle Wrapper の初回取得と依存関係の解決に必要なネットワーク接続
+- 初回実行時に Gradle と依存関係を取得するためのネットワーク接続
 
-Gradle の別途インストールは不要です。
+Gradle Wrapper をリポジトリに同梱しているため、Gradle の別途インストールは不要です。
 
-## ビルドと実行
+## クイックスタート
+
+macOS / Linux では、clone 後に次のコマンドだけでサンプルを実行できます。
+
+```shell
+git clone https://github.com/shin3tky/BSB.git
+cd BSB
+./gradlew run --args="run samples/01-hello-world.bsb"
+```
+
+Windows（PowerShell / コマンドプロンプト）では、最後のコマンドを次のように置き換えてください。
+
+```powershell
+.\gradlew.bat run --args="run samples/01-hello-world.bsb"
+```
+
+初回のみ Gradle 本体と依存関係を自動取得するため、完了まで時間がかかることがあります。
+`Hello, World!` と表示されれば実行成功です。
+
+## ビルドと CLI の実行
+
+テストを実行し、単独で起動できる JAR を作成します。
 
 ```shell
 ./gradlew clean test shadowJar
+```
+
+作成した JAR では、次の CLI 操作を試せます。
+
+```shell
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar check samples/01-hello-world.bsb
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/01-hello-world.bsb
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar format samples/01-hello-world.bsb
