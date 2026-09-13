@@ -1,0 +1,7 @@
+{
+  "check": "tests/conformance/result-values/sources/RESULT-F008-success-06.bsb:2:14: エラー[E_TYPE_CONSTRAINT_NOT_ALLOWED]: 辞書専用の型制約を利用者定義へ使用できません。\n  必要: 具体型\n  実際: 数値\n  修正候補: 整数または小数の具体型を書いてください\n",
+  "checkJson": "",
+  "run": "tests/conformance/result-values/sources/RESULT-F008-success-06.bsb:2:14: エラー[E_TYPE_CONSTRAINT_NOT_ALLOWED]: 辞書専用の型制約を利用者定義へ使用できません。\n  必要: 具体型\n  実際: 数値\n  修正候補: 整数または小数の具体型を書いてください\n",
+  "format": "",
+  "explain": ""
+}

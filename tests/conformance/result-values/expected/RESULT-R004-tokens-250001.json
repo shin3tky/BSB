@@ -1,0 +1,56 @@
+{
+  "lexicalSuccess": false,
+  "countedTokens": 250000,
+  "attemptedTokens": 250001,
+  "commaTokens": 31249,
+  "diagnostics": [
+    {
+      "code": "E_TOKEN_LIMIT",
+      "severity": "error",
+      "stage": "lexical",
+      "message": "ソース中のトークンは250000個までですが、250001個目が現れました。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R004-tokens-250001.bsb",
+      "span": {
+        "start": {
+          "line": 31253,
+          "column": 3
+        },
+        "endInclusive": {
+          "line": 31253,
+          "column": 3
+        },
+        "utf8Start": 1781258,
+        "utf8EndExclusive": 1781261
+      },
+      "fields": {},
+      "expected": "250000トークン以下",
+      "actual": "250001トークン目",
+      "relatedLocations": [],
+      "fixes": [],
+      "resourceLimit": {
+        "name": "tokens",
+        "limit": "250000",
+        "observed": "250001"
+      },
+      "fixtureLocation": {
+        "span": {
+          "start": {
+            "line": 31253,
+            "column": 3
+          },
+          "endInclusive": {
+            "line": 31253,
+            "column": 3
+          },
+          "utf8Start": 1781258,
+          "utf8EndExclusive": 1781261
+        },
+        "utf16Start": 843754,
+        "utf16EndExclusive": 843755
+      }
+    }
+  ],
+  "sourceSha256": "3ec0395911c73762dfa8699e3098f106fcd60a0c289689b11f35be102de3e738",
+  "sourceUtf8Bytes": 1781262,
+  "sourceUtf16Units": 843756
+}

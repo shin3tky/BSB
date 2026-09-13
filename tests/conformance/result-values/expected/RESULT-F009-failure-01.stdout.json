@@ -1,0 +1,7 @@
+{
+  "check": "",
+  "checkJson": "{\"schemaVersion\":1,\"command\":\"check\",\"source\":\"tests/conformance/result-values/sources/RESULT-F009-failure-01.bsb\",\"success\":false,\"exitCode\":8,\"diagnostics\":[{\"code\":\"E_UNKNOWN_TYPE\",\"severity\":\"error\",\"stage\":\"typeAndStack\",\"message\":\"「未知成功型」は言語コアで利用できる型ではありません。\",\"sourcePath\":\"tests/conformance/result-values/sources/RESULT-F009-failure-01.bsb\",\"span\":{\"start\":{\"line\":2,\"column\":11},\"endInclusive\":{\"line\":2,\"column\":15},\"utf8Start\":45,\"utf8EndExclusive\":60},\"fields\":{\"typeName\":\"未知成功型\"},\"expected\":\"整数・真偽・文字・文字列\",\"actual\":\"未知成功型\",\"relatedLocations\":[],\"fixes\":[\"言語コアの型へ変更してください\"]}]}\n",
+  "run": "",
+  "format": "メインとは （--）\n    失敗にする<未知成功型,文字列>\nこと。\n",
+  "explain": "{\"schemaVersion\":1,\"command\":\"explain\",\"source\":\"tests/conformance/result-values/sources/RESULT-F009-failure-01.bsb\",\"success\":false,\"exitCode\":8,\"diagnostics\":[{\"code\":\"E_UNKNOWN_TYPE\",\"severity\":\"error\",\"stage\":\"typeAndStack\",\"message\":\"「未知成功型」は言語コアで利用できる型ではありません。\",\"sourcePath\":\"tests/conformance/result-values/sources/RESULT-F009-failure-01.bsb\",\"span\":{\"start\":{\"line\":2,\"column\":11},\"endInclusive\":{\"line\":2,\"column\":15},\"utf8Start\":45,\"utf8EndExclusive\":60},\"fields\":{\"typeName\":\"未知成功型\"},\"expected\":\"整数・真偽・文字・文字列\",\"actual\":\"未知成功型\",\"relatedLocations\":[],\"fixes\":[\"言語コアの型へ変更してください\"]}],\"builtinWords\":[],\"userWords\":[],\"scopes\":[],\"bindings\":[]}\n"
+}

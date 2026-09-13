@@ -1,0 +1,58 @@
+{
+  "checkExit": 9,
+  "formatExit": 9,
+  "maximumPathDepth": 257,
+  "selectedSide": "left",
+  "diagnostics": [
+    {
+      "code": "E_SYNTAX_DEPTH_LIMIT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "制御構文の入れ子は256段までですが、257段目が現れました。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R001-construct-success-right-257.bsb",
+      "span": {
+        "start": {
+          "line": 2,
+          "column": 779
+        },
+        "endInclusive": {
+          "line": 2,
+          "column": 780
+        },
+        "utf8Start": 1837,
+        "utf8EndExclusive": 1843
+      },
+      "fields": {},
+      "expected": "256段以下",
+      "actual": "257段",
+      "relatedLocations": [],
+      "fixes": [
+        "型構築子の入れ子を減らしてください"
+      ],
+      "resourceLimit": {
+        "name": "syntaxDepth",
+        "limit": "256",
+        "observed": "257"
+      },
+      "fixtureLocation": {
+        "span": {
+          "start": {
+            "line": 2,
+            "column": 779
+          },
+          "endInclusive": {
+            "line": 2,
+            "column": 780
+          },
+          "utf8Start": 1837,
+          "utf8EndExclusive": 1843
+        },
+        "utf16Start": 789,
+        "utf16EndExclusive": 791
+      }
+    }
+  ],
+  "sourceSha256": "4356f91e224f5ee568d3261ea3313be5659b80f370f6c34d25263ca6bd43f557",
+  "sourceUtf8Bytes": 3910,
+  "sourceUtf16Units": 1824
+}

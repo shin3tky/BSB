@@ -1,0 +1,15 @@
+case_id	variant	method	path	query_count	header_count	body_kind	body_bytes	content_type_implicit	original_preserved	result
+HTTPS-N001	empty	-		0	0	absent	0	false	true	HTTP要求
+HTTPS-N001	stored-and-merged	-	v1/items	0	0	absent	0	false	true	HTTP要求
+HTTPS-N002	get	GET		0	0	absent	0	false	true	結果<HTTP応答,HTTP送信失敗>
+HTTPS-N002	head	HEAD		0	0	absent	0	false	true	結果<HTTP応答,HTTP送信失敗>
+HTTPS-N002	post	POST		0	0	absent	0	false	true	結果<HTTP応答,HTTP送信失敗>
+HTTPS-N002	put	PUT		0	0	absent	0	false	true	結果<HTTP応答,HTTP送信失敗>
+HTTPS-N002	patch	PATCH		0	0	absent	0	false	true	結果<HTTP応答,HTTP送信失敗>
+HTTPS-N002	delete	DELETE		0	0	absent	0	false	true	結果<HTTP応答,HTTP送信失敗>
+HTTPS-N004	duplicate-query	-	search	4	0	absent	0	false	true	HTTP要求
+HTTPS-N005	replaced-header	-		0	1	absent	0	false	true	HTTP要求
+HTTPS-N006	json	-		0	0	json	2	false	true	HTTP要求
+HTTPS-N006	string	-		0	0	string	6	false	true	HTTP要求
+HTTPS-N006	bytes-00-ff	-		0	0	bytes	256	false	true	HTTP要求
+HTTPS-N006	empty-present	-		0	0	bytes	0	false	true	HTTP要求

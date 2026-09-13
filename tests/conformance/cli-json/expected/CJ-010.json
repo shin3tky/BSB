@@ -1,0 +1,1 @@
+{"schemaVersion":1,"command":"check","source":"tests/conformance/cli-json/missing.bsb","success":false,"exitCode":3,"diagnostics":[],"problem":{"kind":"io","message":"ソースファイルの読取りに失敗しました。"}}

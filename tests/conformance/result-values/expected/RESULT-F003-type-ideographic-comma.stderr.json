@@ -1,0 +1,7 @@
+{
+  "check": "tests/conformance/result-values/sources/RESULT-F003-type-ideographic-comma.bsb:1:14: エラー[E_EXPECTED_RESULT_TYPE_SEPARATOR]: 成功型と失敗型を区切る「,」が必要です。\n  必要: ,\n  実際: 文字列\n  修正候補: 成功型と失敗型をASCIIの,で区切ってください\n",
+  "checkJson": "",
+  "run": "tests/conformance/result-values/sources/RESULT-F003-type-ideographic-comma.bsb:1:14: エラー[E_EXPECTED_RESULT_TYPE_SEPARATOR]: 成功型と失敗型を区切る「,」が必要です。\n  必要: ,\n  実際: 文字列\n  修正候補: 成功型と失敗型をASCIIの,で区切ってください\n",
+  "format": "tests/conformance/result-values/sources/RESULT-F003-type-ideographic-comma.bsb:1:14: エラー[E_EXPECTED_RESULT_TYPE_SEPARATOR]: 成功型と失敗型を区切る「,」が必要です。\n  必要: ,\n  実際: 文字列\n  修正候補: 成功型と失敗型をASCIIの,で区切ってください\n",
+  "explain": ""
+}

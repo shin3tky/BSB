@@ -1,0 +1,15 @@
+schema-version = 1
+
+[connections."顧客管理API"]
+base-uri = "https://customers.example.test/"
+allowed-methods = ["POST"]
+
+[connections."顧客管理API".authentication]
+kind = "none"
+
+[connections."通知API"]
+base-uri = "https://notifications.example.test/"
+allowed-methods = ["POST"]
+
+[connections."通知API".authentication]
+kind = "none"

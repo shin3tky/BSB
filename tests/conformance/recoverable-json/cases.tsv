@@ -1,0 +1,25 @@
+case_id	variant	input_utf8_hex	outcome	payload_utf8_hex	failure_kind	utf8_offset	line	column	json_work_delta	json_construction_delta	diagnostic	input_preserved	target_words	evidence
+RJSON-N001	null	6e756c6c	success	6e756c6c	-	-	-	-	4	1	-	false	JSONを解析して結果を返す	sources/RJSON-N-success-values.bsb
+RJSON-N001	boolean	74727565	success	74727565	-	-	-	-	4	1	-	false	JSONを解析して結果を返す	sources/RJSON-N-success-values.bsb
+RJSON-N001	integer	3432	success	3432	-	-	-	-	2	1	-	false	JSONを解析して結果を返す	sources/RJSON-N-success-values.bsb
+RJSON-N001	decimal	322e3530	success	322e35	-	-	-	-	4	1	-	false	JSONを解析して結果を返す	sources/RJSON-N-success-values.bsb
+RJSON-N001	string	22e580a422	success	22e580a422	-	-	-	-	5	1	-	false	JSONを解析して結果を返す	sources/RJSON-N-success-values.bsb
+RJSON-N001	array	5b312c6e756c6c5d	success	5b312c6e756c6c5d	-	-	-	-	8	5	-	false	JSONを解析して結果を返す	sources/RJSON-N-success-values.bsb
+RJSON-N001	object	7b2278223a317d	success	7b2278223a317d	-	-	-	-	7	3	-	false	JSONを解析して結果を返す	sources/RJSON-N-success-values.bsb
+RJSON-N002	empty		recoverable	-	emptyInput	0	1	1	0	0	-	false	JSONを解析して結果を返す	sources/RJSON-N-failure-kinds.bsb
+RJSON-N002	unexpected	78	recoverable	-	unexpectedToken	0	1	1	1	0	-	false	JSONを解析して結果を返す	sources/RJSON-N-failure-kinds.bsb
+RJSON-N002	trailing	6e756c6c2078	recoverable	-	trailingContent	5	1	6	6	0	-	false	JSONを解析して結果を返す	sources/RJSON-N-failure-kinds.bsb
+RJSON-N002	object-key	7b	recoverable	-	expectedObjectKey	1	1	2	1	0	-	false	JSONを解析して結果を返す	sources/RJSON-N-failure-kinds.bsb
+RJSON-N002	colon	7b2278227d	recoverable	-	expectedColon	4	1	5	5	0	-	false	JSONを解析して結果を返す	sources/RJSON-N-failure-kinds.bsb
+RJSON-N002	comma	5b3120325d	recoverable	-	expectedCommaOrEnd	3	1	4	5	0	-	false	JSONを解析して結果を返す	sources/RJSON-N-failure-kinds.bsb
+RJSON-N002	unterminated	2278	recoverable	-	unterminatedString	2	1	3	2	0	-	false	JSONを解析して結果を返す	sources/RJSON-N-failure-kinds.bsb
+RJSON-N002	control	22780a22	recoverable	-	unescapedControl	2	1	3	4	0	-	false	JSONを解析して結果を返す	sources/RJSON-N-failure-kinds.bsb
+RJSON-N002	escape	225c7122	recoverable	-	invalidEscape	1	1	2	4	0	-	false	JSONを解析して結果を返す	sources/RJSON-N-failure-kinds.bsb
+RJSON-N002	unicode-escape	225c753132473422	recoverable	-	invalidUnicodeEscape	1	1	2	8	0	-	false	JSONを解析して結果を返す	sources/RJSON-N-failure-kinds.bsb
+RJSON-N002	surrogate	225c754438303022	recoverable	-	isolatedSurrogate	1	1	2	8	0	-	false	JSONを解析して結果を返す	sources/RJSON-N-failure-kinds.bsb
+RJSON-N002	number	3031	recoverable	-	invalidNumber	1	1	2	2	0	-	false	JSONを解析して結果を返す	sources/RJSON-N-failure-kinds.bsb
+RJSON-N002	duplicate	7b2278223a312c2278223a327d	recoverable	-	duplicateKey	7	1	8	13	0	-	false	JSONを解析して結果を返す	sources/RJSON-N-failure-kinds.bsb
+RJSON-N003	unicode	5b22f09f9880222c785d	recoverable	-	unexpectedToken	8	1	6	10	0	-	false	JSON解析失敗のバイト位置を取り出す|JSON解析失敗の列を取り出す	sources/RJSON-N-position-fields.bsb
+RJSON-N003	crlf	5b0d0a785d	recoverable	-	unexpectedToken	3	2	1	5	0	-	false	JSON解析失敗の行を取り出す|JSON解析失敗の列を取り出す	sources/RJSON-N-position-fields.bsb
+RJSON-F009	syntax	7b	diagnostic	-	-	1	1	2	1	0	E_JSON_SYNTAX	true	JSONを解析する	sources/RJSON-F-existing-parser.bsb
+RJSON-F009	duplicate	7b2278223a312c2278223a327d	diagnostic	-	-	7	1	8	13	0	E_JSON_DUPLICATE_KEY	true	JSONを解析する	sources/RJSON-F-existing-parser.bsb

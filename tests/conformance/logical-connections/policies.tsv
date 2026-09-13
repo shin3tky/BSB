@@ -1,0 +1,13 @@
+policy_id	base_uri	origins	methods	auth_kind	credential_reference	connect_timeout_ms	response_timeout_ms	max_request_bytes	max_response_bytes	redirect_policy	retry_policy	expected_reason	secret_marker
+valid	https://api.example.test/v1/	https://api.example.test	GET|HEAD|POST|PUT|PATCH|DELETE	none	-	1000	2000	1048576	2097152	deny	none	-	SECRET_VALID_15
+bad-base	http://BASE_URI_SECRET.invalid/	https://api.example.test	GET	none	-	1000	2000	1	1	deny	none	BASE_URI_INVALID	SECRET_BASE_15
+bad-origin	https://api.example.test/	https://other.example.test	GET	none	-	1000	2000	1	1	deny	none	ORIGIN_POLICY_INVALID	SECRET_ORIGIN_15
+bad-method	https://api.example.test/	https://api.example.test	CONNECT	none	-	1000	2000	1	1	deny	none	METHOD_POLICY_INVALID	SECRET_METHOD_15
+bad-auth	https://api.example.test/	https://api.example.test	GET	basic	-	1000	2000	1	1	deny	none	AUTHENTICATION_POLICY_INVALID	SECRET_AUTH_15
+bad-connect-timeout	https://api.example.test/	https://api.example.test	GET	none	-	0	2000	1	1	deny	none	CONNECT_TIMEOUT_INVALID	SECRET_CONNECT_15
+bad-response-timeout	https://api.example.test/	https://api.example.test	GET	none	-	1000	30001	1	1	deny	none	RESPONSE_TIMEOUT_INVALID	SECRET_RESPONSE_15
+bad-request-limit	https://api.example.test/	https://api.example.test	GET	none	-	1000	2000	67108865	1	deny	none	REQUEST_LIMIT_INVALID	SECRET_REQUEST_15
+bad-response-limit	https://api.example.test/	https://api.example.test	GET	none	-	1000	2000	1	67108865	deny	none	RESPONSE_LIMIT_INVALID	SECRET_RESPONSE_LIMIT_15
+bad-redirect	https://api.example.test/	https://api.example.test	GET	none	-	1000	2000	1	1	follow	none	REDIRECT_POLICY_INVALID	SECRET_REDIRECT_15
+bad-retry	https://api.example.test/	https://api.example.test	GET	none	-	1000	2000	1	1	deny	automatic	RETRY_POLICY_INVALID	SECRET_RETRY_15
+first-invalid	http://first.invalid/	https://other.invalid	CONNECT	basic	-	0	30001	0	67108865	follow	automatic	BASE_URI_INVALID	SECRET_FIRST_15

@@ -1,0 +1,9 @@
+{
+  "bindings": [
+    {
+      "name": "保存",
+      "type": "結果<整数,文字列>",
+      "storage": "local"
+    }
+  ]
+}

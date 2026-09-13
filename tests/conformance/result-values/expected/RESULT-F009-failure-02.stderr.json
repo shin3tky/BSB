@@ -1,0 +1,7 @@
+{
+  "check": "tests/conformance/result-values/sources/RESULT-F009-failure-02.bsb:2:14: エラー[E_UNKNOWN_TYPE]: 「未知失敗型」は言語コアで利用できる型ではありません。\n  必要: 整数・真偽・文字・文字列\n  実際: 未知失敗型\n  修正候補: 言語コアの型へ変更してください\n",
+  "checkJson": "",
+  "run": "tests/conformance/result-values/sources/RESULT-F009-failure-02.bsb:2:14: エラー[E_UNKNOWN_TYPE]: 「未知失敗型」は言語コアで利用できる型ではありません。\n  必要: 整数・真偽・文字・文字列\n  実際: 未知失敗型\n  修正候補: 言語コアの型へ変更してください\n",
+  "format": "",
+  "explain": ""
+}

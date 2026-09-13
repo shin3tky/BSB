@@ -1,0 +1,7 @@
+source	resolver_fixture	exit	data_stack	globals	stdout_utf8_hex	stderr_utf8_hex	capabilities	diagnostic	resolver_calls	event
+sources/CONN-N-basic.bsb	resolved	0	[]	{}			["connection.resolve"]	-	1	connection.resolve|顧客管理API|resolved
+sources/CONN-F-not-configured.bsb	not-configured	10	[]	{}			["connection.resolve"]	E_LOGICAL_CONNECTION_NOT_CONFIGURED	1	connection.resolve|顧客管理API|notConfigured
+sources/CONN-F-denied.bsb	denied	10	[]	{}			["connection.resolve"]	E_LOGICAL_CONNECTION_ACCESS_DENIED	1	connection.resolve|顧客管理API|denied
+sources/CONN-F-invalid.bsb	invalid	10	[]	{}			["connection.resolve"]	E_LOGICAL_CONNECTION_CONFIGURATION_INVALID	1	connection.resolve|顧客管理API|invalid
+sources/CONN-N-basic.bsb	absent	10	[]	{}			[]	E_CAPABILITY_UNAVAILABLE	0	-
+chapter/logical-connections-chapter.bsb	chapter-resolved	0	[]	{}			["connection.resolve"]	-	2	connection.resolve|顧客管理API|resolved;connection.resolve|通知API|resolved

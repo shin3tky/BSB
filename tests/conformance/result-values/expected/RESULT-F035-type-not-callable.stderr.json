@@ -1,0 +1,7 @@
+{
+  "check": "tests/conformance/result-values/sources/RESULT-F035-type-not-callable.bsb:2:5: エラー[E_NAME_NOT_CALLABLE]: 「結果」は型名であり、単語として呼び出せません。\n  必要: 呼び出し可能な単語\n  実際: 型名 結果\n  修正候補: 単語名を指定してください\n",
+  "checkJson": "",
+  "run": "tests/conformance/result-values/sources/RESULT-F035-type-not-callable.bsb:2:5: エラー[E_NAME_NOT_CALLABLE]: 「結果」は型名であり、単語として呼び出せません。\n  必要: 呼び出し可能な単語\n  実際: 型名 結果\n  修正候補: 単語名を指定してください\n",
+  "format": "",
+  "explain": ""
+}

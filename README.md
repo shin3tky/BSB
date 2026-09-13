@@ -1,0 +1,75 @@
+# BSB
+
+BSB（Block Sentence Builder）は、日本語の文に近い表記で記述する、実験的な静的型付きスタック言語です。
+Java で実装した処理系は、字句・構文解析、静的検査、整形、実行、機械可読な診断と静的説明を一体で提供します。
+
+```text
+メイン とは （ -- ）
+    「こんにちは、世界！」を 一行表示する
+こと。
+```
+
+現在の実装には、正確な整数・10進小数、Unicode文字列、正規表現、不変配列、条件分岐と反復、
+定数・変数、コンソール／時刻／プロセス情報、JSON、任意値、結果値、不変バイト列、論理接続、
+HTTPS、名前付き作業領域、複数ファイル、CSV/TSV が含まれます。実装済み範囲と非対応範囲は
+[最小言語仕様の概説](docs/language-overview.md)にまとめています。
+
+## 必要な環境
+
+- JDK 25
+- Gradle Wrapper の初回取得と依存関係の解決に必要なネットワーク接続
+
+Gradle の別途インストールは不要です。
+
+## ビルドと実行
+
+```shell
+./gradlew clean test shadowJar
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar check samples/01-hello-world.bsb
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/01-hello-world.bsb
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar format samples/01-hello-world.bsb
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar explain --json samples/01-hello-world.bsb
+```
+
+`check` は静的検査、`run` は検査後の実行、`format` は正規表記の出力、`explain --json` は
+語・束縛・能力・副作用の静的な説明を行います。`format` は入力ファイルを上書きしません。
+
+公開前の一式を検証するコマンドは次のとおりです。
+
+```shell
+./gradlew clean spotlessCheck test jacocoTestReport javadoc shadowJar
+python3 tools/diagnostic_coverage.py --format json --strict
+python3 tools/builtin_word_coverage.py --format json --strict
+```
+
+## ドキュメント
+
+- [ドキュメント案内](docs/README.md)
+- [目的と設計原則](docs/vision.md)
+- [実行基盤の構成](docs/runtime-architecture.md)
+- [実装・配布ガイド](docs/implementation-guide.md)
+- [最小言語仕様の概説](docs/language-overview.md)
+- [詳細言語仕様](docs/spec/README.md)
+- [機能グループと適合性テスト](docs/conformance.md)
+- [サンプル](samples/README.md)
+- [網羅性監査ツール](tools/README.md)
+
+`docs` は公開ドキュメント、`docs_internal` は旧リポジトリから保持する設計・実装記録です。
+公開仕様では機能グループ ID を使って実装と適合性テストを対応付けます。
+
+## リポジトリ構成
+
+```text
+src/main/java/       処理系本体
+src/test/java/       単体・統合・適合性テスト
+tests/conformance/   機能グループ別の宣言的な適合データ
+samples/             独立して実行できる BSB プログラムと埋込み例
+docs/               公開ドキュメントと詳細言語仕様
+docs_internal/      過去の設計判断、実装計画、引き継ぎ記録
+tools/               診断・組み込み語・適合データの監査ツール
+```
+
+## プロジェクトの位置づけ
+
+BSB は実験段階の処理系です。言語と CLI の挙動は適合性テストで固定していますが、安定版 API や
+後方互換性はまだ保証しません。現時点の制約は[概説の「非対応範囲」](docs/language-overview.md#非対応範囲)を参照してください。

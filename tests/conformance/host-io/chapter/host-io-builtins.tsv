@@ -1,0 +1,21 @@
+word	inputs	outputs	capabilities	effects	feature_group
+表示する	表示可能		console.output	console.output	CORE
+一行表示する	表示可能		console.output	console.output	CORE
+改行する			console.output	console.output	CORE
+一行を入力する		入力結果	console.input	console.input	IO
+入力行である	入力結果	入力結果,真偽			IO
+入力終端である	入力結果	入力結果,真偽			IO
+入力キャンセルである	入力結果	入力結果,真偽			IO
+入力行を取り出す	入力結果	文字列			IO
+入力結果を捨てる	入力結果				IO
+エラー表示する	表示可能		console.error	console.error	IO
+エラー一行表示する	表示可能		console.error	console.error	IO
+エラー改行する			console.error	console.error	IO
+終了する	整数	⊥	process.exit	process.exit	IO
+起動引数を得る		配列<文字列>	process.arguments	process.arguments	IO
+プログラム名を得る		文字列	program.identity	program.identity	IO
+プログラムの場所を得る		文字列	program.identity	program.identity	IO
+待つ	整数		time.sleep	time.sleep	IO
+単調ミリ秒を得る		整数	time.monotonic	time.monotonic	IO
+現在日時を得る		日時	time.wall	time.wall	IO
+日時を文字列に変換する	日時	文字列			IO

@@ -1,0 +1,13 @@
+case_id	variant	input_utf8_hex	kind	position
+BYTES-N008	space	5a20673d3d	invalidCharacter	1
+BYTES-N008	line-feed	5a0a673d3d	invalidCharacter	1
+BYTES-N008	url-dash	2d414141	invalidCharacter	0
+BYTES-N008	url-underscore	5f414141	invalidCharacter	0
+BYTES-N008	non-ascii	5ae381823d	invalidCharacter	1
+BYTES-N008	short-unpadded	5a67	invalidLength	2
+BYTES-N008	length-three	5a673d	invalidLength	3
+BYTES-N008	padding-leading	3d414141	invalidPadding	0
+BYTES-N008	padding-middle	41413d41	invalidPadding	3
+BYTES-N008	padding-three	413d3d3d	invalidPadding	1
+BYTES-N008	pad-bits-four	5a683d3d	nonZeroPadBits	1
+BYTES-N008	pad-bits-two	5a6d393d	nonZeroPadBits	2

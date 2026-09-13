@@ -1,0 +1,7 @@
+{
+  "check": "tests/conformance/result-values/sources/RESULT-F034-comment-failure.bsb:2:14: エラー[E_COMMENT_NOT_ALLOWED]: 定義ヘッダーとスタック効果の中にはコメントを書けません。\n  必要: 型引数\n  実際: # 型内\n  修正候補: コメントを次の行へ移してください\n",
+  "checkJson": "",
+  "run": "tests/conformance/result-values/sources/RESULT-F034-comment-failure.bsb:2:14: エラー[E_COMMENT_NOT_ALLOWED]: 定義ヘッダーとスタック効果の中にはコメントを書けません。\n  必要: 型引数\n  実際: # 型内\n  修正候補: コメントを次の行へ移してください\n",
+  "format": "tests/conformance/result-values/sources/RESULT-F034-comment-failure.bsb:2:14: エラー[E_COMMENT_NOT_ALLOWED]: 定義ヘッダーとスタック効果の中にはコメントを書けません。\n  必要: 型引数\n  実際: # 型内\n  修正候補: コメントを次の行へ移してください\n",
+  "explain": ""
+}

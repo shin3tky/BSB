@@ -1,0 +1,9 @@
+fixture	connection	operation	outcome	policy_id	invalid_reason	host_failure_marker	expected_calls
+resolved	顧客管理API	resolve	RESOLVED	valid	-	-	1
+not-configured	顧客管理API	resolve	NOT_CONFIGURED	-	-	-	1
+denied	顧客管理API	resolve	DENIED	-	-	-	1
+invalid	顧客管理API	resolve	INVALID	-	BASE_URI_INVALID	-	1
+failure	顧客管理API	resolve	FAILURE	-	-	HOST_FAILURE_SECRET_15	1
+contract-null	顧客管理API	resolve	CONTRACT_NULL	-	-	-	1
+chapter-resolved	顧客管理API	resolve	RESOLVED	valid	-	-	2
+chapter-resolved	通知API	resolve	RESOLVED	valid	-	-	2

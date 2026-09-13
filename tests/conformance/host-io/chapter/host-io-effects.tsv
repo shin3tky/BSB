@@ -1,0 +1,13 @@
+sequence	effect
+1	console.output:4F0A
+2	console.error:450A
+3	console.input:end
+4	process.arguments:2
+5	console.output:320A
+6	program.identity:name
+7	console.output:494F2D4E3032332E6273620A
+8	time.sleep:0
+9	time.monotonic
+10	console.output:31300A
+11	time.wall
+12	console.output:323032362D30382D32395431343A30353A30362E3132332B30393A30300A

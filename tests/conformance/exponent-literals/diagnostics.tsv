@@ -1,0 +1,13 @@
+case_id	command	severity	stage	code	line	column	fields	expected	actual	fix
+EXP-F001	check	error	lexical	E_INVALID_NUMBER_LITERAL	2	5	reason=missingExponentDigits	指数部のASCII数字	1e	指数部へ数字を追加してください
+EXP-F002	check	error	lexical	E_INVALID_NUMBER_LITERAL	2	5	reason=missingExponentDigits	指数符号後のASCII数字	1e+	指数符号の後へ数字を追加してください
+EXP-F003	check	error	lexical	E_INVALID_NUMBER_LITERAL	2	5	reason=invalidMantissa	整数部と小数部を持つ仮数	.5e2	0.5e2のように書いてください
+EXP-F004	check	error	lexical	E_INVALID_NUMBER_LITERAL	2	5	reason=leadingPlus	先頭符号なしの正数	+1e2	先頭の+を削除してください
+EXP-F005	check	error	lexical	E_INVALID_NUMBER_LITERAL	2	5	reason=leadingZero	0または非ゼロ数字で始まる整数部	01e2	先頭の0を削除してください
+EXP-F006	check	error	lexical	E_INVALID_NUMBER_LITERAL	2	5	reason=repeatedExponent	指数記号1個	1ee2	余分な指数記号を削除してください
+EXP-F007	check	error	name	E_UNDEFINED_WORD	2	5	word=e2	定義済み単語	e2	単語を定義するか数値の仮数を書いてください
+EXP-F008	check	error	lexical	E_MISSING_SEPARATOR	2	8	-	数値後の区切り	円	1e2 円
+EXP-F009	check	error	lexical	E_INVALID_NUMBER_LITERAL	2	5	reason=missingExponentDigits	指数部のASCII数字	1e円	指数数字を追加するかeの前へ空白を入れてください
+EXP-F010	check	error	lexical	E_INVALID_NUMBER_LITERAL	2	5	reason=missingExponentDigits	指数符号1個とASCII数字	1e--2	余分な-を削除してください
+EXP-F011	run	error	runtime	E_DECIMAL_TEXT_INVALID	2	12	word=文字列を小数に変換する;inputPreview=1e;inputCodePoints=2	小数点または指数部を持つASCII小数表記	1e	1.0または1e0のような小数表記にしてください
+EXP-F012	check	error	typeAndStack	E_DECIMAL_SCALE_LIMIT	2	5	word=小数リテラル;metric=rawScale;limit=65536;observed=65537	スケール絶対値65536以下	65537	指数の絶対値を小さくしてください

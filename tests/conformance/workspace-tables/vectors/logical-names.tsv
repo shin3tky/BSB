@@ -1,0 +1,15 @@
+case_id	variant	utf8_hex	utf8_bytes	valid	reason	match_key
+WST-F005	ascii	696e7075742e646174	9	true	-	input.dat
+WST-F005	japanese	e5a3b2e4b88ae38387e383bce382bf2e646174	19	true	-	売上データ.dat
+WST-F005	empty		0	false	empty	-
+WST-F005	not-nfc	65cc812e646174	7	false	notNfc	-
+WST-F005	separator-slash	612f622e646174	7	false	separator	-
+WST-F005	separator-backslash	615c622e646174	7	false	separator	-
+WST-F005	control-nul	610062	3	false	controlCharacter	-
+WST-F005	control-del	617f62	3	false	controlCharacter	-
+WST-F005	dot	2e	1	false	dotName	-
+WST-F005	dot-dot	2e2e	2	false	dotName	-
+WST-F005	bytes-255	61x255	255	true	-	long-255
+WST-F005	bytes-256	61x256	256	false	tooLong	-
+WST-F005	case-distinct-upper	412e646174	5	true	-	A.dat
+WST-F005	case-distinct-lower	612e646174	5	true	-	a.dat

@@ -1,0 +1,9 @@
+case_id	target	variant	outcome	exit	code	limit	observed
+FLOW-R001	syntaxDepth	256	accepted	0	-	256	256
+FLOW-R001	syntaxDepth	257	error	9	E_SYNTAX_DEPTH_LIMIT	256	257
+FLOW-R002	controlIrInstructions	250000	accepted	0	-	250000	250000
+FLOW-R002	controlIrInstructions	250001	error	8	E_IR_LIMIT	250000	250001
+FLOW-R003	executedControlInstructions	10000000	accepted	0	-	10000000	10000000
+FLOW-R003	executedControlInstructions	10000001	error	10	E_INSTRUCTION_LIMIT	10000000	10000001
+FLOW-R004	repeatCount	0	accepted	0	-	0	0
+FLOW-R004	repeatCount	-1	error	10	E_NEGATIVE_REPEAT_COUNT	0	-1

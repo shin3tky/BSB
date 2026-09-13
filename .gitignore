@@ -1,0 +1,16 @@
+.DS_Store
+Thumbs.db
+.gradle/
+build/
+out/
+.idea/
+.vscode/
+*.iml
+gradlew
+gradlew.bat
+gradle/wrapper/gradle-wrapper.jar
+gradle/wrapper/gradle-wrapper.properties
+tools/reports/
+__pycache__/
+*.connections.local.toml
+docs_internal/

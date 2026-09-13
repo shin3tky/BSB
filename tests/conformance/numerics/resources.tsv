@@ -1,0 +1,16 @@
+case_id	target	variant	outcome	exit	code	limit	observed
+NUM-R001	decimalResultPrecision	65536	accepted	0	-	65536	65536
+NUM-R001	decimalResultPrecision	65537	error	10	E_DECIMAL_RESULT_PRECISION_LIMIT	65536	65537
+NUM-R002	decimalScaleAbsolute	65536	accepted	0	-	65536	65536
+NUM-R002	decimalScaleAbsolute	65537	error	10	E_DECIMAL_SCALE_LIMIT	65536	65537
+NUM-R003	divisionPrecision	1	accepted	0	-	1..4096	1
+NUM-R003	divisionPrecision	4096	accepted	0	-	1..4096	4096
+NUM-R003	divisionPrecision	0	error	10	E_DIVISION_PRECISION_OUT_OF_RANGE	1..4096	0
+NUM-R003	divisionPrecision	4097	error	10	E_DIVISION_PRECISION_OUT_OF_RANGE	1..4096	4097
+NUM-R004	decimalToIntegerDigits	65536	accepted	0	-	65536	65536
+NUM-R004	decimalToIntegerDigits	65537	error	10	E_INTEGER_RESULT_LIMIT	65536	65537
+NUM-R005	traceDecimalCodePoints	32	rendered	0	-	32	32
+NUM-R005	traceDecimalCodePoints	33	truncated	0	-	32	33
+NUM-R005	traceDisclosure	0	redacted	0	-	0	0
+NUM-R006	numericIrTypes	matching	accepted	0	-	-	-
+NUM-R006	numericIrTypes	mismatch	internal-error	70	INTERNAL	-	-

@@ -1,0 +1,1 @@
+{"schemaVersion":1,"command":"explain","success":false,"exitCode":70,"diagnostics":[],"builtinWords":[],"userWords":[],"scopes":[],"bindings":[],"problem":{"kind":"outputLimit","message":"JSON説明の出力が上限を超えました。"}}

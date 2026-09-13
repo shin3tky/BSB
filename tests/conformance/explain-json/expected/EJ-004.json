@@ -1,0 +1,1 @@
+{"schemaVersion":1,"command":"explain","source":"tests/conformance/explain-json/missing.bsb","success":false,"exitCode":3,"diagnostics":[],"builtinWords":[],"userWords":[],"scopes":[],"bindings":[],"problem":{"kind":"io","message":"ソースファイルの読取りに失敗しました。"}}

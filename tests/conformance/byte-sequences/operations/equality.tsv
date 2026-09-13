@@ -1,0 +1,8 @@
+case_id	variant	left_hex	right_hex	wrapper	result	compared_bytes	construction
+BYTES-N010	equal	000102ff	000102ff	direct	true	4	0
+BYTES-N010	first-different	000102ff	010102ff	direct	false	1	0
+BYTES-N010	middle-different	000102ff	000103ff	direct	false	3	0
+BYTES-N010	last-different	000102ff	000102fe	direct	false	4	0
+BYTES-N010	length-different	000102ff	000102	direct	false	0	0
+BYTES-N010	optional-equal	000102ff	000102ff	present	true	4	0
+BYTES-N010	result-state-different	000102ff	000102ff	result-state	false	0	0

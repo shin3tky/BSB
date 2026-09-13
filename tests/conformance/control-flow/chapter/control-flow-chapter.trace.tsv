@@ -1,0 +1,34 @@
+sequence	word	opcode	sourceLine	sourceColumn	dataBefore	dataAfter	callDepthBefore	callDepthAfter	outputHex	particles	controlBefore	controlAfter	target	branchTaken
+1	メイン	PushConst	10	5	[]	[整数:3]	1	1			[]	[]		
+2	メイン	CountedLoopStart	10	7	[整数:3]	[]	1	1			[]	[count:3/3]	メイン:6	false
+3	メイン	PushConst	11	9	[]	[真偽:はい]	1	1			[count:3/3]	[count:3/3]		
+4	メイン	Call:分岐表示	11	14	[真偽:はい]	[真偽:はい]	1	2		を@11:12	[count:3/3]	[count:3/3]		
+5	分岐表示	BranchIfFalse	2	5	[真偽:はい]	[]	2	2			[count:3/3]	[count:3/3]	分岐表示:5	false
+6	分岐表示	PushConst	3	9	[]	[文字列:条件は真]	2	2			[count:3/3]	[count:3/3]		
+7	分岐表示	Call:一行表示する	3	17	[文字列:条件は真]	[]	2	2	E69DA1E4BBB6E381AFE79C9F0A	を@3:15	[count:3/3]	[count:3/3]		
+8	分岐表示	Jump	4	5	[]	[]	2	2			[count:3/3]	[count:3/3]	分岐表示:7	true
+9	分岐表示	Return	7	1	[]	[]	2	1			[count:3/3]	[count:3/3]		
+10	メイン	CountedLoopNext	12	5	[]	[]	1	1			[count:3/3]	[count:2/3]	メイン:3	true
+11	メイン	PushConst	11	9	[]	[真偽:はい]	1	1			[count:2/3]	[count:2/3]		
+12	メイン	Call:分岐表示	11	14	[真偽:はい]	[真偽:はい]	1	2		を@11:12	[count:2/3]	[count:2/3]		
+13	分岐表示	BranchIfFalse	2	5	[真偽:はい]	[]	2	2			[count:2/3]	[count:2/3]	分岐表示:5	false
+14	分岐表示	PushConst	3	9	[]	[文字列:条件は真]	2	2			[count:2/3]	[count:2/3]		
+15	分岐表示	Call:一行表示する	3	17	[文字列:条件は真]	[]	2	2	E69DA1E4BBB6E381AFE79C9F0A	を@3:15	[count:2/3]	[count:2/3]		
+16	分岐表示	Jump	4	5	[]	[]	2	2			[count:2/3]	[count:2/3]	分岐表示:7	true
+17	分岐表示	Return	7	1	[]	[]	2	1			[count:2/3]	[count:2/3]		
+18	メイン	CountedLoopNext	12	5	[]	[]	1	1			[count:2/3]	[count:1/3]	メイン:3	true
+19	メイン	PushConst	11	9	[]	[真偽:はい]	1	1			[count:1/3]	[count:1/3]		
+20	メイン	Call:分岐表示	11	14	[真偽:はい]	[真偽:はい]	1	2		を@11:12	[count:1/3]	[count:1/3]		
+21	分岐表示	BranchIfFalse	2	5	[真偽:はい]	[]	2	2			[count:1/3]	[count:1/3]	分岐表示:5	false
+22	分岐表示	PushConst	3	9	[]	[文字列:条件は真]	2	2			[count:1/3]	[count:1/3]		
+23	分岐表示	Call:一行表示する	3	17	[文字列:条件は真]	[]	2	2	E69DA1E4BBB6E381AFE79C9F0A	を@3:15	[count:1/3]	[count:1/3]		
+24	分岐表示	Jump	4	5	[]	[]	2	2			[count:1/3]	[count:1/3]	分岐表示:7	true
+25	分岐表示	Return	7	1	[]	[]	2	1			[count:1/3]	[count:1/3]		
+26	メイン	CountedLoopNext	12	5	[]	[]	1	1			[count:1/3]	[]	メイン:3	false
+27	メイン	PushConst	13	5	[]	[真偽:いいえ]	1	1			[]	[]		
+28	メイン	Call:分岐表示	13	11	[真偽:いいえ]	[真偽:いいえ]	1	2		を@13:9	[]	[]		
+29	分岐表示	BranchIfFalse	2	5	[真偽:いいえ]	[]	2	2			[]	[]	分岐表示:5	true
+30	分岐表示	PushConst	5	9	[]	[文字列:条件は偽]	2	2			[]	[]		
+31	分岐表示	Call:一行表示する	5	17	[文字列:条件は偽]	[]	2	2	E69DA1E4BBB6E381AFE581BD0A	を@5:15	[]	[]		
+32	分岐表示	Return	7	1	[]	[]	2	1			[]	[]		
+33	メイン	Return	14	1	[]	[]	1	0			[]	[]		

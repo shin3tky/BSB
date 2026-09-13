@@ -1,0 +1,10 @@
+{
+  "lexicalSuccess": true,
+  "countedTokens": 250000,
+  "attemptedTokens": 250000,
+  "commaTokens": 31249,
+  "diagnostics": [],
+  "sourceSha256": "a0ab9d07c63f89990dd1dc01dc1bdf328c3dff4f69536de9514aecf688807652",
+  "sourceUtf8Bytes": 1781245,
+  "sourceUtf16Units": 843747
+}

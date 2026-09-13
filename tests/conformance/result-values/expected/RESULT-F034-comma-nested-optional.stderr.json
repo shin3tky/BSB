@@ -1,0 +1,7 @@
+{
+  "check": "tests/conformance/result-values/sources/RESULT-F034-comma-nested-optional.bsb:1:17: エラー[E_UNEXPECTED_CHARACTER]: この文字はBSBの構文で使用できません。\n  必要: BSBの構文で使用できる文字\n  実際: U+002C\n  修正候補: この文字を削除してください\n",
+  "checkJson": "",
+  "run": "tests/conformance/result-values/sources/RESULT-F034-comma-nested-optional.bsb:1:17: エラー[E_UNEXPECTED_CHARACTER]: この文字はBSBの構文で使用できません。\n  必要: BSBの構文で使用できる文字\n  実際: U+002C\n  修正候補: この文字を削除してください\n",
+  "format": "tests/conformance/result-values/sources/RESULT-F034-comma-nested-optional.bsb:1:17: エラー[E_UNEXPECTED_CHARACTER]: この文字はBSBの構文で使用できません。\n  必要: BSBの構文で使用できる文字\n  実際: U+002C\n  修正候補: この文字を削除してください\n",
+  "explain": ""
+}

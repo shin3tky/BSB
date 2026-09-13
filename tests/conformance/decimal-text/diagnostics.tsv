@@ -1,0 +1,13 @@
+case_id	input_spec	word	code	line	column	fields	expected	actual	fix
+DTXT-F001	1e	文字列を小数に変換する	E_DECIMAL_TEXT_INVALID	2	12	word=文字列を小数に変換する;inputPreview=1e;inputCodePoints=2	小数点または指数部を持つASCII小数表記	1e	1.0または1e0のような小数表記にしてください
+DTXT-F002	1e+	文字列を小数に変換する	E_DECIMAL_TEXT_INVALID	2	13	word=文字列を小数に変換する;inputPreview=1e+;inputCodePoints=3	小数点または指数部を持つASCII小数表記	1e+	1.0または1e0のような小数表記にしてください
+DTXT-F003	+1e2	文字列を小数に変換する	E_DECIMAL_TEXT_INVALID	2	14	word=文字列を小数に変換する;inputPreview=+1e2;inputCodePoints=4	小数点または指数部を持つASCII小数表記	+1e2	先頭の+を除いてください
+DTXT-F004	01e2	文字列を小数に変換する	E_DECIMAL_TEXT_INVALID	2	14	word=文字列を小数に変換する;inputPreview=01e2;inputCodePoints=4	小数点または指数部を持つASCII小数表記	01e2	先頭0を除いてください
+DTXT-F005	.5e2	文字列を小数に変換する	E_DECIMAL_TEXT_INVALID	2	14	word=文字列を小数に変換する;inputPreview=.5e2;inputCodePoints=4	小数点または指数部を持つASCII小数表記	.5e2	1.0または1e0のような小数表記にしてください
+DTXT-F006	1.e2	文字列を小数に変換する	E_DECIMAL_TEXT_INVALID	2	14	word=文字列を小数に変換する;inputPreview=1.e2;inputCodePoints=4	小数点または指数部を持つASCII小数表記	1.e2	1.0または1e0のような小数表記にしてください
+DTXT-F007	1ee2	文字列を小数に変換する	E_DECIMAL_TEXT_INVALID	2	14	word=文字列を小数に変換する;inputPreview=1ee2;inputCodePoints=4	小数点または指数部を持つASCII小数表記	1ee2	1.0または1e0のような小数表記にしてください
+DTXT-F008	1	文字列を小数に変換する	E_DECIMAL_TEXT_INVALID	2	11	word=文字列を小数に変換する;inputPreview=1;inputCodePoints=1	小数点または指数部を持つASCII小数表記	1	1.0または1e0のような小数表記にしてください
+DTXT-F009	1e2	文字列を整数に変換する	E_INTEGER_TEXT_INVALID	2	13	word=文字列を整数に変換する;inputPreview=1e2;inputCodePoints=3	-?(0|[1-9][0-9]*)	1e2	ASCII数字による整数表記にしてください
+DTXT-F010	DTXT-R002.over.literal	文字列を小数に変換する	E_NUMERIC_TEXT_DIGIT_LIMIT	2	4108	word=文字列を小数に変換する;numericType=小数;inputCodePoints=4098;limit=4096;observed=4097	数字4096桁以下	4097	入力の桁数を4096以下にしてください
+DTXT-F011	1e65537	文字列を小数に変換する	E_DECIMAL_SCALE_LIMIT	2	17	word=文字列を小数に変換する;metric=rawScale;inputPreview=1e65537;inputCodePoints=7;limit=65536;observed=65537	スケール絶対値65536以下	65537	指数の絶対値または小数桁を減らしてください
+DTXT-F012	10e65536	文字列を小数に変換する	E_DECIMAL_SCALE_LIMIT	2	18	word=文字列を小数に変換する;metric=normalizedScale;inputPreview=10e65536;inputCodePoints=8;limit=65536;observed=65537	スケール絶対値65536以下	65537	指数の絶対値または小数桁を減らしてください

@@ -1,0 +1,7 @@
+{
+  "check": "",
+  "checkJson": "{\"schemaVersion\":1,\"command\":\"check\",\"source\":\"tests/conformance/result-values/sources/RESULT-F034-comment-before-success.bsb\",\"success\":false,\"exitCode\":9,\"diagnostics\":[{\"code\":\"E_COMMENT_NOT_ALLOWED\",\"severity\":\"error\",\"stage\":\"syntax\",\"message\":\"定義ヘッダーとスタック効果の中にはコメントを書けません。\",\"sourcePath\":\"tests/conformance/result-values/sources/RESULT-F034-comment-before-success.bsb\",\"span\":{\"start\":{\"line\":2,\"column\":11},\"endInclusive\":{\"line\":2,\"column\":17},\"utf8Start\":45,\"utf8EndExclusive\":62},\"fields\":{},\"expected\":\"型引数開始の<\",\"actual\":\"# 構築名の後\",\"relatedLocations\":[],\"fixes\":[\"コメントを次の行へ移してください\"]}]}\n",
+  "run": "",
+  "format": "",
+  "explain": "{\"schemaVersion\":1,\"command\":\"explain\",\"source\":\"tests/conformance/result-values/sources/RESULT-F034-comment-before-success.bsb\",\"success\":false,\"exitCode\":9,\"diagnostics\":[{\"code\":\"E_COMMENT_NOT_ALLOWED\",\"severity\":\"error\",\"stage\":\"syntax\",\"message\":\"定義ヘッダーとスタック効果の中にはコメントを書けません。\",\"sourcePath\":\"tests/conformance/result-values/sources/RESULT-F034-comment-before-success.bsb\",\"span\":{\"start\":{\"line\":2,\"column\":11},\"endInclusive\":{\"line\":2,\"column\":17},\"utf8Start\":45,\"utf8EndExclusive\":62},\"fields\":{},\"expected\":\"型引数開始の<\",\"actual\":\"# 構築名の後\",\"relatedLocations\":[],\"fixes\":[\"コメントを次の行へ移してください\"]}],\"builtinWords\":[],\"userWords\":[],\"scopes\":[],\"bindings\":[]}\n"
+}

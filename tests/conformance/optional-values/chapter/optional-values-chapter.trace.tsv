@@ -1,0 +1,41 @@
+sequence	word	opcode	sourceLine	sourceColumn	dataBefore	dataAfter	callDepthBefore	callDepthAfter	outputHex	particles	controlBefore	controlAfter	target	branchTaken	bindingId	bindingName	bindingKind	storageScope	valueBefore	valueAfter	effect
+1	メイン	PushConst	19	5	[]	[文字列:<redacted>]	1	1			[]	[]			-	-	-	-	-	-\t
+2	メイン	Call:JSONを解析する	19	34	[文字列:<redacted>]	[JSON:<redacted>]	1	1		を@19:32	[]	[]			-	-	-	-	-	-\t
+3	メイン	Call:設定を読む	19	44	[JSON:<redacted>]	[JSON:<redacted>]	1	2			[]	[]			-	-	-	-	-	-\t
+4	設定を読む	PushConst	2	5	[JSON:<redacted>]	[JSON:<redacted>,文字列:<redacted>]	2	2			[]	[]			-	-	-	-	-	-\t
+5	設定を読む	Call:JSONオブジェクトから任意値を取り出す	2	13	[JSON:<redacted>,文字列:<redacted>]	[任意<JSON>:<redacted>]	2	2		を@2:11	[]	[]			-	-	-	-	-	-\t
+6	設定を読む	Call:任意に値がある	3	5	[任意<JSON>:<redacted>]	[任意<JSON>:<redacted>,真偽:はい]	2	2			[]	[]			-	-	-	-	-	-\t
+7	設定を読む	BranchIfFalse	4	5	[任意<JSON>:<redacted>,真偽:はい]	[任意<JSON>:<redacted>]	2	2			[]	[]	設定を読む:12	false	-	-	-	-	-	-\t
+8	設定を読む	Call:任意から値を取り出す	5	9	[任意<JSON>:<redacted>]	[JSON:<redacted>]	2	2			[]	[]			-	-	-	-	-	-\t
+9	設定を読む	Call:JSON文字列である	6	9	[JSON:<redacted>]	[JSON:<redacted>,真偽:はい]	2	2			[]	[]			-	-	-	-	-	-\t
+10	設定を読む	BranchIfFalse	7	9	[JSON:<redacted>,真偽:はい]	[JSON:<redacted>]	2	2			[]	[]	設定を読む:10	false	-	-	-	-	-	-\t
+11	設定を読む	Call:JSONから文字列を取り出す	8	13	[JSON:<redacted>]	[文字列:<redacted>]	2	2			[]	[]			-	-	-	-	-	-\t
+12	設定を読む	Jump	9	9	[文字列:<redacted>]	[文字列:<redacted>]	2	2			[]	[]	設定を読む:11	true	-	-	-	-	-	-\t
+13	設定を読む	Jump	12	5	[文字列:<redacted>]	[文字列:<redacted>]	2	2			[]	[]	設定を読む:14	true	-	-	-	-	-	-\t
+14	設定を読む	Return	16	1	[文字列:<redacted>]	[文字列:<redacted>]	2	1			[]	[]			-	-	-	-	-	-\t
+15	メイン	Call:一行表示する	19	50	[文字列:<redacted>]	[]	1	1	636F6E666967757265640A		[]	[]			-	-	-	-	-	-	console.output:636F6E666967757265640A
+16	メイン	PushConst	20	5	[]	[文字列:<redacted>]	1	1			[]	[]			-	-	-	-	-	-\t
+17	メイン	Call:JSONを解析する	20	24	[文字列:<redacted>]	[JSON:<redacted>]	1	1		を@20:22	[]	[]			-	-	-	-	-	-\t
+18	メイン	Call:設定を読む	20	34	[JSON:<redacted>]	[JSON:<redacted>]	1	2			[]	[]			-	-	-	-	-	-\t
+19	設定を読む	PushConst	2	5	[JSON:<redacted>]	[JSON:<redacted>,文字列:<redacted>]	2	2			[]	[]			-	-	-	-	-	-\t
+20	設定を読む	Call:JSONオブジェクトから任意値を取り出す	2	13	[JSON:<redacted>,文字列:<redacted>]	[任意<JSON>:<redacted>]	2	2		を@2:11	[]	[]			-	-	-	-	-	-\t
+21	設定を読む	Call:任意に値がある	3	5	[任意<JSON>:<redacted>]	[任意<JSON>:<redacted>,真偽:はい]	2	2			[]	[]			-	-	-	-	-	-\t
+22	設定を読む	BranchIfFalse	4	5	[任意<JSON>:<redacted>,真偽:はい]	[任意<JSON>:<redacted>]	2	2			[]	[]	設定を読む:12	false	-	-	-	-	-	-\t
+23	設定を読む	Call:任意から値を取り出す	5	9	[任意<JSON>:<redacted>]	[JSON:<redacted>]	2	2			[]	[]			-	-	-	-	-	-\t
+24	設定を読む	Call:JSON文字列である	6	9	[JSON:<redacted>]	[JSON:<redacted>,真偽:いいえ]	2	2			[]	[]			-	-	-	-	-	-\t
+25	設定を読む	BranchIfFalse	7	9	[JSON:<redacted>,真偽:いいえ]	[JSON:<redacted>]	2	2			[]	[]	設定を読む:10	true	-	-	-	-	-	-\t
+26	設定を読む	Call:JSONを文字列に変換する	10	13	[JSON:<redacted>]	[文字列:<redacted>]	2	2			[]	[]			-	-	-	-	-	-\t
+27	設定を読む	Jump	12	5	[文字列:<redacted>]	[文字列:<redacted>]	2	2			[]	[]	設定を読む:14	true	-	-	-	-	-	-\t
+28	設定を読む	Return	16	1	[文字列:<redacted>]	[文字列:<redacted>]	2	1			[]	[]			-	-	-	-	-	-\t
+29	メイン	Call:一行表示する	20	40	[文字列:<redacted>]	[]	1	1	6E756C6C0A		[]	[]			-	-	-	-	-	-	console.output:6E756C6C0A
+30	メイン	Call:空のJSONオブジェクト	21	5	[]	[JSON:<redacted>]	1	1			[]	[]			-	-	-	-	-	-\t
+31	メイン	Call:設定を読む	21	18	[JSON:<redacted>]	[JSON:<redacted>]	1	2			[]	[]			-	-	-	-	-	-\t
+32	設定を読む	PushConst	2	5	[JSON:<redacted>]	[JSON:<redacted>,文字列:<redacted>]	2	2			[]	[]			-	-	-	-	-	-\t
+33	設定を読む	Call:JSONオブジェクトから任意値を取り出す	2	13	[JSON:<redacted>,文字列:<redacted>]	[任意<JSON>:<redacted>]	2	2		を@2:11	[]	[]			-	-	-	-	-	-\t
+34	設定を読む	Call:任意に値がある	3	5	[任意<JSON>:<redacted>]	[任意<JSON>:<redacted>,真偽:いいえ]	2	2			[]	[]			-	-	-	-	-	-\t
+35	設定を読む	BranchIfFalse	4	5	[任意<JSON>:<redacted>,真偽:いいえ]	[任意<JSON>:<redacted>]	2	2			[]	[]	設定を読む:12	true	-	-	-	-	-	-\t
+36	設定を読む	Call:任意を捨てる	13	9	[任意<JSON>:<redacted>]	[]	2	2			[]	[]			-	-	-	-	-	-\t
+37	設定を読む	PushConst	14	9	[]	[文字列:<redacted>]	2	2			[]	[]			-	-	-	-	-	-\t
+38	設定を読む	Return	16	1	[文字列:<redacted>]	[文字列:<redacted>]	2	1			[]	[]			-	-	-	-	-	-\t
+39	メイン	Call:一行表示する	21	24	[文字列:<redacted>]	[]	1	1	64656661756C740A		[]	[]			-	-	-	-	-	-	console.output:64656661756C740A
+40	メイン	Return	22	1	[]	[]	1	0			[]	[]			-	-	-	-	-	-\t

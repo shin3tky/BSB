@@ -1,0 +1,7 @@
+{
+  "check": "",
+  "checkJson": "{\"schemaVersion\":1,\"command\":\"check\",\"source\":\"tests/conformance/result-values/sources/RESULT-F004-failure-one.bsb\",\"success\":false,\"exitCode\":9,\"diagnostics\":[{\"code\":\"E_RESULT_TYPE_ARGUMENT_COUNT\",\"severity\":\"error\",\"stage\":\"syntax\",\"message\":\"結果型には成功型と失敗型の2個の型引数が必要です。\",\"sourcePath\":\"tests/conformance/result-values/sources/RESULT-F004-failure-one.bsb\",\"point\":{\"line\":2,\"column\":13,\"utf8Offset\":51},\"fields\":{\"actualCount\":\"1\",\"expectedCount\":\"2\",\"owner\":\"失敗にする\",\"typeConstructor\":\"結果\",\"word\":\"失敗にする\"},\"expected\":\"2個の型引数\",\"actual\":\"1個の型引数\",\"relatedLocations\":[],\"fixes\":[\"成功型と失敗型を1個ずつ指定してください\"]}]}\n",
+  "run": "",
+  "format": "",
+  "explain": "{\"schemaVersion\":1,\"command\":\"explain\",\"source\":\"tests/conformance/result-values/sources/RESULT-F004-failure-one.bsb\",\"success\":false,\"exitCode\":9,\"diagnostics\":[{\"code\":\"E_RESULT_TYPE_ARGUMENT_COUNT\",\"severity\":\"error\",\"stage\":\"syntax\",\"message\":\"結果型には成功型と失敗型の2個の型引数が必要です。\",\"sourcePath\":\"tests/conformance/result-values/sources/RESULT-F004-failure-one.bsb\",\"point\":{\"line\":2,\"column\":13,\"utf8Offset\":51},\"fields\":{\"actualCount\":\"1\",\"expectedCount\":\"2\",\"owner\":\"失敗にする\",\"typeConstructor\":\"結果\",\"word\":\"失敗にする\"},\"expected\":\"2個の型引数\",\"actual\":\"1個の型引数\",\"relatedLocations\":[],\"fixes\":[\"成功型と失敗型を1個ずつ指定してください\"]}],\"builtinWords\":[],\"userWords\":[],\"scopes\":[],\"bindings\":[]}\n"
+}

@@ -1,0 +1,7 @@
+{
+  "check": "",
+  "checkJson": "{\"schemaVersion\":1,\"command\":\"check\",\"source\":\"tests/conformance/result-values/sources/RESULT-F034-comma-type.bsb\",\"success\":false,\"exitCode\":9,\"diagnostics\":[{\"code\":\"E_UNEXPECTED_CHARACTER\",\"severity\":\"error\",\"stage\":\"lexical\",\"message\":\"この文字はBSBの構文で使用できません。\",\"sourcePath\":\"tests/conformance/result-values/sources/RESULT-F034-comma-type.bsb\",\"span\":{\"start\":{\"line\":1,\"column\":11},\"endInclusive\":{\"line\":1,\"column\":11},\"utf8Start\":26,\"utf8EndExclusive\":27},\"fields\":{\"codePoint\":\"U+002C\"},\"expected\":\"BSBの構文で使用できる文字\",\"actual\":\"U+002C\",\"relatedLocations\":[],\"fixes\":[\"この文字を削除してください\"]}]}\n",
+  "run": "",
+  "format": "",
+  "explain": "{\"schemaVersion\":1,\"command\":\"explain\",\"source\":\"tests/conformance/result-values/sources/RESULT-F034-comma-type.bsb\",\"success\":false,\"exitCode\":9,\"diagnostics\":[{\"code\":\"E_UNEXPECTED_CHARACTER\",\"severity\":\"error\",\"stage\":\"lexical\",\"message\":\"この文字はBSBの構文で使用できません。\",\"sourcePath\":\"tests/conformance/result-values/sources/RESULT-F034-comma-type.bsb\",\"span\":{\"start\":{\"line\":1,\"column\":11},\"endInclusive\":{\"line\":1,\"column\":11},\"utf8Start\":26,\"utf8EndExclusive\":27},\"fields\":{\"codePoint\":\"U+002C\"},\"expected\":\"BSBの構文で使用できる文字\",\"actual\":\"U+002C\",\"relatedLocations\":[],\"fixes\":[\"この文字を削除してください\"]}],\"builtinWords\":[],\"userWords\":[],\"scopes\":[],\"bindings\":[]}\n"
+}

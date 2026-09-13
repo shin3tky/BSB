@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+
+repository_root=$(git rev-parse --show-toplevel)
+cd "$repository_root"
+
+if ! ./gradlew --quiet spotlessCheck; then
+    echo >&2
+    echo "Javaソースが正規の書式ではありません。" >&2
+    echo "./gradlew spotlessApply を実行し、変更を確認してから再度コミットしてください。" >&2
+    exit 1
+fi

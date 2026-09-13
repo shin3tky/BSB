@@ -1,0 +1,1 @@
+{"schemaVersion":1,"command":"explain","success":false,"exitCode":2,"diagnostics":[],"builtinWords":[],"userWords":[],"scopes":[],"bindings":[],"problem":{"kind":"usage","message":"ソースファイルを1つ指定してください。"}}

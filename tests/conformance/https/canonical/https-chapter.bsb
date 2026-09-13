@@ -1,0 +1,15 @@
+顧客管理APIは 論理接続。
+
+メインとは （--）
+    要求は 定数 空のHTTP要求 「v1/customers」 を HTTP要求に経路を設定する 「Accept」 と 「application/json」 を HTTP要求にヘッダーを設定する 「Content-Type」 と 「application/json」 を HTTP要求にヘッダーを設定する 空のJSONオブジェクト HTTP要求にJSON本文を設定する。
+    要求 を HTTP要求を送信する<顧客管理API,POST>
+    結果が成功である ならば
+        結果から成功値を取り出す
+        HTTP応答から状態コードを取り出す
+        一行表示する
+    さもなければ
+        結果から失敗値を取り出す
+        HTTP送信失敗の種類を取り出す
+        一行表示する
+    つぎに
+こと。

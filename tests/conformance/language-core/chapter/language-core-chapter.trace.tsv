@@ -1,0 +1,9 @@
+sequence	word	opcode	sourceLine	sourceColumn	dataBefore	dataAfter	callDepthBefore	callDepthAfter	outputHex	particles
+1	メイン	PushConst	6	5	[]	[整数:21]	1	1		
+2	メイン	Call:二倍	6	10	[整数:21]	[整数:21]	1	2		を@6:8
+3	二倍	PushConst	2	5	[整数:21]	[整数:21,整数:2]	2	2		
+4	二倍	Call:掛ける	2	9	[整数:21,整数:2]	[整数:42]	2	2		と@2:7
+5	二倍	Return	3	1	[整数:42]	[整数:42]	2	1		
+6	メイン	Call:表示する	7	5	[整数:42]	[]	1	1	3432	
+7	メイン	Call:改行する	8	5	[]	[]	1	1	0A	
+8	メイン	Return	9	1	[]	[]	1	0		

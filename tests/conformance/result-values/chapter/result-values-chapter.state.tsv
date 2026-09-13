@@ -1,0 +1,12 @@
+metric	value
+exit	0
+final_stack	0
+final_globals	0
+instructions	86
+output_bytes	35
+error_output_bytes	0
+array_construction	0
+array_work	0
+json_construction	8
+json_work	61
+capabilities	console.output

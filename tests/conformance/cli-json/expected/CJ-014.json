@@ -1,0 +1,1 @@
+{"schemaVersion":1,"command":"check","success":false,"exitCode":70,"diagnostics":[],"problem":{"kind":"outputLimit","message":"JSON診断の出力が上限を超えました。"}}

@@ -1,0 +1,7 @@
+{
+  "check": "tests/conformance/result-values/sources/RESULT-F012-success-empty.bsb:2:5: エラー[E_RESULT_TYPE_ARGUMENTS_REQUIRED]: 結果型とその構築には成功型と失敗型の指定が必要です。\n  必要: 成功にする<具体型,具体型>\n  実際: 成功にする\n  修正候補: 成功にする<整数,文字列>のように成功型と失敗型を指定してください\n",
+  "checkJson": "",
+  "run": "tests/conformance/result-values/sources/RESULT-F012-success-empty.bsb:2:5: エラー[E_RESULT_TYPE_ARGUMENTS_REQUIRED]: 結果型とその構築には成功型と失敗型の指定が必要です。\n  必要: 成功にする<具体型,具体型>\n  実際: 成功にする\n  修正候補: 成功にする<整数,文字列>のように成功型と失敗型を指定してください\n",
+  "format": "",
+  "explain": ""
+}

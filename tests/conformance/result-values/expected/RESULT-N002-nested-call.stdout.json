@@ -1,0 +1,6 @@
+{
+  "check": "",
+  "checkJson": "{\"schemaVersion\":1,\"command\":\"check\",\"source\":\"tests/conformance/result-values/sources/RESULT-N002-nested-call.bsb\",\"success\":true,\"exitCode\":0,\"diagnostics\":[]}\n",
+  "run": "",
+  "format": "包むとは （結果<整数,真偽> -- 結果<結果<整数,真偽>,任意<JSON>>）\n    成功にする<結果<整数,真偽>,任意<JSON>>\nこと。\n\nメインとは （--）\nこと。\n"
+}

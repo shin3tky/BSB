@@ -1,0 +1,10 @@
+case_id	variant	status	headers_json	lookup	values_json	body_hex	outcome
+HTTPS-N005	multiple-values	200	[["content-type","application/json"],["set-cookie","a=1"],["set-cookie","b=2"]]	SET-COOKIE	["a=1","b=2"]		success
+HTTPS-N005	missing-header	200	[]	x-missing	[]		success
+HTTPS-N007	ok-binary	200	[]	-	[]	00ff80	success
+HTTPS-N007	no-content	204	[]	-	[]		success
+HTTPS-N007	redirect	302	[["location","https://elsewhere.invalid/"]]	location	["https://elsewhere.invalid/"]		success
+HTTPS-N007	client-error	404	[]	-	[]	7b7d	success
+HTTPS-N007	server-error	599	[]	-	[]		success
+HTTPS-F012	informational	199	[]	-	[]		failure
+HTTPS-F012	switching-protocols	101	[]	-	[]		failure

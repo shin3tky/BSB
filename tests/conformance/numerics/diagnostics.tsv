@@ -1,0 +1,21 @@
+case_id	command	severity	code	line	column	fields	expected	actual	fix	related
+NUM-F001	check	error	E_TYPE_MISMATCH	2	15	word=足す;inputIndex=2;expectedType=整数;actualType=小数	[整数, 整数]	[整数, 小数]	両入力を同じ数値型にしてください	-
+NUM-F002	check	error	E_TYPE_MISMATCH	2	15	word=割った商;inputIndex=1;expectedType=整数;actualType=小数	[整数, 整数]	[小数, 整数]	整数の被除数を渡してください	-
+NUM-F003	check	error	E_TYPE_MISMATCH	2	15	word=比べて小さい;inputIndex=2;expectedType=整数;actualType=小数	[整数, 整数]	[整数, 小数]	両入力を同じ数値型にしてください	-
+NUM-F004	check	error	E_TYPE_MISMATCH	2	15	word=整数に丸める;inputIndex=2;expectedType=丸め方法;actualType=整数	[小数, 丸め方法]	[小数, 整数]	5種類の丸め方法から1つ指定してください	-
+NUM-F005	check	error	E_ARRAY_ELEMENT_TYPE_MISMATCH	2	8	elementIndex=2;expectedType=整数;actualType=小数	整数	小数	各整数を明示的に小数へ変換するか要素型を揃えてください	2:6 1
+NUM-F006	check	error	E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED	1	10	actualType=丸め方法;allowedTypes=整数,真偽,文字,文字列,小数,JSON;plannedFeature=配列要素の対象外	配列要素にできる型	丸め方法	丸め方法を個別の値として使用してください	-
+NUM-F007	check	error	E_ASSIGNMENT_TYPE_MISMATCH	4	15	target=値;expectedType=整数;actualType=小数;declarationLine=1;declarationColumn=1	整数	小数	整数へ変換または丸めてから代入してください	1:1 値
+NUM-F008	check	error	E_TYPE_MISMATCH	2	11	word=小数に変換する;inputIndex=1;expectedType=整数;actualType=小数	整数	小数	整数値を渡してください	-
+NUM-F009	check	error	E_TYPE_CONSTRAINT_NOT_ALLOWED	1	7	type=数値;context=利用者定義スタック効果	具体型	数値	整数または小数の具体型を書いてください	-
+NUM-F010	run	error	E_DIVISION_BY_ZERO	2	13	word=割った商;dividendPreview=1;divisorPreview=0	0でない整数除数	0	除数を0以外にしてください	-
+NUM-F011	run	error	E_DIVISION_BY_ZERO	2	13	word=割った剰余;dividendPreview=1;divisorPreview=0	0でない整数除数	0	除数を0以外にしてください	-
+NUM-F012	run	error	E_DIVISION_BY_ZERO	2	13	word=割った商と剰余;dividendPreview=1;divisorPreview=0	0でない整数除数	0	除数を0以外にしてください	-
+NUM-F013	run	error	E_DIVISION_BY_ZERO	2	18	word=小数で割る;dividendPreview=1.0;divisorPreview=0.0	0でない数値除数	0.0	除数を0以外にしてください	-
+NUM-F014	run	error	E_DIVISION_BY_ZERO	3	7	word=精度指定で割る;dividendPreview=1;divisorPreview=0;precision=0;rounding=最近接偶数丸め	0でない数値除数	0	除数を0以外にしてください	-
+NUM-F015	run	error	E_DIVISION_PRECISION_OUT_OF_RANGE	3	7	word=精度指定で割る;dividendPreview=1;divisorPreview=3;precision=0;minimum=1;maximum=4096	1以上4096以下	0	精度を1から4096にしてください	-
+NUM-F016	run	error	E_DIVISION_PRECISION_OUT_OF_RANGE	3	7	word=精度指定で割る;dividendPreview=1;divisorPreview=3;precision=4097;minimum=1;maximum=4096	1以上4096以下	4097	精度を1から4096にしてください	-
+NUM-F017	run	error	E_DECIMAL_NOT_INTEGER	2	11	word=整数に変換する;valuePreview=1.5	小数部が0の小数	1.5	丸め方法を明示して「整数に丸める」を使用してください	-
+NUM-F018	run	error	E_DECIMAL_SCALE_LIMIT	5	17	word=掛ける;limitName=decimalScale;limit=65536;observed=81920;inputPreviewPolicy=numerics	スケール絶対値65536以下	81920	入力の小数桁または演算回数を減らしてください	-
+NUM-F019	run	error	E_DIVISION_BY_ZERO	3	13	word=小数で割る;dividendPreview=1;divisorPreview=0	0でない数値除数	0	除数を0以外にしてください	-
+NUM-F020	check	warning	W_UNREACHABLE_CODE	3	5	cause=戻る;causeLine=2;causeColumn=5	到達可能な処理	1.0	この処理を削除するか戻る前へ移動してください	2:5 戻る

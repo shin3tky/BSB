@@ -1,0 +1,10 @@
+{
+  "maximumPathDepth": 15,
+  "expandedConstructors": 32767,
+  "expandedLeaves": 32768,
+  "typeNameSha256": "3488fff366b37d206202c7bb807783097b956e5d85024b8ae1b12e7abe73c5d2",
+  "typeNameUtf8Bytes": 491511,
+  "sameTypeEquals": true,
+  "equalTypeHashCodesMatch": true,
+  "publicSourceGeneratorKey": "RESULT-R004-wide-source"
+}

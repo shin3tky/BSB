@@ -1,0 +1,1 @@
+{"schemaVersion":1,"command":"check","success":false,"exitCode":2,"diagnostics":[],"problem":{"kind":"usage","message":"ソースファイルを1つ指定してください。"}}

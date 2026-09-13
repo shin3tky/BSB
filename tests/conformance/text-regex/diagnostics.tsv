@@ -1,0 +1,31 @@
+case_id	command	severity	code	line	column	fields	expected	actual	fix	related
+TEXT-F001	check	error	E_UNTERMINATED_REGEX_LITERAL	2	5	openedLine=2;openedColumn=5	終わりかぎ括弧」	入力末尾	正規表現リテラルを」で閉じてください	-
+TEXT-F002	check	error	E_NEWLINE_IN_REGEX_LITERAL	2	13	openedLine=2;openedColumn=5	改行を含まないrawパターン	LF	改行を\\nとして表すかパターンを1行にしてください	2:5 正規表現
+TEXT-F003	check	error	E_REGEX_FLAG	2	14	flag=x;allowed=i,m,s	フラグi,m,s	x	xを削除してください	-
+TEXT-F004	check	error	E_REGEX_FLAG	2	15	flag=i;reason=duplicate	重複しないフラグ	i	2個目のiを削除してください	2:14 i
+TEXT-F005	check	error	E_TYPE_MISMATCH	2	15	word=つなぐ;inputIndex=2;expectedType=文字列;actualType=整数	[文字列, 文字列]	[文字列, 整数]	第2入力を明示的に文字列へ変換してください	-
+TEXT-F006	check	error	E_TYPE_MISMATCH	2	19	word=文字列からコードポイントを取り出す;inputIndex=2;expectedType=整数;actualType=文字列	[文字列, 整数]	[文字列, 文字列]	0始まりの整数位置を渡してください	-
+TEXT-F007	check	error	E_TYPE_MISMATCH	2	19	word=正規表現に完全一致する;inputIndex=2;expectedType=正規表現;actualType=文字列	[文字列, 正規表現]	[文字列, 文字列]	正規表現リテラルを使用してください	-
+TEXT-F008	check	error	E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED	1	10	actualType=正規表現;allowedTypes=整数,真偽,文字,文字列,小数,JSON;plannedFeature=配列要素の対象外	配列要素にできる型	正規表現	正規表現を個別の値として使用してください	-
+TEXT-F009	check	error	E_REGEX_UNSUPPORTED_CONSTRUCT	2	20	construct=backreference;token=\\1;patternOffset=3	線形時間部分集合	\\1	後方参照を使わずパターンを組み直してください	-
+TEXT-F010	check	error	E_REGEX_UNSUPPORTED_CONSTRUCT	2	18	construct=lookahead;token=(?=;patternOffset=1	線形時間部分集合	(?=	先読みを使わず完全一致または検索を組み合わせてください	-
+TEXT-F011	check	error	E_REGEX_SYNTAX	2	11	reason=quantifierLimit;minimum=1001;limit=1000;patternOffset=1	量指定子0以上1000以下	a{1001}	回数を1000以下にしてください	-
+TEXT-F012	check	error	E_REGEX_SYNTAX	2	20	reason=duplicateGroupName;name=x;firstPatternOffset=0;patternOffset=7	一意なキャプチャ名	x	2個目のキャプチャ名を変更してください	2:13 x
+TEXT-F013	check	error	E_REGEX_SYNTAX	2	13	reason=invalidGroupName;name=年;patternOffset=3	[A-Za-z][A-Za-z0-9_]{0,63}	年	ASCIIのキャプチャ名を使用してください	-
+TEXT-F014	check	error	E_TYPE_MISMATCH	2	17	word=一行表示する;inputIndex=1;expectedType=表示可能;actualType=正規表現	表示可能	正規表現	正規表現を照合操作に使用してください	-
+TEXT-F015	run	error	E_STRING_INDEX_OUT_OF_BOUNDS	2	18	word=文字列から取り出す;unit=grapheme;index=-1;length=3;valid=0..2	0以上3未満	-1	0から2の位置を指定してください	-
+TEXT-F016	run	error	E_STRING_INDEX_OUT_OF_BOUNDS	2	17	word=文字列から取り出す;unit=grapheme;index=3;length=3;valid=0..2	0以上3未満	3	0から2の位置を指定してください	-
+TEXT-F017	run	error	E_STRING_RANGE_OUT_OF_BOUNDS	2	21	word=文字列の一部を取り出す;unit=grapheme;start=2;end=1;length=3	0 <= 開始 <= 終了 <= 3	[2,1)	開始を終了以下にしてください	-
+TEXT-F018	run	error	E_CODE_POINT_INDEX_OUT_OF_BOUNDS	2	23	word=文字列からコードポイントを取り出す;unit=codePoint;index=2;length=2;valid=0..1	0以上2未満	2	0から1のコードポイント位置を指定してください	-
+TEXT-F019	run	error	E_CODE_POINT_RANGE_OUT_OF_BOUNDS	2	27	word=コードポイント範囲で文字列の一部を取り出す;unit=codePoint;start=0;end=3;length=2	0 <= 開始 <= 終了 <= 2	[0,3)	終了を2以下にしてください	-
+TEXT-F020	run	error	E_EMPTY_SEARCH_TEXT	2	24	word=文字列を置き換える;targetPreview=abc	non-empty search text	空文字列	検索文字列を1書記素以上にしてください	-
+TEXT-F021	run	error	E_EMPTY_DELIMITER	2	18	word=文字列を分割する;targetPreview=abc	non-empty delimiter	空文字列	区切り文字列を1書記素以上にしてください	-
+TEXT-F022	run	error	E_INTEGER_TEXT_INVALID	2	12	word=文字列を整数に変換する;inputPreview=01;inputCodePoints=2	-?(0|[1-9][0-9]*)	01	先頭0を除いてください	-
+TEXT-F023	run	error	E_DECIMAL_TEXT_INVALID	2	12	word=文字列を小数に変換する;inputPreview=1e;inputCodePoints=2	小数点または指数部を持つASCII小数表記	1e	1.0または1e0のような小数表記にしてください	-
+TEXT-F024	run	error	E_NUMERIC_TEXT_DIGIT_LIMIT	2	4107	word=文字列を整数に変換する;numericType=整数;limit=4096;observed=4097;inputCodePoints=4097	数字4096桁以下	4097	入力の桁数を4096以下にしてください	-
+TEXT-F025	run	error	E_REGEX_NO_MATCH	2	28	word=正規表現で最初を取り出す;inputPreview=abc;patternPreview=[0-9]+	一致する入力	abc	パターンまたは入力を確認してください	-
+TEXT-F026	run	error	E_REGEX_GROUP_NOT_FOUND	2	45	word=正規表現の名前付き部分を取り出す;group=missing;available=n	存在する名前付きキャプチャ	missing	nを指定してください	-
+TEXT-F027	run	error	E_REGEX_GROUP_UNMATCHED	2	35	word=正規表現の名前付き部分を取り出す;group=a;inputPreview=b;patternPreview=(?<a>a)|b	参加した名前付きキャプチャ	a	一致した選択枝で必ず参加する群を指定してください	-
+TEXT-F028	run	error	E_REGEX_REPLACEMENT_TEMPLATE	2	48	word=正規表現で置き換える;templateOffset=0;reference=missing;available=n;groupCount=1	存在するキャプチャ参照	${missing}	${n}を使用してください	-
+TEXT-F029	run	error	E_REGEX_NO_MATCH	3	28	word=正規表現で最初を取り出す;inputPreview=abc;patternPreview=[0-9]+	一致する入力	abc	パターンまたは入力を確認してください	-
+TEXT-F030	check	warning	W_UNREACHABLE_CODE	3	5	cause=戻る;causeLine=2;causeColumn=5	到達可能な処理	文字列を置き換える	この処理を削除するか戻る前へ移動してください	2:5 戻る

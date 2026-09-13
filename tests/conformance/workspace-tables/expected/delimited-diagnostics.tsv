@@ -1,0 +1,6 @@
+case_id	variant	word	code	fields	stack_preserved	forbidden_markers
+WST-F024	second-empty-row	表をCSVに変換する	E_DELIMITED_TEXT_EMPTY_ROW	word=表をCSVに変換する;row=2	true	EMPTY_ROW_SECRET
+WST-F025	second-short-row	表をTSVに変換する	E_DELIMITED_TEXT_COLUMN_COUNT_MISMATCH	word=表をTSVに変換する;row=2;expectedCount=2;actualCount=1	true	RAGGED_CELL_SECRET
+WST-F026	second-row-first-cell	表をCSVに変換する	E_DELIMITED_TEXT_CELL_INVALID	word=表をCSVに変換する;row=2;column=1;reason=nulCharacter	true	NUL_CELL_SECRET
+WST-F027	one-over-output	表をCSVに変換する	E_DELIMITED_TEXT_OUTPUT_LIMIT	word=表をCSVに変換する;limitName=delimitedTextOutputUtf8Bytes;limit=16777216;observed=16777217	true	OUTPUT_PREFIX_SECRET
+WST-F028	one-over-work	CSVを表として解析する	E_DELIMITED_TEXT_WORK_LIMIT	word=CSVを表として解析する;limitName=delimitedTextWorkUnits;limit=134217728;used=134217727;requested=2	true	WORK_INPUT_SECRET

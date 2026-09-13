@@ -1,0 +1,7 @@
+{
+  "check": "",
+  "checkJson": "{\"schemaVersion\":1,\"command\":\"check\",\"source\":\"tests/conformance/result-values/sources/RESULT-F006-success-three.bsb\",\"success\":false,\"exitCode\":9,\"diagnostics\":[{\"code\":\"E_RESULT_TYPE_ARGUMENT_COUNT\",\"severity\":\"error\",\"stage\":\"syntax\",\"message\":\"結果型には成功型と失敗型の2個の型引数が必要です。\",\"sourcePath\":\"tests/conformance/result-values/sources/RESULT-F006-success-three.bsb\",\"point\":{\"line\":2,\"column\":17,\"utf8Offset\":61},\"fields\":{\"actualCount\":\"3\",\"expectedCount\":\"2\",\"owner\":\"成功にする\",\"typeConstructor\":\"結果\",\"word\":\"成功にする\"},\"expected\":\"2個の型引数\",\"actual\":\"3個以上の型引数\",\"relatedLocations\":[],\"fixes\":[\"成功型と失敗型を1個ずつ指定してください\"]}]}\n",
+  "run": "",
+  "format": "",
+  "explain": "{\"schemaVersion\":1,\"command\":\"explain\",\"source\":\"tests/conformance/result-values/sources/RESULT-F006-success-three.bsb\",\"success\":false,\"exitCode\":9,\"diagnostics\":[{\"code\":\"E_RESULT_TYPE_ARGUMENT_COUNT\",\"severity\":\"error\",\"stage\":\"syntax\",\"message\":\"結果型には成功型と失敗型の2個の型引数が必要です。\",\"sourcePath\":\"tests/conformance/result-values/sources/RESULT-F006-success-three.bsb\",\"point\":{\"line\":2,\"column\":17,\"utf8Offset\":61},\"fields\":{\"actualCount\":\"3\",\"expectedCount\":\"2\",\"owner\":\"成功にする\",\"typeConstructor\":\"結果\",\"word\":\"成功にする\"},\"expected\":\"2個の型引数\",\"actual\":\"3個以上の型引数\",\"relatedLocations\":[],\"fixes\":[\"成功型と失敗型を1個ずつ指定してください\"]}],\"builtinWords\":[],\"userWords\":[],\"scopes\":[],\"bindings\":[]}\n"
+}

@@ -1,0 +1,6 @@
+{
+  "check": "",
+  "checkJson": "{\"schemaVersion\":1,\"command\":\"check\",\"source\":\"tests/conformance/result-values/sources/RESULT-N002-failure-call.bsb\",\"success\":true,\"exitCode\":0,\"diagnostics\":[]}\n",
+  "run": "",
+  "format": "包むとは （文字列 -- 結果<整数,文字列>）\n    失敗にする<整数,文字列>\nこと。\n\nメインとは （--）\nこと。\n"
+}

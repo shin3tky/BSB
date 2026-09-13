@@ -1,0 +1,7 @@
+{
+  "check": "tests/conformance/result-values/sources/RESULT-F034-unsupported-type-call-initializer.bsb:1:15: エラー[E_INITIALIZER_ELEMENT_NOT_ALLOWED]: 宣言の初期値には「<」を書けません。\n  必要: 初期値で許可された要素\n  実際: <\n  修正候補: この要素を宣言の外へ移動してください\ntests/conformance/result-values/sources/RESULT-F034-unsupported-type-call-initializer.bsb:1:18: エラー[E_INITIALIZER_ELEMENT_NOT_ALLOWED]: 宣言の初期値には「>」を書けません。\n  必要: 初期値で許可された要素\n  実際: >\n  修正候補: この要素を宣言の外へ移動してください\n",
+  "checkJson": "",
+  "run": "tests/conformance/result-values/sources/RESULT-F034-unsupported-type-call-initializer.bsb:1:15: エラー[E_INITIALIZER_ELEMENT_NOT_ALLOWED]: 宣言の初期値には「<」を書けません。\n  必要: 初期値で許可された要素\n  実際: <\n  修正候補: この要素を宣言の外へ移動してください\ntests/conformance/result-values/sources/RESULT-F034-unsupported-type-call-initializer.bsb:1:18: エラー[E_INITIALIZER_ELEMENT_NOT_ALLOWED]: 宣言の初期値には「>」を書けません。\n  必要: 初期値で許可された要素\n  実際: >\n  修正候補: この要素を宣言の外へ移動してください\n",
+  "format": "tests/conformance/result-values/sources/RESULT-F034-unsupported-type-call-initializer.bsb:1:15: エラー[E_INITIALIZER_ELEMENT_NOT_ALLOWED]: 宣言の初期値には「<」を書けません。\n  必要: 初期値で許可された要素\n  実際: <\n  修正候補: この要素を宣言の外へ移動してください\ntests/conformance/result-values/sources/RESULT-F034-unsupported-type-call-initializer.bsb:1:18: エラー[E_INITIALIZER_ELEMENT_NOT_ALLOWED]: 宣言の初期値には「>」を書けません。\n  必要: 初期値で許可された要素\n  実際: >\n  修正候補: この要素を宣言の外へ移動してください\n",
+  "explain": ""
+}

@@ -1,0 +1,5 @@
+case_id	variant	code	stage	target_lexeme	fields_json	expected	actual
+BYTES-F011	negative	E_BYTE_SEQUENCE_RANGE_OUT_OF_BOUNDS	runtime	バイト列の一部を取り出す	{"end":"2","length":"4","start":"-1","unit":"byte","validRange":"0 <= start <= end <= length","word":"バイト列の一部を取り出す"}	0 <= 開始 <= 終了 <= 4	開始-1、終了2
+BYTES-R001	value-over-limit	E_BYTE_SEQUENCE_SIZE_LIMIT	runtime	文字列をUTF8バイト列に変換する	{"limitName":"byteSequenceBytes","observed":"67108865","operation":"utf8Encode","word":"文字列をUTF8バイト列に変換する"}	67108864バイト以下	67108865バイト
+BYTES-R002	construction-over-limit	E_BYTE_SEQUENCE_CONSTRUCTION_LIMIT	runtime	文字列をUTF8バイト列に変換する	{"limitName":"byteSequenceConstructionBytes","observed":"134217729","requested":"1","used":"134217728","word":"文字列をUTF8バイト列に変換する"}	累積134217728バイト以下	累積134217729バイト
+BYTES-R003	work-over-limit	E_BYTE_SEQUENCE_WORK_LIMIT	runtime	バイト列の長さ	{"limitName":"byteSequenceWorkBytes","observed":"268435457","requested":"1","used":"268435456","word":"バイト列の長さ"}	累積268435456バイト以下	累積268435457バイト

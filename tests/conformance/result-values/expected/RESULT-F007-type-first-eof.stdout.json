@@ -1,0 +1,7 @@
+{
+  "check": "",
+  "checkJson": "{\"schemaVersion\":1,\"command\":\"check\",\"source\":\"tests/conformance/result-values/sources/RESULT-F007-type-first-eof.bsb\",\"success\":false,\"exitCode\":9,\"diagnostics\":[{\"code\":\"E_EXPECTED_RESULT_TYPE_ARGUMENT\",\"severity\":\"error\",\"stage\":\"syntax\",\"message\":\"結果型の型引数には具体型が必要です。\",\"sourcePath\":\"tests/conformance/result-values/sources/RESULT-F007-type-first-eof.bsb\",\"point\":{\"line\":2,\"column\":1,\"utf8Offset\":27},\"fields\":{\"argumentIndex\":\"1\",\"owner\":\"結果\",\"typeConstructor\":\"結果\"},\"expected\":\"具体型\",\"actual\":\"EOF\",\"relatedLocations\":[],\"fixes\":[\"成功型と失敗型に具体型を指定してください\"]}]}\n",
+  "run": "",
+  "format": "",
+  "explain": "{\"schemaVersion\":1,\"command\":\"explain\",\"source\":\"tests/conformance/result-values/sources/RESULT-F007-type-first-eof.bsb\",\"success\":false,\"exitCode\":9,\"diagnostics\":[{\"code\":\"E_EXPECTED_RESULT_TYPE_ARGUMENT\",\"severity\":\"error\",\"stage\":\"syntax\",\"message\":\"結果型の型引数には具体型が必要です。\",\"sourcePath\":\"tests/conformance/result-values/sources/RESULT-F007-type-first-eof.bsb\",\"point\":{\"line\":2,\"column\":1,\"utf8Offset\":27},\"fields\":{\"argumentIndex\":\"1\",\"owner\":\"結果\",\"typeConstructor\":\"結果\"},\"expected\":\"具体型\",\"actual\":\"EOF\",\"relatedLocations\":[],\"fixes\":[\"成功型と失敗型に具体型を指定してください\"]}],\"builtinWords\":[],\"userWords\":[],\"scopes\":[],\"bindings\":[]}\n"
+}

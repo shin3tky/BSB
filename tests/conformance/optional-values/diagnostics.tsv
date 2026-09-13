@@ -1,0 +1,30 @@
+case_id	occurrence	command	code	severity	stage	line	column	fields	expected	actual	fixes	related	limit_name	limit	observed
+OPT-F001	1	check	E_OPTIONAL_ELEMENT_TYPE_REQUIRED	error	typeAndStack	1	6	context=スタック効果;typeConstructor=任意	任意<具体型>	任意	任意<JSON>のように具体型を追加してください	-	-	-	-
+OPT-F002	1	check	E_EXPECTED_OPTIONAL_ELEMENT_TYPE	error	syntax	1	11	typeConstructor=任意	具体型	>	任意<JSON>のように具体型を追加してください	-	-	-	-
+OPT-F003	1	check	E_EXPECTED_OPTIONAL_TYPE_END	error	syntax	1	14	startColumn=8;startLine=1;typeConstructor=任意	>	--	型引数の末尾へ>を追加してください	1:8:任意	-	-	-
+OPT-F004	1	check	E_TYPE_CONSTRAINT_NOT_ALLOWED	error	typeAndStack	1	10	-	整数・真偽・文字・文字列	T	具体的な言語コアの型へ変更してください	-	-	-	-
+OPT-F004	2	check	E_TYPE_CONSTRAINT_NOT_ALLOWED	error	typeAndStack	1	16	context=利用者定義スタック効果;type=数値	具体型	数値	整数または小数の具体型を書いてください	-	-	-	-
+OPT-F005	1	check	E_UNKNOWN_TYPE	error	typeAndStack	1	10	typeName=未知型	整数・真偽・文字・文字列	未知型	言語コアの型へ変更してください	-	-	-	-
+OPT-F006	1	check	E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED	error	typeAndStack	1	10	actualType=任意<整数>;allowedTypes=整数,真偽,文字,文字列,小数,JSON	配列要素にできる型	任意<整数>	任意値を配列の外で個別に処理してください	-	-	-	-
+OPT-F007	1	check	E_TYPE_MISMATCH	error	typeAndStack	6	7	actualType=整数;expectedType=任意<整数>;inputIndex=1;word=受ける	[任意<整数>]	[整数]	第1入力を任意<整数>にしてください	-	-	-	-
+OPT-F008	1	check	E_BRANCH_STACK_MISMATCH	error	typeAndStack	6	5	base=[];falseStack=[任意<文字列>];trueStack=[任意<整数>]	両側で同じ型列	真側[任意<整数>]、偽側[任意<文字列>]	-	3:11:真側|5:13:偽側	-	-	-
+OPT-F009	1	check	E_STACK_UNDERFLOW	error	typeAndStack	2	5	actualCount=0;requiredCount=1;word=任意にする	[T]	[]	Tをもう1つ置いてください	-	-	-	-
+OPT-F010	1	check	E_STACK_UNDERFLOW	error	typeAndStack	2	5	actualCount=0;requiredCount=1;word=任意に値がある	[任意<T>]	[]	任意<T>をもう1つ置いてください	-	-	-	-
+OPT-F011	1	check	E_TYPE_MISMATCH	error	typeAndStack	2	7	actualType=整数;expectedType=任意<T>;inputIndex=1;word=任意に値がある	任意<T>	整数	任意値を渡してください	-	-	-	-
+OPT-F012	1	check	E_STACK_UNDERFLOW	error	typeAndStack	2	5	actualCount=0;requiredCount=1;word=任意から値を取り出す	[任意<T>]	[]	任意<T>をもう1つ置いてください	-	-	-	-
+OPT-F013	1	check	E_TYPE_MISMATCH	error	typeAndStack	2	7	actualType=整数;expectedType=任意<T>;inputIndex=1;word=任意から値を取り出す	任意<T>	整数	任意値を渡してください	-	-	-	-
+OPT-F014	1	check	E_STACK_UNDERFLOW	error	typeAndStack	2	5	actualCount=0;requiredCount=1;word=任意を捨てる	[任意<T>]	[]	任意<T>をもう1つ置いてください	-	-	-	-
+OPT-F015	1	check	E_TYPE_MISMATCH	error	typeAndStack	2	7	actualType=整数;expectedType=任意<T>;inputIndex=1;word=任意を捨てる	任意<T>	整数	任意値を渡してください	-	-	-	-
+OPT-F016	1	check	E_STACK_UNDERFLOW	error	typeAndStack	2	5	actualCount=0;requiredCount=2;word=JSONオブジェクトから任意値を取り出す	[JSON, 文字列]	[]	必要な値を2個置いてください	-	-	-	-
+OPT-F017	1	check	E_TYPE_MISMATCH	error	typeAndStack	2	14	actualType=文字列;expectedType=JSON;inputIndex=1;word=JSONオブジェクトから任意値を取り出す	[JSON, 文字列]	[文字列, 文字列]	第1入力をJSONにしてください	-	-	-	-
+OPT-F018	1	check	E_TYPE_MISMATCH	error	typeAndStack	2	22	actualType=整数;expectedType=文字列;inputIndex=2;word=JSONオブジェクトから任意値を取り出す	[JSON, 文字列]	[JSON, 整数]	第2入力を文字列にしてください	-	-	-	-
+OPT-F019	1	check	E_TYPE_MISMATCH	error	typeAndStack	2	19	actualType=任意<正規表現>;expectedType=表示可能;inputIndex=1;word=一行表示する	表示可能	任意<正規表現>	正規表現を照合操作に使用してください	-	-	-	-
+OPT-F020	1	check	E_TYPE_MISMATCH	error	typeAndStack	2	5	actualType=任意<日時>;expectedType=等値比較可能;inputIndex=1;word=等しい	等値比較可能	任意<日時>	日時を文字列に変換してから比較してください	-	-	-	-
+OPT-F024	1	check	W_UNREACHABLE_CODE	warning	typeAndStack	3	5	cause=戻る;causeColumn=5;causeLine=2	到達可能な処理	空のJSONオブジェクト	この処理を削除するか戻る前へ移動してください	2:5:戻る	-	-	-
+OPT-F025	1	check	E_EXPECTED_OPTIONAL_ELEMENT_TYPE	error	syntax	1	13	typeConstructor=任意	具体型	>	任意<JSON>のように具体型を追加してください	-	-	-	-
+OPT-F025	2	check	E_EXPECTED_ARRAY_ELEMENT_TYPE	error	syntax	4	13	allowedTypes=整数,真偽,文字,文字列	要素型	>	4種類の要素型から1つ追加してください	-	-	-	-
+OPT-F026	1	check	E_EXPECTED_OPTIONAL_TYPE_END	error	syntax	1	17	startColumn=11;startLine=1;typeConstructor=任意	>	--	型引数の末尾へ>を追加してください	1:11:任意	-	-	-
+OPT-F026	2	check	E_EXPECTED_OPTIONAL_TYPE_END	error	syntax	1	17	startColumn=8;startLine=1;typeConstructor=任意	>	--	型引数の末尾へ>を追加してください	1:8:任意	-	-	-
+OPT-F021	1	run	E_OPTIONAL_VALUE_ABSENT	error	runtime	3	5	word=任意から値を取り出す;optionalType=任意<JSON>;state=absent;currentWord=メイン;dataStack=[任意<JSON>:ない];callStack=メイン	値がある任意値	ない	任意に値があるで分岐してから取り出してください	-	-	-	-
+OPT-F022	1	run	E_JSON_KIND_MISMATCH	error	runtime	2	17	word=JSONオブジェクトから任意値を取り出す;expectedKind=object;actualKind=null;currentWord=メイン;dataStack=[JSON:<redacted>, 文字列:x];callStack=メイン	object	null	JSON値種別を判定してから必要な操作を呼び出してください	-	-	-	-
+OPT-F023	1	internal	E_JSON_WORK_LIMIT	error	runtime	1	1	operation=objectGetOptional;current=67108864;requested=1	67108864単位以下	67108865単位	1回の実行で処理するJSONの量を減らしてください。	-	jsonWorkUnits	67108864	67108865

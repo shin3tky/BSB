@@ -1,0 +1,11 @@
+case_id	target	variant	outcome	exit	code	limit	observed
+BIND-R001	globalBindings	10000	accepted	0	-	10000	10000
+BIND-R001	globalBindings	10001	error	8	E_GLOBAL_BINDING_LIMIT	10000	10001
+BIND-R002	localBindingsPerWord	1024	accepted	0	-	1024	1024
+BIND-R002	localBindingsPerWord	1025	error	8	E_LOCAL_BINDING_LIMIT	1024	1025
+BIND-R003	programBindings	65536	accepted	0	-	65536	65536
+BIND-R003	programBindings	65537	error	8	E_BINDING_LIMIT	65536	65537
+BIND-R004	storageIrInstructions	250000	accepted	0	-	250000	250000
+BIND-R004	storageIrInstructions	250001	error	8	E_IR_LIMIT	250000	250001
+BIND-R005	loadDataStackValues	65536	accepted	0	-	65536	65536
+BIND-R005	loadDataStackValues	65537	error	10	E_DATA_STACK_LIMIT	65536	65537

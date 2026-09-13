@@ -1,0 +1,7 @@
+{
+  "check": "tests/conformance/result-values/sources/RESULT-F011-array-element-failure.bsb:2:5: エラー[E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED]: 数値演算では「結果<整数,文字列>」を配列の要素型にできません。\n  必要: 配列要素にできる型\n  実際: 結果<整数,文字列>\n  修正候補: 結果<整数,文字列>を個別に処理してください\n",
+  "checkJson": "",
+  "run": "tests/conformance/result-values/sources/RESULT-F011-array-element-failure.bsb:2:5: エラー[E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED]: 数値演算では「結果<整数,文字列>」を配列の要素型にできません。\n  必要: 配列要素にできる型\n  実際: 結果<整数,文字列>\n  修正候補: 結果<整数,文字列>を個別に処理してください\n",
+  "format": "",
+  "explain": ""
+}

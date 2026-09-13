@@ -1,0 +1,63 @@
+sequence	word	opcode	sourceLine	sourceColumn	dataBefore	dataAfter	callDepthBefore	callDepthAfter	outputHex	particles	controlBefore	controlAfter	target	branchTaken	bindingId	bindingName	bindingKind	storageScope	valueBefore	valueAfter
+1	<大域初期化>	PushConst	1	9	[]	[整数:70]	1	1			[]	[]			-	-	-	-	-	-
+2	<大域初期化>	PushConst	1	12	[整数:70]	[整数:70,整数:80]	1	1			[]	[]			-	-	-	-	-	-
+3	<大域初期化>	PushConst	1	15	[整数:70,整数:80]	[整数:70,整数:80,整数:90]	1	1			[]	[]			-	-	-	-	-	-
+4	<大域初期化>	PushConst	1	18	[整数:70,整数:80,整数:90]	[整数:70,整数:80,整数:90,整数:75]	1	1			[]	[]			-	-	-	-	-	-
+5	<大域初期化>	PushConst	1	21	[整数:70,整数:80,整数:90,整数:75]	[整数:70,整数:80,整数:90,整数:75,整数:85]	1	1			[]	[]			-	-	-	-	-	-
+6	<大域初期化>	BuildArray	1	8	[整数:70,整数:80,整数:90,整数:75,整数:85]	[配列<整数>:【70、80、90、75、85】]	1	1			[]	[]			-	-	-	-	-	-
+7	<大域初期化>	InitializeGlobal	1	5	[配列<整数>:【70、80、90、75、85】]	[]	1	1			[]	[]			B1	点数	constant	global	<uninitialized>	配列<整数>:【70、80、90、75、85】
+8	<大域初期化>	PushConst	2	8	[]	[整数:0]	1	1			[]	[]			-	-	-	-	-	-
+9	<大域初期化>	InitializeGlobal	2	5	[整数:0]	[]	1	1			[]	[]			B2	合計	variable	global	<uninitialized>	整数:0
+10	<大域初期化>	PushConst	3	9	[]	[整数:0]	1	1			[]	[]			-	-	-	-	-	-
+11	<大域初期化>	InitializeGlobal	3	6	[整数:0]	[]	1	1			[]	[]			B3	現在値	variable	global	<uninitialized>	整数:0
+12	<大域初期化>	Return	3	10	[]	[]	1	0			[]	[]			-	-	-	-	-	-
+13	メイン	LoadGlobal	6	5	[]	[配列<整数>:【70、80、90、75、85】]	1	1			[]	[]			B1	点数	constant	global	配列<整数>:【70、80、90、75、85】	配列<整数>:【70、80、90、75、85】
+14	メイン	ArrayLoopStart	6	10	[配列<整数>:【70、80、90、75、85】]	[整数:70]	1	1			[]	[array:0/5]	メイン:9	false	-	-	-	-	-	-
+15	メイン	StoreGlobal	7	17	[整数:70]	[]	1	1			[array:0/5]	[array:0/5]			B3	現在値	variable	global	整数:0	整数:70
+16	メイン	LoadGlobal	8	9	[]	[整数:0]	1	1			[array:0/5]	[array:0/5]			B2	合計	variable	global	整数:0	整数:0
+17	メイン	LoadGlobal	8	14	[整数:0]	[整数:0,整数:70]	1	1			[array:0/5]	[array:0/5]			B3	現在値	variable	global	整数:70	整数:70
+18	メイン	Call:足す	8	20	[整数:0,整数:70]	[整数:70]	1	1		と@8:12,を@8:18	[array:0/5]	[array:0/5]			-	-	-	-	-	-
+19	メイン	StoreGlobal	8	30	[整数:70]	[]	1	1			[array:0/5]	[array:0/5]			B2	合計	variable	global	整数:0	整数:70
+20	メイン	ArrayLoopNext	9	5	[]	[整数:80]	1	1			[array:0/5]	[array:1/5]	メイン:3	true	-	-	-	-	-	-
+21	メイン	StoreGlobal	7	17	[整数:80]	[]	1	1			[array:1/5]	[array:1/5]			B3	現在値	variable	global	整数:70	整数:80
+22	メイン	LoadGlobal	8	9	[]	[整数:70]	1	1			[array:1/5]	[array:1/5]			B2	合計	variable	global	整数:70	整数:70
+23	メイン	LoadGlobal	8	14	[整数:70]	[整数:70,整数:80]	1	1			[array:1/5]	[array:1/5]			B3	現在値	variable	global	整数:80	整数:80
+24	メイン	Call:足す	8	20	[整数:70,整数:80]	[整数:150]	1	1		と@8:12,を@8:18	[array:1/5]	[array:1/5]			-	-	-	-	-	-
+25	メイン	StoreGlobal	8	30	[整数:150]	[]	1	1			[array:1/5]	[array:1/5]			B2	合計	variable	global	整数:70	整数:150
+26	メイン	ArrayLoopNext	9	5	[]	[整数:90]	1	1			[array:1/5]	[array:2/5]	メイン:3	true	-	-	-	-	-	-
+27	メイン	StoreGlobal	7	17	[整数:90]	[]	1	1			[array:2/5]	[array:2/5]			B3	現在値	variable	global	整数:80	整数:90
+28	メイン	LoadGlobal	8	9	[]	[整数:150]	1	1			[array:2/5]	[array:2/5]			B2	合計	variable	global	整数:150	整数:150
+29	メイン	LoadGlobal	8	14	[整数:150]	[整数:150,整数:90]	1	1			[array:2/5]	[array:2/5]			B3	現在値	variable	global	整数:90	整数:90
+30	メイン	Call:足す	8	20	[整数:150,整数:90]	[整数:240]	1	1		と@8:12,を@8:18	[array:2/5]	[array:2/5]			-	-	-	-	-	-
+31	メイン	StoreGlobal	8	30	[整数:240]	[]	1	1			[array:2/5]	[array:2/5]			B2	合計	variable	global	整数:150	整数:240
+32	メイン	ArrayLoopNext	9	5	[]	[整数:75]	1	1			[array:2/5]	[array:3/5]	メイン:3	true	-	-	-	-	-	-
+33	メイン	StoreGlobal	7	17	[整数:75]	[]	1	1			[array:3/5]	[array:3/5]			B3	現在値	variable	global	整数:90	整数:75
+34	メイン	LoadGlobal	8	9	[]	[整数:240]	1	1			[array:3/5]	[array:3/5]			B2	合計	variable	global	整数:240	整数:240
+35	メイン	LoadGlobal	8	14	[整数:240]	[整数:240,整数:75]	1	1			[array:3/5]	[array:3/5]			B3	現在値	variable	global	整数:75	整数:75
+36	メイン	Call:足す	8	20	[整数:240,整数:75]	[整数:315]	1	1		と@8:12,を@8:18	[array:3/5]	[array:3/5]			-	-	-	-	-	-
+37	メイン	StoreGlobal	8	30	[整数:315]	[]	1	1			[array:3/5]	[array:3/5]			B2	合計	variable	global	整数:240	整数:315
+38	メイン	ArrayLoopNext	9	5	[]	[整数:85]	1	1			[array:3/5]	[array:4/5]	メイン:3	true	-	-	-	-	-	-
+39	メイン	StoreGlobal	7	17	[整数:85]	[]	1	1			[array:4/5]	[array:4/5]			B3	現在値	variable	global	整数:75	整数:85
+40	メイン	LoadGlobal	8	9	[]	[整数:315]	1	1			[array:4/5]	[array:4/5]			B2	合計	variable	global	整数:315	整数:315
+41	メイン	LoadGlobal	8	14	[整数:315]	[整数:315,整数:85]	1	1			[array:4/5]	[array:4/5]			B3	現在値	variable	global	整数:85	整数:85
+42	メイン	Call:足す	8	20	[整数:315,整数:85]	[整数:400]	1	1		と@8:12,を@8:18	[array:4/5]	[array:4/5]			-	-	-	-	-	-
+43	メイン	StoreGlobal	8	30	[整数:400]	[]	1	1			[array:4/5]	[array:4/5]			B2	合計	variable	global	整数:315	整数:400
+44	メイン	ArrayLoopNext	9	5	[]	[]	1	1			[array:4/5]	[]	メイン:3	false	-	-	-	-	-	-
+45	メイン	LoadGlobal	10	5	[]	[整数:400]	1	1			[]	[]			B2	合計	variable	global	整数:400	整数:400
+46	メイン	Call:一行表示する	10	10	[整数:400]	[]	1	1	3430300A	を@10:8	[]	[]			-	-	-	-	-	-
+47	メイン	LoadGlobal	11	5	[]	[配列<整数>:【70、80、90、75、85】]	1	1			[]	[]			B1	点数	constant	global	配列<整数>:【70、80、90、75、85】	配列<整数>:【70、80、90、75、85】
+48	メイン	Call:配列の長さ	11	10	[配列<整数>:【70、80、90、75、85】]	[整数:5]	1	1		を@11:8	[]	[]			-	-	-	-	-	-
+49	メイン	Call:一行表示する	12	5	[整数:5]	[]	1	1	350A		[]	[]			-	-	-	-	-	-
+50	メイン	LoadGlobal	13	5	[]	[配列<整数>:【70、80、90、75、85】]	1	1			[]	[]			B1	点数	constant	global	配列<整数>:【70、80、90、75、85】	配列<整数>:【70、80、90、75、85】
+51	メイン	ArrayLoopStart	13	10	[配列<整数>:【70、80、90、75、85】]	[整数:70]	1	1			[]	[array:0/5]	メイン:18	false	-	-	-	-	-	-
+52	メイン	Call:一行表示する	14	9	[整数:70]	[]	1	1	37300A		[array:0/5]	[array:0/5]			-	-	-	-	-	-
+53	メイン	ArrayLoopNext	15	5	[]	[整数:80]	1	1			[array:0/5]	[array:1/5]	メイン:16	true	-	-	-	-	-	-
+54	メイン	Call:一行表示する	14	9	[整数:80]	[]	1	1	38300A		[array:1/5]	[array:1/5]			-	-	-	-	-	-
+55	メイン	ArrayLoopNext	15	5	[]	[整数:90]	1	1			[array:1/5]	[array:2/5]	メイン:16	true	-	-	-	-	-	-
+56	メイン	Call:一行表示する	14	9	[整数:90]	[]	1	1	39300A		[array:2/5]	[array:2/5]			-	-	-	-	-	-
+57	メイン	ArrayLoopNext	15	5	[]	[整数:75]	1	1			[array:2/5]	[array:3/5]	メイン:16	true	-	-	-	-	-	-
+58	メイン	Call:一行表示する	14	9	[整数:75]	[]	1	1	37350A		[array:3/5]	[array:3/5]			-	-	-	-	-	-
+59	メイン	ArrayLoopNext	15	5	[]	[整数:85]	1	1			[array:3/5]	[array:4/5]	メイン:16	true	-	-	-	-	-	-
+60	メイン	Call:一行表示する	14	9	[整数:85]	[]	1	1	38350A		[array:4/5]	[array:4/5]			-	-	-	-	-	-
+61	メイン	ArrayLoopNext	15	5	[]	[]	1	1			[array:4/5]	[]	メイン:16	false	-	-	-	-	-	-
+62	メイン	Return	16	1	[]	[]	1	0			[]	[]			-	-	-	-	-	-

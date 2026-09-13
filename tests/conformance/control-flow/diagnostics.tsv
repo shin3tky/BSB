@@ -1,0 +1,27 @@
+case_id	command	severity	code	line	column	fields	expected	actual	fix	related
+FLOW-F001	check	error	E_UNEXPECTED_ELSE	2	5	-	ならばの内側	さもなければ	この語を削除してください	-
+FLOW-F002	check	error	E_DUPLICATE_ELSE	4	5	firstLine=3;firstColumn=5	さもなければは1個まで	2個目のさもなければ	この語を削除してください	3:5 最初のさもなければ
+FLOW-F003	check	error	E_EXPECTED_IF_END	4	1	openingLine=2;openingColumn=8	つぎに	こと	ここにつぎにを追加してください	2:8 ならば
+FLOW-F004	check	error	E_UNEXPECTED_BLOCK_END	2	5	-	ならばの内側	つぎに	この語を削除してください	-
+FLOW-F005	check	error	E_UNEXPECTED_LOOP_END	2	5	-	ループの内側	繰り返す	この語を削除してください	-
+FLOW-F006	check	error	E_EXPECTED_LOOP_END	4	1	loopKind=回数;openingLine=2;openingColumn=7	繰り返す	こと	ここに繰り返すを追加してください	2:7 回だけ
+FLOW-F007	check	error	E_EXPECTED_LOOP_CONDITION_SEPARATOR	4	1	openingLine=2;openingColumn=5	続く間	こと	ここに続く間を追加してください	2:5 ここから
+FLOW-F008	check	error	E_UNEXPECTED_LOOP_SEPARATOR	5	5	firstLine=4;firstColumn=5	続く間は1個	2個目の続く間	この語を削除してください	4:5 最初の続く間
+FLOW-F009	check	error	E_SYNTAX_DEPTH_LIMIT	258	8	limit=256;observed=257	256段以下	257段	入れ子を減らしてください	-
+FLOW-F010	check	error	E_CONDITION_STACK_UNDERFLOW	2	5	-	[真偽]	[]	条件となる真偽値を置いてください	-
+FLOW-F011	check	error	E_CONDITION_TYPE_MISMATCH	2	11	actualType=文字列	真偽	文字列	条件を真偽にしてください	-
+FLOW-F012	check	error	E_BRANCH_STACK_MISMATCH	5	5	base=[];trueStack=[整数];falseStack=[]	両側で同じ型列	真側[整数]、偽側[]	-	3:9 真側;4:5 偽側
+FLOW-F013	check	error	E_BRANCH_STACK_MISMATCH	6	5	base=[];trueStack=[整数];falseStack=[文字列]	両側で同じ型列	真側[整数]、偽側[文字列]	-	3:9 真側;5:9 偽側
+FLOW-F014	check	error	E_BRANCH_STACK_MISMATCH	4	5	base=[];trueStack=[整数];falseStack=[]	真側[]	真側[整数]	-	2:8 ならば;4:5 つぎに
+FLOW-F015	check	error	E_REPEAT_COUNT_UNDERFLOW	2	5	-	[整数]	[]	反復回数を置いてください	-
+FLOW-F016	check	error	E_REPEAT_COUNT_TYPE_MISMATCH	2	8	actualType=真偽	整数	真偽	反復回数を整数にしてください	-
+FLOW-F017	check	error	E_LOOP_STACK_MISMATCH	4	5	pathKind=通常終端;base=[];actualStack=[整数]	[]	[整数]	-	2:7 回だけ;4:5 繰り返す
+FLOW-F018	check	error	E_LOOP_CONDITION_MISMATCH	3	5	base=[];expectedStack=[真偽];actualStack=[]	[真偽]	[]	条件となる真偽値を置いてください	2:5 ここから
+FLOW-F019	check	error	E_LOOP_CONDITION_MISMATCH	5	5	base=[];expectedStack=[真偽];actualStack=[整数,真偽]	[真偽]	[整数, 真偽]	余分な値を条件計算部に残さないでください	2:5 ここから
+FLOW-F020	check	error	E_BREAK_OUTSIDE_LOOP	2	5	-	ループ内	打ち切る	ループ内へ移動してください	-
+FLOW-F021	check	error	E_CONTINUE_OUTSIDE_LOOP	2	5	-	ループ内	続ける	ループ内へ移動してください	-
+FLOW-F022	check	error	E_RETURN_EFFECT_MISMATCH	3	5	word=誤る	[]	[整数]	戻る前に宣言出力へ合わせてください	1:1 誤る
+FLOW-F023	check	error	E_STACK_UNDERFLOW	2	9	word=比べて小さい;requiredCount=2;actualCount=1	[整数, 整数]	[整数]	整数をもう1つ置いてください	-
+FLOW-F024	check	error	E_TYPE_MISMATCH	2	14	word=比べて小さい;inputIndex=1;expectedType=整数;actualType=文字列	[整数, 整数]	[文字列, 整数]	第1入力を整数にしてください	-
+FLOW-F025	run	error	E_NEGATIVE_REPEAT_COUNT	2	8	count=-1	0以上	-1	反復回数を0以上にしてください	-
+FLOW-F026	check	warning	W_UNREACHABLE_CODE	3	5	cause=戻る;causeLine=2;causeColumn=5	到達可能な処理	未定義	この処理を削除するか戻る前へ移動してください	2:5 戻る

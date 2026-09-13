@@ -1,0 +1,6 @@
+{
+  "check": "",
+  "checkJson": "{\"schemaVersion\":1,\"command\":\"check\",\"source\":\"tests/conformance/result-values/sources/RESULT-N002-array-element.bsb\",\"success\":true,\"exitCode\":0,\"diagnostics\":[]}\n",
+  "run": "",
+  "format": "作るとは （-- 配列<整数>）\n    【42 を 成功にする<整数,真偽> 結果から成功値を取り出す】\nこと。\n\nメインとは （--）\nこと。\n"
+}

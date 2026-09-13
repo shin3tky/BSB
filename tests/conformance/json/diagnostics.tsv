@@ -1,0 +1,29 @@
+case_id	kind	command	severity	code	stage	line	column	fields	expected	actual	fix	related	reason
+JSON-F001	codec	codec	error	E_JSON_SYNTAX	-	0	0	-	-	-	-	-	emptyInput,unexpectedToken,unterminatedString
+JSON-F002	codec	codec	error	E_JSON_SYNTAX	-	0	0	-	-	-	-	-	unexpectedToken
+JSON-F003	codec	codec	error	E_JSON_SYNTAX	-	0	0	-	-	-	-	-	trailingContent
+JSON-F004	codec	codec	error	E_JSON_SYNTAX	-	0	0	-	-	-	-	-	unexpectedToken,expectedObjectKey,expectedColon,expectedCommaOrEnd
+JSON-F005	codec	codec	error	E_JSON_SYNTAX	-	0	0	-	-	-	-	-	unescapedControl
+JSON-F006	codec	codec	error	E_JSON_SYNTAX	-	0	0	-	-	-	-	-	invalidEscape,invalidUnicodeEscape
+JSON-F007	codec	codec	error	E_JSON_SYNTAX	-	0	0	-	-	-	-	-	isolatedSurrogate
+JSON-F008	codec	codec	error	E_JSON_SYNTAX	-	0	0	-	-	-	-	-	invalidNumber,unexpectedToken
+JSON-F009	codec	codec	error	E_JSON_DUPLICATE_KEY	-	0	0	-	-	-	-	-	duplicateKey
+JSON-F010	codec	codec	error	E_JSON_DUPLICATE_KEY	-	0	0	-	-	-	-	-	duplicateKey
+JSON-F011	codec	codec	error	E_JSON_NUMBER_LIMIT	-	0	0	-	-	-	-	-	inputDigits
+JSON-F012	codec	codec	error	E_JSON_NUMBER_LIMIT	-	0	0	-	-	-	-	-	scale
+JSON-F013	codec	codec	error	E_JSON_DEPTH_LIMIT	-	0	0	-	-	-	-	-	depthLimit
+JSON-F014	codec	codec	error	E_JSON_NODE_LIMIT	-	0	0	-	-	-	-	-	nodeLimit
+JSON-F015	codec	codec	error	E_JSON_ARRAY_LENGTH_LIMIT	-	0	0	-	-	-	-	-	arrayLengthLimit
+JSON-F016	codec	codec	error	E_JSON_OBJECT_MEMBER_LIMIT	-	0	0	-	-	-	-	-	objectMemberLimit
+JSON-F017	cli	run	error	E_JSON_KIND_MISMATCH	runtime	2	12	word=JSONから真偽を取り出す;expectedKind=boolean;actualKind=null;currentWord=メイン;dataStack=[JSON:<redacted>];callStack=メイン	boolean	null	JSON値種別を判定してから必要な操作を呼び出してください	-	-
+JSON-F018	cli	run	error	E_JSON_KIND_MISMATCH	runtime	2	12	word=JSONから整数を取り出す;expectedKind=integer;actualKind=null;currentWord=メイン;dataStack=[JSON:<redacted>];callStack=メイン	integer	null	JSON値種別を判定してから必要な操作を呼び出してください	-	-
+JSON-F019	cli	run	error	E_JSON_KIND_MISMATCH	runtime	2	12	word=JSONから小数を取り出す;expectedKind=decimal;actualKind=null;currentWord=メイン;dataStack=[JSON:<redacted>];callStack=メイン	decimal	null	JSON値種別を判定してから必要な操作を呼び出してください	-	-
+JSON-F020	cli	run	error	E_JSON_KIND_MISMATCH	runtime	2	12	word=JSONから文字列を取り出す;expectedKind=string;actualKind=null;currentWord=メイン;dataStack=[JSON:<redacted>];callStack=メイン	string	null	JSON値種別を判定してから必要な操作を呼び出してください	-	-
+JSON-F021	cli	run	error	E_JSON_KIND_MISMATCH	runtime	2	12	word=JSON配列の長さ;expectedKind=array;actualKind=null;currentWord=メイン;dataStack=[JSON:<redacted>];callStack=メイン	array	null	JSON値種別を判定してから必要な操作を呼び出してください	-	-
+JSON-F022	cli	run	error	E_JSON_KIND_MISMATCH	runtime	2	12	word=JSONオブジェクトの要素数;expectedKind=object;actualKind=null;currentWord=メイン;dataStack=[JSON:<redacted>];callStack=メイン	object	null	JSON値種別を判定してから必要な操作を呼び出してください	-	-
+JSON-F023	cli	run	error	E_JSON_KEY_NOT_FOUND	runtime	2	29	word=JSONオブジェクトから必須値を取り出す;keyPreview=missing;memberCount=0;currentWord=メイン;dataStack=[JSON:<redacted>, 文字列:missing];callStack=メイン	存在するキー	キー不在	JSONオブジェクトにキーがあるで先に確認してください	-	-
+JSON-F024	cli	run	error	E_JSON_INDEX_OUT_OF_BOUNDS	runtime	2	30	operation=get;word=JSON配列から取り出す;index=-1;length=1;validRange=[0,1);currentWord=メイン;dataStack=[JSON:<redacted>, 整数:-1];callStack=メイン	0以上1未満	-1	有効範囲の添字を指定してください	-	-
+JSON-F025	cli	run	error	E_JSON_RANGE_OUT_OF_BOUNDS	runtime	2	33	start=1;word=JSON配列の一部を取り出す;end=0;length=1;validCondition=0<=start<=end<=1;currentWord=メイン;dataStack=[JSON:<redacted>, 整数:1, 整数:0];callStack=メイン	0 <= 開始 <= 終了 <= 1	[1,0)	開始を終了以下にしてください	-	-
+JSON-F026	cli	run	error	E_JSON_OUTPUT_LIMIT	runtime	9	5	word=JSONを文字列に変換する;currentWord=メイン;dataStack=[JSON:<redacted>];callStack=メイン;limitName=jsonOutputUtf8Bytes;limit=16777216;observed=25165826	16777216 UTF-8バイト以下	25165826 UTF-8バイト	JSON値または文字列を小さくしてください	-	-
+JSON-F027	cli	run	error	E_JSON_CONSTRUCTION_LIMIT	runtime	8	10	operation=stringToJson;current=1000000;requested=1;word=文字列をJSONに変換する;currentWord=メイン;dataStack=[文字列:x];callStack=メイン;limitName=jsonConstructionUnits;limit=1000000;observed=1000001	1000000単位以下	1000001単位	1回の実行で構築するJSON値を減らしてください。	-	-
+JSON-F028	cli	run	error	E_JSON_WORK_LIMIT	runtime	14	9	operation=serialize;current=58720276;requested=8388611;word=JSONを文字列に変換する;currentWord=メイン;dataStack=[JSON:<redacted>];callStack=メイン;limitName=jsonWorkUnits;limit=67108864;observed=67108887	67108864単位以下	67108887単位	1回の実行で処理するJSONの量を減らしてください。	-	-

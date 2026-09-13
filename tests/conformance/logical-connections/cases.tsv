@@ -1,0 +1,9 @@
+case_id	variant	resolver_present	resolver_outcome	policy_id	invalid_reason	expected_outcome	diagnostic	resolver_calls	connection	operation	state_preserved	event
+CONN-N006	resolved	true	RESOLVED	valid	-	success	-	1	顧客管理API	resolve	true	connection.resolve|顧客管理API|resolved
+CONN-F010	not-configured	true	NOT_CONFIGURED	-	-	diagnostic	E_LOGICAL_CONNECTION_NOT_CONFIGURED	1	顧客管理API	resolve	true	connection.resolve|顧客管理API|notConfigured
+CONN-F011	denied	true	DENIED	-	-	diagnostic	E_LOGICAL_CONNECTION_ACCESS_DENIED	1	顧客管理API	resolve	true	connection.resolve|顧客管理API|denied
+CONN-F012	explicit-invalid	true	INVALID	-	BASE_URI_INVALID	diagnostic	E_LOGICAL_CONNECTION_CONFIGURATION_INVALID	1	顧客管理API	resolve	true	connection.resolve|顧客管理API|invalid
+CONN-F012	resolved-invalid	true	RESOLVED	bad-origin	ORIGIN_POLICY_INVALID	diagnostic	E_LOGICAL_CONNECTION_CONFIGURATION_INVALID	1	顧客管理API	resolve	true	connection.resolve|顧客管理API|invalid
+CONN-R008	capability-absent	false	-	-	-	diagnostic	E_CAPABILITY_UNAVAILABLE	0	顧客管理API	resolve	true	-
+CONN-R008	capability-failure	true	FAILURE	-	-	diagnostic	E_CAPABILITY_FAILURE	1	顧客管理API	resolve	true	connection.resolve|顧客管理API|failure
+CONN-R008	contract-null	true	CONTRACT_NULL	-	-	internal	-	1	顧客管理API	resolve	true	connection.resolve|顧客管理API|failure

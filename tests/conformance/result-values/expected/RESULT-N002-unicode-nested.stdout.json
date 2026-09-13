@@ -1,0 +1,6 @@
+{
+  "check": "",
+  "checkJson": "{\"schemaVersion\":1,\"command\":\"check\",\"source\":\"tests/conformance/result-values/sources/RESULT-N002-unicode-nested.bsb\",\"success\":true,\"exitCode\":0,\"diagnostics\":[]}\n",
+  "run": "",
+  "format": "受け渡すとは （任意<結果<JSON,真偽>> -- 任意<結果<JSON,真偽>>）\nこと。\n\nメインとは （--）\nこと。\n"
+}

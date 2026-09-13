@@ -1,0 +1,21 @@
+schema-version = 1
+
+[workspaces."入力"]
+maximum-read-bytes = 16777216
+maximum-write-bytes = 16777216
+
+[workspaces."入力".files."商品.csv"]
+path = "../products.csv"
+access = "read"
+
+[workspaces."入力".files."注記.tsv"]
+path = "../notes.tsv"
+access = "read"
+
+[workspaces."出力"]
+maximum-read-bytes = 16777216
+maximum-write-bytes = 16777216
+
+[workspaces."出力".files."集計.csv"]
+path = "../summary.csv"
+access = "write"

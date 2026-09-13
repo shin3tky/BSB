@@ -1,0 +1,6 @@
+{
+  "check": "",
+  "checkJson": "{\"schemaVersion\":1,\"command\":\"check\",\"source\":\"tests/conformance/result-values/sources/RESULT-N002-local-initializer.bsb\",\"success\":true,\"exitCode\":0,\"diagnostics\":[]}\n",
+  "run": "",
+  "format": "作るとは （-- 結果<整数,文字列>）\n    保存は 定数 42 を 成功にする<整数,文字列>。\n    保存\nこと。\n\nメインとは （--）\nこと。\n"
+}

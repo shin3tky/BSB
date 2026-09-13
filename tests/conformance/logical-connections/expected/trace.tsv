@@ -1,0 +1,7 @@
+variant	outcome	effect	forbidden_markers	data_stack	globals	diagnostic	resolver_calls
+resolved	success	connection.resolve|顧客管理API|resolved	SECRET_VALID_15|https://api.example.test|credential-reference	[]	{}	-	1
+not-configured	diagnostic	connection.resolve|顧客管理API|notConfigured	SECRET_VALID_15|https://api.example.test|credential-reference	[]	{}	E_LOGICAL_CONNECTION_NOT_CONFIGURED	1
+denied	diagnostic	connection.resolve|顧客管理API|denied	SECRET_VALID_15|https://api.example.test|credential-reference	[]	{}	E_LOGICAL_CONNECTION_ACCESS_DENIED	1
+invalid	diagnostic	connection.resolve|顧客管理API|invalid	SECRET_BASE_15|BASE_URI_SECRET.invalid|credential-reference	[]	{}	E_LOGICAL_CONNECTION_CONFIGURATION_INVALID	1
+failure	diagnostic	connection.resolve|顧客管理API|failure	HOST_FAILURE_SECRET_15|java.lang|credential-reference	[]	{}	E_CAPABILITY_FAILURE	1
+strong-redaction	success	connection.resolve|<redacted>|resolved	SECRET_VALID_15|https://api.example.test|顧客管理API	[]	{}	-	1

@@ -1,0 +1,17 @@
+case_id	target	variant	command	outcome	exit	code	limit	observed	lexeme_spec
+EXP-R001	sourceInputDigitsMantissa	exact	check	accepted	0	-	4096	4096	ONE + ZERO*4094 + e0
+EXP-R001	sourceInputDigitsMantissa	over	check	error	9	E_NUMBER_LIMIT	4096	4097	ONE + ZERO*4095 + e0
+EXP-R002	sourceInputDigitsExponent	exact	check	accepted	0	-	4096	4096	1e + ZERO*4095
+EXP-R002	sourceInputDigitsExponent	over	check	error	9	E_NUMBER_LIMIT	4096	4097	1e + ZERO*4096
+EXP-R003	rawScalePositive	exact	check	accepted	0	-	65536	65536	1e-65536
+EXP-R003	rawScalePositive	over	check	error	8	E_DECIMAL_SCALE_LIMIT	65536	65537	1e-65537
+EXP-R004	rawScaleNegative	exact	check	accepted	0	-	65536	65536	1e65536
+EXP-R004	rawScaleNegative	over	check	error	8	E_DECIMAL_SCALE_LIMIT	65536	65537	1e65537
+EXP-R005	normalizedScaleNegative	exact	check	accepted	0	-	65536	65536	10e65535
+EXP-R005	normalizedScaleNegative	over	check	error	8	E_DECIMAL_SCALE_LIMIT	65536	65537	10e65536
+EXP-R006	zeroRawScale	exact	check	accepted	0	-	65536	65536	0e65536
+EXP-R006	zeroRawScale	over	check	error	8	E_DECIMAL_SCALE_LIMIT	65536	65537	0e65537
+EXP-R007	boundedHugeExponent	withinInputDigits	check	error	8	E_DECIMAL_SCALE_LIMIT	65536	65537	1e + NINE*4095
+EXP-R007	javaFailureDisclosure	withinInputDigits	check	none	0	-	0	0	no NumberFormatException or ArithmeticException
+EXP-R008	fixedDisplayCodePoints	positiveBoundary	run	accepted	0	-	67108864	65539	1e65536
+EXP-R008	formatWithoutEvaluation	overScale	format	accepted	0	-	-	-	1E+065537

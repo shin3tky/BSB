@@ -1,0 +1,26 @@
+case_id	variant	input	outcome	token_kind	type	value_display	format	code	reason
+EXP-N001	lower	1e2	accepted	DECIMAL	小数	100.0	1e2	-	-
+EXP-N001	upper	1E2	accepted	DECIMAL	小数	100.0	1E2	-	-
+EXP-N002	positive	1.5e3	accepted	DECIMAL	小数	1500.0	1.5e3	-	-
+EXP-N002	negative	1.25E-2	accepted	DECIMAL	小数	0.0125	1.25E-2	-	-
+EXP-N003	plus	1e+2	accepted	DECIMAL	小数	100.0	1e+2	-	-
+EXP-N003	leadingZero	1e002	accepted	DECIMAL	小数	100.0	1e002	-	-
+EXP-N004	zeroExponent	1e0	accepted	DECIMAL	小数	1.0	1e0	-	-
+EXP-N004	integralValue	100e-2	accepted	DECIMAL	小数	1.0	100e-2	-	-
+EXP-N009	negativeZero	-0e10	accepted	DECIMAL	小数	0.0	-0e10	-	-
+EXP-N009	trailingZero	1.500e3	accepted	DECIMAL	小数	1500.0	1.500e3	-	-
+EXP-N011	space	1e2 円	accepted	DECIMAL	小数	100.0	1e2 円	-	-
+EXP-F001	lower	1e	failure	-	-	-	-	E_INVALID_NUMBER_LITERAL	missingExponentDigits
+EXP-F001	upper	1E	failure	-	-	-	-	E_INVALID_NUMBER_LITERAL	missingExponentDigits
+EXP-F002	plus	1e+	failure	-	-	-	-	E_INVALID_NUMBER_LITERAL	missingExponentDigits
+EXP-F002	minus	1e-	failure	-	-	-	-	E_INVALID_NUMBER_LITERAL	missingExponentDigits
+EXP-F003	missingInteger	.5e2	failure	-	-	-	-	E_INVALID_NUMBER_LITERAL	invalidMantissa
+EXP-F003	missingFraction	1.e2	failure	-	-	-	-	E_INVALID_NUMBER_LITERAL	invalidMantissa
+EXP-F004	leadingPlus	+1e2	failure	-	-	-	-	E_INVALID_NUMBER_LITERAL	leadingPlus
+EXP-F005	leadingZero	01e2	failure	-	-	-	-	E_INVALID_NUMBER_LITERAL	leadingZero
+EXP-F006	doubleMarker	1ee2	failure	-	-	-	-	E_INVALID_NUMBER_LITERAL	repeatedExponent
+EXP-F006	secondMarker	1e2e3	failure	-	-	-	-	E_INVALID_NUMBER_LITERAL	repeatedExponent
+EXP-F007	identifier	e2	failure	IDENTIFIER	-	-	-	E_UNDEFINED_WORD	-
+EXP-F008	missingSeparator	1e2円	failure	-	-	-	-	E_MISSING_SEPARATOR	-
+EXP-F009	incompleteBeforeName	1e円	failure	-	-	-	-	E_INVALID_NUMBER_LITERAL	missingExponentDigits
+EXP-F010	doubleMinus	1e--2	failure	-	-	-	-	E_INVALID_NUMBER_LITERAL	missingExponentDigits

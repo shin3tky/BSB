@@ -1,0 +1,63 @@
+{
+  "checkExit": 8,
+  "formatExit": 0,
+  "inputDepth": 256,
+  "outputDepth": 257,
+  "diagnostics": [
+    {
+      "code": "E_TYPE_DEPTH_LIMIT",
+      "severity": "error",
+      "stage": "typeAndStack",
+      "message": "推論された型の入れ子が上限を超えています。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R002-mixed-256.bsb",
+      "span": {
+        "start": {
+          "line": 2,
+          "column": 5
+        },
+        "endInclusive": {
+          "line": 2,
+          "column": 9
+        },
+        "utf8Start": 2977,
+        "utf8EndExclusive": 2992
+      },
+      "fields": {
+        "typeConstructor": "任意",
+        "word": "任意にする"
+      },
+      "expected": "型構築子の深さ256以下",
+      "actual": "型構築子の深さ257",
+      "relatedLocations": [],
+      "fixes": [
+        "型の入れ子を浅くしてください"
+      ],
+      "resourceLimit": {
+        "name": "typeDepth",
+        "limit": "256",
+        "observed": "257"
+      },
+      "fixtureLocation": {
+        "span": {
+          "start": {
+            "line": 2,
+            "column": 5
+          },
+          "endInclusive": {
+            "line": 2,
+            "column": 9
+          },
+          "utf8Start": 2977,
+          "utf8EndExclusive": 2992
+        },
+        "utf16Start": 1425,
+        "utf16EndExclusive": 1430
+      }
+    }
+  ],
+  "sourceSha256": "58391768cad0b935b32ce4a3f0f7db76132882a5bc97079e747b92f49b15af5e",
+  "sourceUtf8Bytes": 3062,
+  "sourceUtf16Units": 1462,
+  "canonicalSha256": "58391768cad0b935b32ce4a3f0f7db76132882a5bc97079e747b92f49b15af5e",
+  "canonicalUtf8Bytes": 3062
+}

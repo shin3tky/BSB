@@ -1,0 +1,19 @@
+sequence	word	opcode	sourceLine	sourceColumn	dataBefore	dataAfter	callDepthBefore	callDepthAfter	outputHex	particles	controlBefore	controlAfter	target	branchTaken	bindingId	bindingName	bindingKind	storageScope	valueBefore	valueAfter	effect
+1	メイン	PushConst	2	5	[]	[文字列:お名前は？]	1	1			[]	[]			-	-	-	-	-	-	
+2	メイン	Call:表示する	2	14	[文字列:お名前は？]	[]	1	1	E3818AE5908DE5898DE381AFEFBC9F	を@2:12	[]	[]			-	-	-	-	-	-	console.output:E3818AE5908DE5898DE381AFEFBC9F
+3	メイン	PushConst	3	5	[]	[文字列:こんにちは、]	1	1			[]	[]			-	-	-	-	-	-	
+4	メイン	Call:一行を入力する	4	5	[文字列:こんにちは、]	[文字列:こんにちは、,入力結果:<redacted>]	1	1		を@3:13	[]	[]			-	-	-	-	-	-	console.input:line
+5	メイン	Call:入力行を取り出す	5	5	[文字列:こんにちは、,入力結果:<redacted>]	[文字列:こんにちは、,文字列:山田 太郎]	1	1			[]	[]			-	-	-	-	-	-	
+6	メイン	Call:つなぐ	6	5	[文字列:こんにちは、,文字列:山田 太郎]	[文字列:こんにちは、山田 太郎]	1	1			[]	[]			-	-	-	-	-	-	
+7	メイン	PushConst	7	5	[文字列:こんにちは、山田 太郎]	[文字列:こんにちは、山田 太郎,文字列:さん]	1	1			[]	[]			-	-	-	-	-	-	
+8	メイン	Call:つなぐ	7	11	[文字列:こんにちは、山田 太郎,文字列:さん]	[文字列:こんにちは、山田 太郎さん]	1	1		を@7:9	[]	[]			-	-	-	-	-	-	
+9	メイン	Call:一行表示する	8	5	[文字列:こんにちは、山田 太郎さん]	[]	1	1	E38193E38293E381ABE381A1E381AFE38081E5B1B1E794B020E5A4AAE9838EE38195E382930A		[]	[]			-	-	-	-	-	-	console.output:E38193E38293E381ABE381A1E381AFE38081E5B1B1E794B020E5A4AAE9838EE38195E382930A
+10	メイン	Call:現在日時を得る	9	5	[]	[日時:2026-08-29T14:05:06.123+09:00]	1	1			[]	[]			-	-	-	-	-	-	time.wall
+11	メイン	Call:日時を文字列に変換する	10	5	[日時:2026-08-29T14:05:06.123+09:00]	[文字列:2026-08-29T14:05:06.123+09:00]	1	1			[]	[]			-	-	-	-	-	-	
+12	メイン	Call:一行表示する	11	5	[文字列:2026-08-29T14:05:06.123+09:00]	[]	1	1	323032362D30382D32395431343A30353A30362E3132332B30393A30300A		[]	[]			-	-	-	-	-	-	console.output:323032362D30382D32395431343A30353A30362E3132332B30393A30300A
+13	メイン	PushConst	12	5	[]	[文字列:実行: ]	1	1			[]	[]			-	-	-	-	-	-	
+14	メイン	Call:プログラム名を得る	13	5	[文字列:実行: ]	[文字列:実行: ,文字列:host-io-chapter.bsb]	1	1		を@12:11	[]	[]			-	-	-	-	-	-	program.identity:name
+15	メイン	Call:つなぐ	14	5	[文字列:実行: ,文字列:host-io-chapter.bsb]	[文字列:実行: host-io-chapter.bsb]	1	1			[]	[]			-	-	-	-	-	-	
+16	メイン	Call:エラー一行表示する	15	5	[文字列:実行: host-io-chapter.bsb]	[]	1	1			[]	[]			-	-	-	-	-	-	console.error:E5AE9FE8A18C3A20686F73742D696F2D636861707465722E6273620A
+17	メイン	PushConst	16	5	[]	[整数:0]	1	1			[]	[]			-	-	-	-	-	-	
+18	メイン	Call:終了する	16	9	[整数:0]	[]	1	0		を@16:7	[]	[]			-	-	-	-	-	-	process.exit:0

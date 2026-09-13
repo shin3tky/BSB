@@ -1,0 +1,7 @@
+line	column	spelling	use	bindingId	bindingName	bindingKind	scope	type	declarationLine	declarationColumn
+6	12	単価	read	B1	単価	constant	global	整数	1	1
+6	17	個数	read	B2	個数	constant	global	整数	2	1
+7	5	累計	read	B3	累計	variable	global	整数	3	1
+7	10	小計	read	B4	小計	constant	local:小計を加える	整数	6	5
+7	20	累計	write	B3	累計	variable	global	整数	3	1
+14	5	累計	read	B3	累計	variable	global	整数	3	1

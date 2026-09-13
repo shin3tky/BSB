@@ -1,0 +1,41 @@
+{
+  "checkExit": 9,
+  "commaTokens": 1,
+  "diagnosticCount": 1,
+  "followingDefinition": "メイン",
+  "diagnostics": [
+    {
+      "code": "E_EXPECTED_OPTIONAL_ELEMENT_TYPE",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "任意型には型引数が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-recover-comma.bsb",
+      "point": {
+        "line": 1,
+        "column": 13,
+        "utf8Offset": 30
+      },
+      "fields": {
+        "typeConstructor": "任意"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "任意<JSON>のように具体型を追加してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 1,
+          "column": 13,
+          "utf8Offset": 30
+        },
+        "utf16Start": 12,
+        "utf16EndExclusive": 12
+      }
+    }
+  ],
+  "sourceSha256": "c75b614c39c302b5b8ae140c222b4b1b29c127cfbcb8901e67a3da8147363f11",
+  "sourceUtf8Bytes": 95,
+  "sourceUtf16Units": 43
+}

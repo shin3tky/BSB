@@ -1,0 +1,17 @@
+case_id	target	variant	command	outcome	exit	code	limit	observed	generator_key
+DTXT-R001	inputDigitsMantissa	exact	run	accepted	0	-	4096	4096	DTXT-R001.exact.literal
+DTXT-R001	inputDigitsMantissa	over	run	error	10	E_NUMERIC_TEXT_DIGIT_LIMIT	4096	4097	DTXT-R001.over.literal
+DTXT-R002	inputDigitsExponent	exact	run	accepted	0	-	4096	4096	DTXT-R002.exact.literal
+DTXT-R002	inputDigitsExponent	over	run	error	10	E_NUMERIC_TEXT_DIGIT_LIMIT	4096	4097	DTXT-R002.over.literal
+DTXT-R003	rawScalePositive	exact	run	accepted	0	-	65536	65536	DTXT-R003.exact.literal
+DTXT-R003	rawScalePositive	over	run	error	10	E_DECIMAL_SCALE_LIMIT	65536	65537	DTXT-R003.over.literal
+DTXT-R004	rawScaleNegative	exact	run	accepted	0	-	65536	65536	DTXT-R004.exact.literal
+DTXT-R004	rawScaleNegative	over	run	error	10	E_DECIMAL_SCALE_LIMIT	65536	65537	DTXT-R004.over.literal
+DTXT-R005	normalizedScaleNegative	exact	run	accepted	0	-	65536	65536	DTXT-R005.exact.literal
+DTXT-R005	normalizedScaleNegative	over	run	error	10	E_DECIMAL_SCALE_LIMIT	65536	65537	DTXT-R005.over.literal
+DTXT-R006	zeroRawScale	exact	run	accepted	0	-	65536	65536	DTXT-R006.exact.literal
+DTXT-R006	zeroRawScale	over	run	error	10	E_DECIMAL_SCALE_LIMIT	65536	65537	DTXT-R006.over.literal
+DTXT-R007	boundedHugeExponent	withinInputDigits	run	error	10	E_DECIMAL_SCALE_LIMIT	65536	65537	DTXT-R007.literal
+DTXT-R007	javaFailureDisclosure	withinInputDigits	run	none	10	-	0	0	DTXT-R007.literal
+DTXT-R008	fixedDisplayCodePoints	positiveBoundary	run	accepted	0	-	67108864	65539	DTXT-R008.run.literal
+DTXT-R008	formatWithoutEvaluation	overScale	format	accepted	0	-	-	-	DTXT-R008.format.literal

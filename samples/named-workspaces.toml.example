@@ -1,0 +1,17 @@
+schema-version = 1
+
+[workspaces."帳票"]
+maximum-read-bytes = 16777216
+maximum-write-bytes = 16777216
+
+[workspaces."帳票".files."入力A.dat"]
+path = "../input-a.dat"
+access = "read"
+
+[workspaces."帳票".files."入力B.dat"]
+path = "../input-b.dat"
+access = "read"
+
+[workspaces."帳票".files."出力.dat"]
+path = "../output.dat"
+access = "write"

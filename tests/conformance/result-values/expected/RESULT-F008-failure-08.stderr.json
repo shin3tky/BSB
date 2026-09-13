@@ -1,0 +1,7 @@
+{
+  "check": "tests/conformance/result-values/sources/RESULT-F008-failure-08.bsb:2:11: エラー[E_TYPE_CONSTRAINT_NOT_ALLOWED]: 辞書専用の型制約を利用者定義へ使用できません。\n  必要: 整数・真偽・文字・文字列\n  実際: T\n  修正候補: 具体的な言語コアの型へ変更してください\ntests/conformance/result-values/sources/RESULT-F008-failure-08.bsb:2:13: エラー[E_TYPE_CONSTRAINT_NOT_ALLOWED]: 辞書専用の型制約を利用者定義へ使用できません。\n  必要: 整数・真偽・文字・文字列\n  実際: T\n  修正候補: 具体的な言語コアの型へ変更してください\n",
+  "checkJson": "",
+  "run": "tests/conformance/result-values/sources/RESULT-F008-failure-08.bsb:2:11: エラー[E_TYPE_CONSTRAINT_NOT_ALLOWED]: 辞書専用の型制約を利用者定義へ使用できません。\n  必要: 整数・真偽・文字・文字列\n  実際: T\n  修正候補: 具体的な言語コアの型へ変更してください\ntests/conformance/result-values/sources/RESULT-F008-failure-08.bsb:2:13: エラー[E_TYPE_CONSTRAINT_NOT_ALLOWED]: 辞書専用の型制約を利用者定義へ使用できません。\n  必要: 整数・真偽・文字・文字列\n  実際: T\n  修正候補: 具体的な言語コアの型へ変更してください\n",
+  "format": "",
+  "explain": ""
+}

@@ -1,0 +1,27 @@
+case_id	command	severity	code	line	column	fields	expected	actual	fix	related
+IO-F001	check	error	E_TYPE_MISMATCH	2	10	word=入力行である;inputIndex=1;expectedType=入力結果;actualType=文字列	入力結果	文字列	一行を入力するの結果を渡してください	-
+IO-F002	check	error	E_TYPE_MISMATCH	2	15	word=一行表示する;inputIndex=1;expectedType=表示可能;actualType=入力結果	表示可能	入力結果	入力状態を判定してから行を取り出してください	-
+IO-F003	check	error	E_TYPE_MISMATCH	2	15	word=一行表示する;inputIndex=1;expectedType=表示可能;actualType=日時	表示可能	日時	日時を文字列に変換してください	-
+IO-F004	check	error	E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED	2	5	actualType=入力結果;allowedTypes=整数,真偽,文字,文字列,小数,JSON	配列要素にできる型	入力結果	入力結果を個別に処理してください	-
+IO-F005	check	error	E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED	2	5	actualType=日時;allowedTypes=整数,真偽,文字,文字列,小数,JSON	配列要素にできる型	日時	日時を個別に処理してください	-
+IO-F006	run	error	E_INPUT_RESULT_NOT_LINE	3	5	word=入力行を取り出す;state=end	行	終端	入力終端であるで先に判定してください	-
+IO-F007	run	error	E_INPUT_RESULT_NOT_LINE	3	5	word=入力行を取り出す;state=cancel	行	取消	入力キャンセルであるで先に判定してください	-
+IO-F008	run	error	E_CAPABILITY_UNAVAILABLE	2	5	word=一行を入力する;capability=console.input	利用可能なconsole.input	能力なし	入力能力を持つ実行環境で実行してください	-
+IO-F009	run	error	E_CAPABILITY_UNAVAILABLE	2	11	word=エラー一行表示する;capability=console.error	利用可能なconsole.error	能力なし	標準エラー能力を持つ実行環境で実行してください	-
+IO-F010	run	error	E_CAPABILITY_FAILURE	2	5	word=一行を入力する;capability=console.input;operation=readLine	成功する入力能力	能力失敗	入力元を確認してください	-
+IO-F011	run	error	E_INPUT_UTF8	2	5	word=一行を入力する;byteOffset=1;bytes=FF	正しいUTF-8	FF	入力をUTF-8で送ってください	-
+IO-F012	run	error	E_INPUT_LINE_LIMIT	2	5	word=一行を入力する;limit=16777216;observed=16777217	16777216バイト以下	16777217バイト	入力行を短くしてください	-
+IO-F013	run	error	E_INPUT_TOTAL_LIMIT	2	5	word=一行を入力する;currentBytes=67108864;additionalBytes=1;limit=67108864;observed=67108865	67108864バイト以下	67108865バイト	入力量を減らしてください	-
+IO-F014	run	error	E_CAPABILITY_FAILURE	2	11	word=一行表示する;capability=console.output;operation=write	成功する出力能力	能力失敗	標準出力先を確認してください	-
+IO-F015	run	error	E_CAPABILITY_FAILURE	2	11	word=エラー表示する;capability=console.error;operation=write	成功する標準エラー能力	能力失敗	標準エラー先を確認してください	-
+IO-F016	run	error	E_EXIT_CODE_RANGE	2	10	word=終了する;exitCode=-1;valid=0..255	0以上255以下	-1	0から255の終了コードを指定してください	-
+IO-F017	run	error	E_EXIT_CODE_RANGE	2	11	word=終了する;exitCode=256;valid=0..255	0以上255以下	256	0から255の終了コードを指定してください	-
+IO-F018	run	error	E_CAPABILITY_UNAVAILABLE	2	5	word=起動引数を得る;capability=process.arguments	利用可能なprocess.arguments	能力なし	起動引数能力を持つ実行環境で実行してください	-
+IO-F019	run	error	E_ARGUMENT_COUNT_LIMIT	2	5	word=起動引数を得る;limit=65536;observed=65537	65536要素以下	65537要素	引数を減らしてください	-
+IO-F020	run	error	E_ARGUMENT_TOTAL_LIMIT	2	5	word=起動引数を得る;limit=67108864;observed=67108865	67108864バイト以下	67108865バイト	引数全体を短くしてください	-
+IO-F021	run	error	E_PROGRAM_METADATA_INVALID	2	5	word=プログラムの場所を得る;item=location;reason=notAbsoluteUri;valuePreview=relative/path.bsb	絶対URI	relative/path.bsb	実行環境のプログラム場所を確認してください	-
+IO-F022	run	error	E_WAIT_DURATION_RANGE	2	10	word=待つ;milliseconds=-1;valid=0..86400000	0以上86400000以下	-1	0以上の待機時間を指定してください	-
+IO-F023	run	error	E_WAIT_DURATION_RANGE	2	16	word=待つ;milliseconds=86400001;valid=0..86400000	0以上86400000以下	86400001	待機時間を1日以下にしてください	-
+IO-F024	run	error	E_WAIT_CANCELLED	2	12	word=待つ;milliseconds=1000	完了する待機	取消	取消を扱う上位実行環境を確認してください	-
+IO-F025	run	error	E_DATETIME_RANGE	2	5	word=現在日時を得る;year=10000;validYear=0000..9999	0000年から9999年	10000年	日時能力の値を確認してください	-
+IO-F026	check	warning	W_UNREACHABLE_CODE	3	5	cause=終了する;causeLine=2;causeColumn=9	到達可能な処理	一行表示する	この処理を削除するか終了する前へ移動してください	2:9 終了する

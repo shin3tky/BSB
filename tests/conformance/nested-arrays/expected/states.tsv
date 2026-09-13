@@ -1,0 +1,16 @@
+case_id	variant	value_type	display	stdout	construction_units	operation_units	original_preserved
+NARRAY-N002	integer-empty	配列<配列<整数>>	【】	-	0	0	true
+NARRAY-N002	boolean-empty	配列<配列<真偽>>	【】	-	0	0	true
+NARRAY-N002	character-empty	配列<配列<文字>>	【】	-	0	0	true
+NARRAY-N002	string-empty	配列<配列<文字列>>	【】	-	0	0	true
+NARRAY-N002	decimal-empty	配列<配列<小数>>	【】	-	0	0	true
+NARRAY-N002	json-empty	配列<配列<JSON>>	【】	-	0	0	true
+NARRAY-N004	length	配列<配列<整数>>	【【1、2】、【3】、【】】	3\n	6	0	true
+NARRAY-N004	get	配列<整数>	【3】	【3】\n	6	1	true
+NARRAY-N005	slice	配列<配列<整数>>	【【3】、【】】	【【3】、【】】\n	8	2	true
+NARRAY-N006	replace	配列<配列<整数>>	【【9、8】、【2】】	【【9、8】、【2】】\n	7	2	true
+NARRAY-N006	append	配列<配列<整数>>	【【1】、【2】、【3、4】】	【【1】、【2】、【3、4】】\n	9	3	true
+NARRAY-N009	equal	真偽	はい	はい\n	12	6	true
+NARRAY-N009	shape-mismatch	真偽	いいえ	いいえ\n	12	6	true
+NARRAY-N009	leaf-mismatch	真偽	いいえ	いいえ\n	12	6	true
+NARRAY-N010	ragged-display	配列<配列<文字列>>	【【「a」、「b」】、【「c」】、【】】	【【「a」、「b」】、【「c」】、【】】\n	6	6	true

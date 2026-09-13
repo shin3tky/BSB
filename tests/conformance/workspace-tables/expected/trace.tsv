@@ -1,0 +1,8 @@
+case_id	variant	type	expected_trace	forbidden_markers	budget_delta
+WST-N011	read-failure	ファイル読取失敗	ファイル読取失敗:<redacted>	LOGICAL_SECRET,PATH_SECRET,CONTENT_SECRET,EXCEPTION_SECRET	0
+WST-N011	write-failure	ファイル書込失敗	ファイル書込失敗:<redacted>	LOGICAL_SECRET,PATH_SECRET,CONTENT_SECRET,TEMP_SECRET,EXCEPTION_SECRET	0
+WST-N011	bytes	バイト列	バイト列:<redacted>	CONTENT_SECRET	0
+WST-N011	optional	任意<ファイル読取失敗>	任意<ファイル読取失敗>:<redacted>	LOGICAL_SECRET,PATH_SECRET,EXCEPTION_SECRET	0
+WST-N011	result	結果<バイト列,ファイル読取失敗>	結果<バイト列,ファイル読取失敗>:<redacted>	LOGICAL_SECRET,PATH_SECRET,CONTENT_SECRET	0
+WST-R008	capability-event	file.read	file.read:帳票:read:success	LOGICAL_SECRET,PATH_SECRET,CONTENT_SECRET,EXCEPTION_SECRET	0
+WST-R008	config-error	configuration	作業領域設定エラー	LOGICAL_SECRET,PATH_SECRET,CONTENT_SECRET,TEMP_SECRET,EXCEPTION_SECRET	0

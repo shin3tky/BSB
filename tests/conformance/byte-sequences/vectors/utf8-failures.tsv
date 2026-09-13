@@ -1,0 +1,13 @@
+case_id	variant	input_hex	kind	offset
+BYTES-N005	leading-continuation	80	invalidLeadingByte	0
+BYTES-N005	leading-c0	c080	invalidLeadingByte	0
+BYTES-N005	leading-f5	f5808080	invalidLeadingByte	0
+BYTES-N005	continuation-first	e228a1	invalidContinuationByte	1
+BYTES-N005	continuation-second	e28241	invalidContinuationByte	2
+BYTES-N005	truncated-one	e2	truncatedSequence	0
+BYTES-N005	truncated-two	e282	truncatedSequence	0
+BYTES-N005	overlong-three	e08080	overlongEncoding	0
+BYTES-N005	surrogate	eda080	surrogateCodePoint	0
+BYTES-N005	out-of-range	f4908080	codePointOutOfRange	0
+BYTES-N005	multiple	80ff	invalidLeadingByte	0
+BYTES-N005	middle	41e228a1	invalidContinuationByte	2

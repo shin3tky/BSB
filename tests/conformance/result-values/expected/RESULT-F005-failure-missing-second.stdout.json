@@ -1,0 +1,7 @@
+{
+  "check": "",
+  "checkJson": "{\"schemaVersion\":1,\"command\":\"check\",\"source\":\"tests/conformance/result-values/sources/RESULT-F005-failure-missing-second.bsb\",\"success\":false,\"exitCode\":9,\"diagnostics\":[{\"code\":\"E_EXPECTED_RESULT_TYPE_ARGUMENT\",\"severity\":\"error\",\"stage\":\"syntax\",\"message\":\"結果型の型引数には具体型が必要です。\",\"sourcePath\":\"tests/conformance/result-values/sources/RESULT-F005-failure-missing-second.bsb\",\"point\":{\"line\":2,\"column\":14,\"utf8Offset\":52},\"fields\":{\"argumentIndex\":\"2\",\"owner\":\"失敗にする\",\"typeConstructor\":\"結果\",\"word\":\"失敗にする\"},\"expected\":\"具体型\",\"actual\":\">\",\"relatedLocations\":[],\"fixes\":[\"成功型と失敗型に具体型を指定してください\"]}]}\n",
+  "run": "",
+  "format": "",
+  "explain": "{\"schemaVersion\":1,\"command\":\"explain\",\"source\":\"tests/conformance/result-values/sources/RESULT-F005-failure-missing-second.bsb\",\"success\":false,\"exitCode\":9,\"diagnostics\":[{\"code\":\"E_EXPECTED_RESULT_TYPE_ARGUMENT\",\"severity\":\"error\",\"stage\":\"syntax\",\"message\":\"結果型の型引数には具体型が必要です。\",\"sourcePath\":\"tests/conformance/result-values/sources/RESULT-F005-failure-missing-second.bsb\",\"point\":{\"line\":2,\"column\":14,\"utf8Offset\":52},\"fields\":{\"argumentIndex\":\"2\",\"owner\":\"失敗にする\",\"typeConstructor\":\"結果\",\"word\":\"失敗にする\"},\"expected\":\"具体型\",\"actual\":\">\",\"relatedLocations\":[],\"fixes\":[\"成功型と失敗型に具体型を指定してください\"]}],\"builtinWords\":[],\"userWords\":[],\"scopes\":[],\"bindings\":[]}\n"
+}

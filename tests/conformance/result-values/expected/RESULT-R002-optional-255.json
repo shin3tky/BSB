@@ -1,0 +1,12 @@
+{
+  "checkExit": 0,
+  "formatExit": 0,
+  "inputDepth": 255,
+  "outputDepth": 256,
+  "diagnostics": [],
+  "sourceSha256": "eb14a7f58c8a0d32478b68df2ef7da878a77f9f426d435bc5d61d60bc270bdd8",
+  "sourceUtf8Bytes": 2158,
+  "sourceUtf16Units": 1074,
+  "canonicalSha256": "eb14a7f58c8a0d32478b68df2ef7da878a77f9f426d435bc5d61d60bc270bdd8",
+  "canonicalUtf8Bytes": 2158
+}

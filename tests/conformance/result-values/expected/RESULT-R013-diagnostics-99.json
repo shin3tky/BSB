@@ -1,0 +1,3181 @@
+{
+  "checkExit": 9,
+  "regularDiagnostics": 99,
+  "limitDiagnostics": 0,
+  "totalDiagnostics": 99,
+  "followingDefinition": "メイン",
+  "followingDefinitionVisited": true,
+  "diagnostics": [
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 1,
+        "column": 11,
+        "utf8Offset": 24
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 1,
+          "column": 11,
+          "utf8Offset": 24
+        },
+        "utf16Start": 10,
+        "utf16EndExclusive": 10
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 4,
+        "column": 11,
+        "utf8Offset": 67
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 4,
+          "column": 11,
+          "utf8Offset": 67
+        },
+        "utf16Start": 31,
+        "utf16EndExclusive": 31
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 7,
+        "column": 11,
+        "utf8Offset": 110
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 7,
+          "column": 11,
+          "utf8Offset": 110
+        },
+        "utf16Start": 52,
+        "utf16EndExclusive": 52
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 10,
+        "column": 11,
+        "utf8Offset": 153
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 10,
+          "column": 11,
+          "utf8Offset": 153
+        },
+        "utf16Start": 73,
+        "utf16EndExclusive": 73
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 13,
+        "column": 11,
+        "utf8Offset": 196
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 13,
+          "column": 11,
+          "utf8Offset": 196
+        },
+        "utf16Start": 94,
+        "utf16EndExclusive": 94
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 16,
+        "column": 11,
+        "utf8Offset": 239
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 16,
+          "column": 11,
+          "utf8Offset": 239
+        },
+        "utf16Start": 115,
+        "utf16EndExclusive": 115
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 19,
+        "column": 11,
+        "utf8Offset": 282
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 19,
+          "column": 11,
+          "utf8Offset": 282
+        },
+        "utf16Start": 136,
+        "utf16EndExclusive": 136
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 22,
+        "column": 11,
+        "utf8Offset": 325
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 22,
+          "column": 11,
+          "utf8Offset": 325
+        },
+        "utf16Start": 157,
+        "utf16EndExclusive": 157
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 25,
+        "column": 11,
+        "utf8Offset": 368
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 25,
+          "column": 11,
+          "utf8Offset": 368
+        },
+        "utf16Start": 178,
+        "utf16EndExclusive": 178
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 28,
+        "column": 11,
+        "utf8Offset": 411
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 28,
+          "column": 11,
+          "utf8Offset": 411
+        },
+        "utf16Start": 199,
+        "utf16EndExclusive": 199
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 31,
+        "column": 12,
+        "utf8Offset": 455
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 31,
+          "column": 12,
+          "utf8Offset": 455
+        },
+        "utf16Start": 221,
+        "utf16EndExclusive": 221
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 34,
+        "column": 12,
+        "utf8Offset": 499
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 34,
+          "column": 12,
+          "utf8Offset": 499
+        },
+        "utf16Start": 243,
+        "utf16EndExclusive": 243
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 37,
+        "column": 12,
+        "utf8Offset": 543
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 37,
+          "column": 12,
+          "utf8Offset": 543
+        },
+        "utf16Start": 265,
+        "utf16EndExclusive": 265
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 40,
+        "column": 12,
+        "utf8Offset": 587
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 40,
+          "column": 12,
+          "utf8Offset": 587
+        },
+        "utf16Start": 287,
+        "utf16EndExclusive": 287
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 43,
+        "column": 12,
+        "utf8Offset": 631
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 43,
+          "column": 12,
+          "utf8Offset": 631
+        },
+        "utf16Start": 309,
+        "utf16EndExclusive": 309
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 46,
+        "column": 12,
+        "utf8Offset": 675
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 46,
+          "column": 12,
+          "utf8Offset": 675
+        },
+        "utf16Start": 331,
+        "utf16EndExclusive": 331
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 49,
+        "column": 12,
+        "utf8Offset": 719
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 49,
+          "column": 12,
+          "utf8Offset": 719
+        },
+        "utf16Start": 353,
+        "utf16EndExclusive": 353
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 52,
+        "column": 12,
+        "utf8Offset": 763
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 52,
+          "column": 12,
+          "utf8Offset": 763
+        },
+        "utf16Start": 375,
+        "utf16EndExclusive": 375
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 55,
+        "column": 12,
+        "utf8Offset": 807
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 55,
+          "column": 12,
+          "utf8Offset": 807
+        },
+        "utf16Start": 397,
+        "utf16EndExclusive": 397
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 58,
+        "column": 12,
+        "utf8Offset": 851
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 58,
+          "column": 12,
+          "utf8Offset": 851
+        },
+        "utf16Start": 419,
+        "utf16EndExclusive": 419
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 61,
+        "column": 12,
+        "utf8Offset": 895
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 61,
+          "column": 12,
+          "utf8Offset": 895
+        },
+        "utf16Start": 441,
+        "utf16EndExclusive": 441
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 64,
+        "column": 12,
+        "utf8Offset": 939
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 64,
+          "column": 12,
+          "utf8Offset": 939
+        },
+        "utf16Start": 463,
+        "utf16EndExclusive": 463
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 67,
+        "column": 12,
+        "utf8Offset": 983
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 67,
+          "column": 12,
+          "utf8Offset": 983
+        },
+        "utf16Start": 485,
+        "utf16EndExclusive": 485
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 70,
+        "column": 12,
+        "utf8Offset": 1027
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 70,
+          "column": 12,
+          "utf8Offset": 1027
+        },
+        "utf16Start": 507,
+        "utf16EndExclusive": 507
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 73,
+        "column": 12,
+        "utf8Offset": 1071
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 73,
+          "column": 12,
+          "utf8Offset": 1071
+        },
+        "utf16Start": 529,
+        "utf16EndExclusive": 529
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 76,
+        "column": 12,
+        "utf8Offset": 1115
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 76,
+          "column": 12,
+          "utf8Offset": 1115
+        },
+        "utf16Start": 551,
+        "utf16EndExclusive": 551
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 79,
+        "column": 12,
+        "utf8Offset": 1159
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 79,
+          "column": 12,
+          "utf8Offset": 1159
+        },
+        "utf16Start": 573,
+        "utf16EndExclusive": 573
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 82,
+        "column": 12,
+        "utf8Offset": 1203
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 82,
+          "column": 12,
+          "utf8Offset": 1203
+        },
+        "utf16Start": 595,
+        "utf16EndExclusive": 595
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 85,
+        "column": 12,
+        "utf8Offset": 1247
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 85,
+          "column": 12,
+          "utf8Offset": 1247
+        },
+        "utf16Start": 617,
+        "utf16EndExclusive": 617
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 88,
+        "column": 12,
+        "utf8Offset": 1291
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 88,
+          "column": 12,
+          "utf8Offset": 1291
+        },
+        "utf16Start": 639,
+        "utf16EndExclusive": 639
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 91,
+        "column": 12,
+        "utf8Offset": 1335
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 91,
+          "column": 12,
+          "utf8Offset": 1335
+        },
+        "utf16Start": 661,
+        "utf16EndExclusive": 661
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 94,
+        "column": 12,
+        "utf8Offset": 1379
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 94,
+          "column": 12,
+          "utf8Offset": 1379
+        },
+        "utf16Start": 683,
+        "utf16EndExclusive": 683
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 97,
+        "column": 12,
+        "utf8Offset": 1423
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 97,
+          "column": 12,
+          "utf8Offset": 1423
+        },
+        "utf16Start": 705,
+        "utf16EndExclusive": 705
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 100,
+        "column": 12,
+        "utf8Offset": 1467
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 100,
+          "column": 12,
+          "utf8Offset": 1467
+        },
+        "utf16Start": 727,
+        "utf16EndExclusive": 727
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 103,
+        "column": 12,
+        "utf8Offset": 1511
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 103,
+          "column": 12,
+          "utf8Offset": 1511
+        },
+        "utf16Start": 749,
+        "utf16EndExclusive": 749
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 106,
+        "column": 12,
+        "utf8Offset": 1555
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 106,
+          "column": 12,
+          "utf8Offset": 1555
+        },
+        "utf16Start": 771,
+        "utf16EndExclusive": 771
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 109,
+        "column": 12,
+        "utf8Offset": 1599
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 109,
+          "column": 12,
+          "utf8Offset": 1599
+        },
+        "utf16Start": 793,
+        "utf16EndExclusive": 793
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 112,
+        "column": 12,
+        "utf8Offset": 1643
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 112,
+          "column": 12,
+          "utf8Offset": 1643
+        },
+        "utf16Start": 815,
+        "utf16EndExclusive": 815
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 115,
+        "column": 12,
+        "utf8Offset": 1687
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 115,
+          "column": 12,
+          "utf8Offset": 1687
+        },
+        "utf16Start": 837,
+        "utf16EndExclusive": 837
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 118,
+        "column": 12,
+        "utf8Offset": 1731
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 118,
+          "column": 12,
+          "utf8Offset": 1731
+        },
+        "utf16Start": 859,
+        "utf16EndExclusive": 859
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 121,
+        "column": 12,
+        "utf8Offset": 1775
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 121,
+          "column": 12,
+          "utf8Offset": 1775
+        },
+        "utf16Start": 881,
+        "utf16EndExclusive": 881
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 124,
+        "column": 12,
+        "utf8Offset": 1819
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 124,
+          "column": 12,
+          "utf8Offset": 1819
+        },
+        "utf16Start": 903,
+        "utf16EndExclusive": 903
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 127,
+        "column": 12,
+        "utf8Offset": 1863
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 127,
+          "column": 12,
+          "utf8Offset": 1863
+        },
+        "utf16Start": 925,
+        "utf16EndExclusive": 925
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 130,
+        "column": 12,
+        "utf8Offset": 1907
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 130,
+          "column": 12,
+          "utf8Offset": 1907
+        },
+        "utf16Start": 947,
+        "utf16EndExclusive": 947
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 133,
+        "column": 12,
+        "utf8Offset": 1951
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 133,
+          "column": 12,
+          "utf8Offset": 1951
+        },
+        "utf16Start": 969,
+        "utf16EndExclusive": 969
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 136,
+        "column": 12,
+        "utf8Offset": 1995
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 136,
+          "column": 12,
+          "utf8Offset": 1995
+        },
+        "utf16Start": 991,
+        "utf16EndExclusive": 991
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 139,
+        "column": 12,
+        "utf8Offset": 2039
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 139,
+          "column": 12,
+          "utf8Offset": 2039
+        },
+        "utf16Start": 1013,
+        "utf16EndExclusive": 1013
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 142,
+        "column": 12,
+        "utf8Offset": 2083
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 142,
+          "column": 12,
+          "utf8Offset": 2083
+        },
+        "utf16Start": 1035,
+        "utf16EndExclusive": 1035
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 145,
+        "column": 12,
+        "utf8Offset": 2127
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 145,
+          "column": 12,
+          "utf8Offset": 2127
+        },
+        "utf16Start": 1057,
+        "utf16EndExclusive": 1057
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 148,
+        "column": 12,
+        "utf8Offset": 2171
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 148,
+          "column": 12,
+          "utf8Offset": 2171
+        },
+        "utf16Start": 1079,
+        "utf16EndExclusive": 1079
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 151,
+        "column": 12,
+        "utf8Offset": 2215
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 151,
+          "column": 12,
+          "utf8Offset": 2215
+        },
+        "utf16Start": 1101,
+        "utf16EndExclusive": 1101
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 154,
+        "column": 12,
+        "utf8Offset": 2259
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 154,
+          "column": 12,
+          "utf8Offset": 2259
+        },
+        "utf16Start": 1123,
+        "utf16EndExclusive": 1123
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 157,
+        "column": 12,
+        "utf8Offset": 2303
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 157,
+          "column": 12,
+          "utf8Offset": 2303
+        },
+        "utf16Start": 1145,
+        "utf16EndExclusive": 1145
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 160,
+        "column": 12,
+        "utf8Offset": 2347
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 160,
+          "column": 12,
+          "utf8Offset": 2347
+        },
+        "utf16Start": 1167,
+        "utf16EndExclusive": 1167
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 163,
+        "column": 12,
+        "utf8Offset": 2391
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 163,
+          "column": 12,
+          "utf8Offset": 2391
+        },
+        "utf16Start": 1189,
+        "utf16EndExclusive": 1189
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 166,
+        "column": 12,
+        "utf8Offset": 2435
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 166,
+          "column": 12,
+          "utf8Offset": 2435
+        },
+        "utf16Start": 1211,
+        "utf16EndExclusive": 1211
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 169,
+        "column": 12,
+        "utf8Offset": 2479
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 169,
+          "column": 12,
+          "utf8Offset": 2479
+        },
+        "utf16Start": 1233,
+        "utf16EndExclusive": 1233
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 172,
+        "column": 12,
+        "utf8Offset": 2523
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 172,
+          "column": 12,
+          "utf8Offset": 2523
+        },
+        "utf16Start": 1255,
+        "utf16EndExclusive": 1255
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 175,
+        "column": 12,
+        "utf8Offset": 2567
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 175,
+          "column": 12,
+          "utf8Offset": 2567
+        },
+        "utf16Start": 1277,
+        "utf16EndExclusive": 1277
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 178,
+        "column": 12,
+        "utf8Offset": 2611
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 178,
+          "column": 12,
+          "utf8Offset": 2611
+        },
+        "utf16Start": 1299,
+        "utf16EndExclusive": 1299
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 181,
+        "column": 12,
+        "utf8Offset": 2655
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 181,
+          "column": 12,
+          "utf8Offset": 2655
+        },
+        "utf16Start": 1321,
+        "utf16EndExclusive": 1321
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 184,
+        "column": 12,
+        "utf8Offset": 2699
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 184,
+          "column": 12,
+          "utf8Offset": 2699
+        },
+        "utf16Start": 1343,
+        "utf16EndExclusive": 1343
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 187,
+        "column": 12,
+        "utf8Offset": 2743
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 187,
+          "column": 12,
+          "utf8Offset": 2743
+        },
+        "utf16Start": 1365,
+        "utf16EndExclusive": 1365
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 190,
+        "column": 12,
+        "utf8Offset": 2787
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 190,
+          "column": 12,
+          "utf8Offset": 2787
+        },
+        "utf16Start": 1387,
+        "utf16EndExclusive": 1387
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 193,
+        "column": 12,
+        "utf8Offset": 2831
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 193,
+          "column": 12,
+          "utf8Offset": 2831
+        },
+        "utf16Start": 1409,
+        "utf16EndExclusive": 1409
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 196,
+        "column": 12,
+        "utf8Offset": 2875
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 196,
+          "column": 12,
+          "utf8Offset": 2875
+        },
+        "utf16Start": 1431,
+        "utf16EndExclusive": 1431
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 199,
+        "column": 12,
+        "utf8Offset": 2919
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 199,
+          "column": 12,
+          "utf8Offset": 2919
+        },
+        "utf16Start": 1453,
+        "utf16EndExclusive": 1453
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 202,
+        "column": 12,
+        "utf8Offset": 2963
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 202,
+          "column": 12,
+          "utf8Offset": 2963
+        },
+        "utf16Start": 1475,
+        "utf16EndExclusive": 1475
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 205,
+        "column": 12,
+        "utf8Offset": 3007
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 205,
+          "column": 12,
+          "utf8Offset": 3007
+        },
+        "utf16Start": 1497,
+        "utf16EndExclusive": 1497
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 208,
+        "column": 12,
+        "utf8Offset": 3051
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 208,
+          "column": 12,
+          "utf8Offset": 3051
+        },
+        "utf16Start": 1519,
+        "utf16EndExclusive": 1519
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 211,
+        "column": 12,
+        "utf8Offset": 3095
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 211,
+          "column": 12,
+          "utf8Offset": 3095
+        },
+        "utf16Start": 1541,
+        "utf16EndExclusive": 1541
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 214,
+        "column": 12,
+        "utf8Offset": 3139
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 214,
+          "column": 12,
+          "utf8Offset": 3139
+        },
+        "utf16Start": 1563,
+        "utf16EndExclusive": 1563
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 217,
+        "column": 12,
+        "utf8Offset": 3183
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 217,
+          "column": 12,
+          "utf8Offset": 3183
+        },
+        "utf16Start": 1585,
+        "utf16EndExclusive": 1585
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 220,
+        "column": 12,
+        "utf8Offset": 3227
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 220,
+          "column": 12,
+          "utf8Offset": 3227
+        },
+        "utf16Start": 1607,
+        "utf16EndExclusive": 1607
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 223,
+        "column": 12,
+        "utf8Offset": 3271
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 223,
+          "column": 12,
+          "utf8Offset": 3271
+        },
+        "utf16Start": 1629,
+        "utf16EndExclusive": 1629
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 226,
+        "column": 12,
+        "utf8Offset": 3315
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 226,
+          "column": 12,
+          "utf8Offset": 3315
+        },
+        "utf16Start": 1651,
+        "utf16EndExclusive": 1651
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 229,
+        "column": 12,
+        "utf8Offset": 3359
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 229,
+          "column": 12,
+          "utf8Offset": 3359
+        },
+        "utf16Start": 1673,
+        "utf16EndExclusive": 1673
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 232,
+        "column": 12,
+        "utf8Offset": 3403
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 232,
+          "column": 12,
+          "utf8Offset": 3403
+        },
+        "utf16Start": 1695,
+        "utf16EndExclusive": 1695
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 235,
+        "column": 12,
+        "utf8Offset": 3447
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 235,
+          "column": 12,
+          "utf8Offset": 3447
+        },
+        "utf16Start": 1717,
+        "utf16EndExclusive": 1717
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 238,
+        "column": 12,
+        "utf8Offset": 3491
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 238,
+          "column": 12,
+          "utf8Offset": 3491
+        },
+        "utf16Start": 1739,
+        "utf16EndExclusive": 1739
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 241,
+        "column": 12,
+        "utf8Offset": 3535
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 241,
+          "column": 12,
+          "utf8Offset": 3535
+        },
+        "utf16Start": 1761,
+        "utf16EndExclusive": 1761
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 244,
+        "column": 12,
+        "utf8Offset": 3579
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 244,
+          "column": 12,
+          "utf8Offset": 3579
+        },
+        "utf16Start": 1783,
+        "utf16EndExclusive": 1783
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 247,
+        "column": 12,
+        "utf8Offset": 3623
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 247,
+          "column": 12,
+          "utf8Offset": 3623
+        },
+        "utf16Start": 1805,
+        "utf16EndExclusive": 1805
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 250,
+        "column": 12,
+        "utf8Offset": 3667
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 250,
+          "column": 12,
+          "utf8Offset": 3667
+        },
+        "utf16Start": 1827,
+        "utf16EndExclusive": 1827
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 253,
+        "column": 12,
+        "utf8Offset": 3711
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 253,
+          "column": 12,
+          "utf8Offset": 3711
+        },
+        "utf16Start": 1849,
+        "utf16EndExclusive": 1849
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 256,
+        "column": 12,
+        "utf8Offset": 3755
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 256,
+          "column": 12,
+          "utf8Offset": 3755
+        },
+        "utf16Start": 1871,
+        "utf16EndExclusive": 1871
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 259,
+        "column": 12,
+        "utf8Offset": 3799
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 259,
+          "column": 12,
+          "utf8Offset": 3799
+        },
+        "utf16Start": 1893,
+        "utf16EndExclusive": 1893
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 262,
+        "column": 12,
+        "utf8Offset": 3843
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 262,
+          "column": 12,
+          "utf8Offset": 3843
+        },
+        "utf16Start": 1915,
+        "utf16EndExclusive": 1915
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 265,
+        "column": 12,
+        "utf8Offset": 3887
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 265,
+          "column": 12,
+          "utf8Offset": 3887
+        },
+        "utf16Start": 1937,
+        "utf16EndExclusive": 1937
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 268,
+        "column": 12,
+        "utf8Offset": 3931
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 268,
+          "column": 12,
+          "utf8Offset": 3931
+        },
+        "utf16Start": 1959,
+        "utf16EndExclusive": 1959
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 271,
+        "column": 12,
+        "utf8Offset": 3975
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 271,
+          "column": 12,
+          "utf8Offset": 3975
+        },
+        "utf16Start": 1981,
+        "utf16EndExclusive": 1981
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 274,
+        "column": 12,
+        "utf8Offset": 4019
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 274,
+          "column": 12,
+          "utf8Offset": 4019
+        },
+        "utf16Start": 2003,
+        "utf16EndExclusive": 2003
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 277,
+        "column": 12,
+        "utf8Offset": 4063
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 277,
+          "column": 12,
+          "utf8Offset": 4063
+        },
+        "utf16Start": 2025,
+        "utf16EndExclusive": 2025
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 280,
+        "column": 12,
+        "utf8Offset": 4107
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 280,
+          "column": 12,
+          "utf8Offset": 4107
+        },
+        "utf16Start": 2047,
+        "utf16EndExclusive": 2047
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 283,
+        "column": 12,
+        "utf8Offset": 4151
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 283,
+          "column": 12,
+          "utf8Offset": 4151
+        },
+        "utf16Start": 2069,
+        "utf16EndExclusive": 2069
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 286,
+        "column": 12,
+        "utf8Offset": 4195
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 286,
+          "column": 12,
+          "utf8Offset": 4195
+        },
+        "utf16Start": 2091,
+        "utf16EndExclusive": 2091
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 289,
+        "column": 12,
+        "utf8Offset": 4239
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 289,
+          "column": 12,
+          "utf8Offset": 4239
+        },
+        "utf16Start": 2113,
+        "utf16EndExclusive": 2113
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 292,
+        "column": 12,
+        "utf8Offset": 4283
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 292,
+          "column": 12,
+          "utf8Offset": 4283
+        },
+        "utf16Start": 2135,
+        "utf16EndExclusive": 2135
+      }
+    },
+    {
+      "code": "E_EXPECTED_RESULT_TYPE_ARGUMENT",
+      "severity": "error",
+      "stage": "syntax",
+      "message": "結果型の型引数には具体型が必要です。",
+      "sourcePath": "tests/conformance/result-values/generated/RESULT-R013-diagnostics-99.bsb",
+      "point": {
+        "line": 295,
+        "column": 12,
+        "utf8Offset": 4327
+      },
+      "fields": {
+        "argumentIndex": "1",
+        "owner": "結果",
+        "typeConstructor": "結果"
+      },
+      "expected": "具体型",
+      "actual": ">",
+      "relatedLocations": [],
+      "fixes": [
+        "成功型と失敗型に具体型を指定してください"
+      ],
+      "fixtureLocation": {
+        "point": {
+          "line": 295,
+          "column": 12,
+          "utf8Offset": 4327
+        },
+        "utf16Start": 2157,
+        "utf16EndExclusive": 2157
+      }
+    }
+  ],
+  "sourceSha256": "1be0a0c4fa8527112a592bfddbb045d94c86d1948b1a05bba7e7fb4717b4a441",
+  "sourceUtf8Bytes": 4381,
+  "sourceUtf16Units": 2183
+}

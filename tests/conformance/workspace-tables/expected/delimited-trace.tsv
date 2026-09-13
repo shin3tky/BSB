@@ -1,0 +1,4 @@
+case_id	variant	type	expected_trace	forbidden_markers	budget_delta
+WST-N021	failure	区切りテキスト解析失敗	区切りテキスト解析失敗:<redacted>	PARSE_INPUT_SECRET,CELL_SECRET,DELIMITER_SECRET	0
+WST-N021	result	結果<配列<配列<文字列>>,区切りテキスト解析失敗>	結果<配列<配列<文字列>>,区切りテキスト解析失敗>:<redacted>	PARSE_INPUT_SECRET,CELL_SECRET,DELIMITER_SECRET	0
+WST-R018	normal-versus-trace	budget	delimitedTextWorkUnits=31	PARSE_INPUT_SECRET,CELL_SECRET	0

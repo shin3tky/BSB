@@ -1,0 +1,7 @@
+{
+  "check": "tests/conformance/result-values/sources/RESULT-F035-binding-06.bsb:1:1: エラー[E_RESERVED_NAME]: この名前はBSBによって予約されています。\n  必要: 利用者定義名\n  実際: 結果が失敗である\n  関連位置: 組み込み単語 結果が失敗である\n  修正候補: 別の名前に変更してください\n",
+  "checkJson": "",
+  "run": "tests/conformance/result-values/sources/RESULT-F035-binding-06.bsb:1:1: エラー[E_RESERVED_NAME]: この名前はBSBによって予約されています。\n  必要: 利用者定義名\n  実際: 結果が失敗である\n  関連位置: 組み込み単語 結果が失敗である\n  修正候補: 別の名前に変更してください\n",
+  "format": "",
+  "explain": ""
+}

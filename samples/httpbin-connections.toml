@@ -1,0 +1,8 @@
+schema-version = 1
+
+[connections.HTTPBin]
+base-uri = "https://httpbin.org/"
+allowed-methods = ["GET"]
+
+[connections.HTTPBin.authentication]
+kind = "none"

@@ -1,0 +1,35 @@
+sequence	word	opcode	sourceLine	sourceColumn	dataBefore	dataAfter	callDepthBefore	callDepthAfter	outputHex	particles	controlBefore	controlAfter	target	branchTaken	bindingId	bindingName	bindingKind	storageScope	valueBefore	valueAfter
+1	<大域初期化>	PushConst	1	8	[]	[整数:120]	1	1			[]	[]			-	-	-	-	-	-
+2	<大域初期化>	InitializeGlobal	1	5	[整数:120]	[]	1	1			[]	[]			B1	単価	constant	global	<uninitialized>	整数:120
+3	<大域初期化>	PushConst	2	8	[]	[整数:3]	1	1			[]	[]			-	-	-	-	-	-
+4	<大域初期化>	InitializeGlobal	2	5	[整数:3]	[]	1	1			[]	[]			B2	個数	constant	global	<uninitialized>	整数:3
+5	<大域初期化>	PushConst	3	8	[]	[整数:0]	1	1			[]	[]			-	-	-	-	-	-
+6	<大域初期化>	InitializeGlobal	3	5	[整数:0]	[]	1	1			[]	[]			B3	累計	variable	global	<uninitialized>	整数:0
+7	<大域初期化>	Return	3	9	[]	[]	1	0			[]	[]			-	-	-	-	-	-
+8	メイン	PushConst	11	5	[]	[整数:2]	1	1			[]	[]			-	-	-	-	-	-
+9	メイン	CountedLoopStart	11	7	[整数:2]	[]	1	1			[]	[count:2/2]	メイン:5	false	-	-	-	-	-	-
+10	メイン	Call:小計を加える	12	9	[]	[]	1	2			[count:2/2]	[count:2/2]			-	-	-	-	-	-
+11	小計を加える	LoadGlobal	6	12	[]	[整数:120]	2	2			[count:2/2]	[count:2/2]			B1	単価	constant	global	整数:120	整数:120
+12	小計を加える	LoadGlobal	6	17	[整数:120]	[整数:120,整数:3]	2	2			[count:2/2]	[count:2/2]			B2	個数	constant	global	整数:3	整数:3
+13	小計を加える	Call:掛ける	6	22	[整数:120,整数:3]	[整数:360]	2	2		と@6:15,を@6:20	[count:2/2]	[count:2/2]			-	-	-	-	-	-
+14	小計を加える	InitializeLocal	6	9	[整数:360]	[]	2	2			[count:2/2]	[count:2/2]			B4	小計	constant	local:小計を加える	<uninitialized>	整数:360
+15	小計を加える	LoadGlobal	7	5	[]	[整数:0]	2	2			[count:2/2]	[count:2/2]			B3	累計	variable	global	整数:0	整数:0
+16	小計を加える	LoadLocal	7	10	[整数:0]	[整数:0,整数:360]	2	2			[count:2/2]	[count:2/2]			B4	小計	constant	local:小計を加える	整数:360	整数:360
+17	小計を加える	Call:足す	7	15	[整数:0,整数:360]	[整数:360]	2	2		と@7:8,を@7:13	[count:2/2]	[count:2/2]			-	-	-	-	-	-
+18	小計を加える	StoreGlobal	7	25	[整数:360]	[]	2	2			[count:2/2]	[count:2/2]			B3	累計	variable	global	整数:0	整数:360
+19	小計を加える	Return	8	1	[]	[]	2	1			[count:2/2]	[count:2/2]			-	-	-	-	-	-
+20	メイン	CountedLoopNext	13	5	[]	[]	1	1			[count:2/2]	[count:1/2]	メイン:3	true	-	-	-	-	-	-
+21	メイン	Call:小計を加える	12	9	[]	[]	1	2			[count:1/2]	[count:1/2]			-	-	-	-	-	-
+22	小計を加える	LoadGlobal	6	12	[]	[整数:120]	2	2			[count:1/2]	[count:1/2]			B1	単価	constant	global	整数:120	整数:120
+23	小計を加える	LoadGlobal	6	17	[整数:120]	[整数:120,整数:3]	2	2			[count:1/2]	[count:1/2]			B2	個数	constant	global	整数:3	整数:3
+24	小計を加える	Call:掛ける	6	22	[整数:120,整数:3]	[整数:360]	2	2		と@6:15,を@6:20	[count:1/2]	[count:1/2]			-	-	-	-	-	-
+25	小計を加える	InitializeLocal	6	9	[整数:360]	[]	2	2			[count:1/2]	[count:1/2]			B4	小計	constant	local:小計を加える	<uninitialized>	整数:360
+26	小計を加える	LoadGlobal	7	5	[]	[整数:360]	2	2			[count:1/2]	[count:1/2]			B3	累計	variable	global	整数:360	整数:360
+27	小計を加える	LoadLocal	7	10	[整数:360]	[整数:360,整数:360]	2	2			[count:1/2]	[count:1/2]			B4	小計	constant	local:小計を加える	整数:360	整数:360
+28	小計を加える	Call:足す	7	15	[整数:360,整数:360]	[整数:720]	2	2		と@7:8,を@7:13	[count:1/2]	[count:1/2]			-	-	-	-	-	-
+29	小計を加える	StoreGlobal	7	25	[整数:720]	[]	2	2			[count:1/2]	[count:1/2]			B3	累計	variable	global	整数:360	整数:720
+30	小計を加える	Return	8	1	[]	[]	2	1			[count:1/2]	[count:1/2]			-	-	-	-	-	-
+31	メイン	CountedLoopNext	13	5	[]	[]	1	1			[count:1/2]	[]	メイン:3	false	-	-	-	-	-	-
+32	メイン	LoadGlobal	14	5	[]	[整数:720]	1	1			[]	[]			B3	累計	variable	global	整数:720	整数:720
+33	メイン	Call:一行表示する	14	10	[整数:720]	[]	1	1	3732300A	を@14:8	[]	[]			-	-	-	-	-	-
+34	メイン	Return	15	1	[]	[]	1	0			[]	[]			-	-	-	-	-	-

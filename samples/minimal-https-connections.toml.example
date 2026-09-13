@@ -1,0 +1,14 @@
+schema-version = 1
+
+[connections."顧客管理API"]
+base-uri = "https://your-endpoint.example/base/"
+allowed-methods = ["POST"]
+connect-timeout-ms = 5000
+response-timeout-ms = 10000
+maximum-request-bytes = 1048576
+maximum-response-bytes = 1048576
+
+[connections."顧客管理API".authentication]
+kind = "api-key"
+header = "x-api-key"
+value-env = "BSB_HTTPS_API_KEY"

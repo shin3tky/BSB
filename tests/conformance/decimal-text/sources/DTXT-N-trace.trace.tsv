@@ -1,0 +1,5 @@
+sequence	word	opcode	sourceLine	sourceColumn	dataBefore	dataAfter	callDepthBefore	callDepthAfter	outputHex	particles	controlBefore	controlAfter	target	branchTaken	bindingId	bindingName	bindingKind	storageScope	valueBefore	valueAfter
+1	メイン	PushConst	2	5	[]	[文字列:1e2]	1	1			[]	[]			-	-	-	-	-	-
+2	メイン	Call:文字列を小数に変換する	2	13	[文字列:1e2]	[小数:100.0]	1	1		を@2:11	[]	[]			-	-	-	-	-	-
+3	メイン	Call:一行表示する	2	27	[小数:100.0]	[]	1	1	3130302E300A	を@2:25	[]	[]			-	-	-	-	-	-
+4	メイン	Return	3	1	[]	[]	1	0			[]	[]			-	-	-	-	-	-

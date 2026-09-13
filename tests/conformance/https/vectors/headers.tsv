@@ -1,0 +1,17 @@
+case_id	variant	initial_json	name	value	outcome	expected_json	reason
+HTTPS-N005	add	[]	Content-Type	application/json	success	[["content-type","application/json"]]	-
+HTTPS-N005	replace	[["content-type","text/plain"]]	CONTENT-TYPE	application/json	success	[["content-type","application/json"]]	-
+HTTPS-N005	empty-value	[]	X-Empty		success	[["x-empty",""]]	-
+HTTPS-F005	empty-name	[]		value	diagnostic	-	emptyName
+HTTPS-F005	invalid-name	[]	Bad Name	value	diagnostic	-	invalidNameCharacter
+HTTPS-F005	crlf	[]	X-Test	bad\r\nInjected: yes	diagnostic	-	invalidValueCharacter
+HTTPS-F005	reserved-authorization	[]	Authorization	value	diagnostic	-	reserved
+HTTPS-F005	reserved-host	[]	Host	value	diagnostic	-	reserved
+HTTPS-F005	reserved-length	[]	Content-Length	1	diagnostic	-	reserved
+HTTPS-F005	reserved-connection	[]	Connection	close	diagnostic	-	reserved
+HTTPS-F005	reserved-expect	[]	Expect	100-continue	diagnostic	-	reserved
+HTTPS-F005	reserved-proxy-authorization	[]	Proxy-Authorization	value	diagnostic	-	reserved
+HTTPS-F005	reserved-te	[]	TE	trailers	diagnostic	-	reserved
+HTTPS-F005	reserved-trailer	[]	Trailer	X-Test	diagnostic	-	reserved
+HTTPS-F005	reserved-transfer-encoding	[]	Transfer-Encoding	chunked	diagnostic	-	reserved
+HTTPS-F005	reserved-upgrade	[]	Upgrade	h2c	diagnostic	-	reserved

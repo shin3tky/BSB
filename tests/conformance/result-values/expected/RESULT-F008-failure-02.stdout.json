@@ -1,0 +1,7 @@
+{
+  "check": "",
+  "checkJson": "{\"schemaVersion\":1,\"command\":\"check\",\"source\":\"tests/conformance/result-values/sources/RESULT-F008-failure-02.bsb\",\"success\":false,\"exitCode\":8,\"diagnostics\":[{\"code\":\"E_TYPE_CONSTRAINT_NOT_ALLOWED\",\"severity\":\"error\",\"stage\":\"typeAndStack\",\"message\":\"辞書専用の型制約を利用者定義へ使用できません。\",\"sourcePath\":\"tests/conformance/result-values/sources/RESULT-F008-failure-02.bsb\",\"span\":{\"start\":{\"line\":2,\"column\":11},\"endInclusive\":{\"line\":2,\"column\":11},\"utf8Start\":45,\"utf8EndExclusive\":46},\"fields\":{},\"expected\":\"整数・真偽・文字・文字列\",\"actual\":\"E\",\"relatedLocations\":[],\"fixes\":[\"具体的な言語コアの型へ変更してください\"]}]}\n",
+  "run": "",
+  "format": "メインとは （--）\n    失敗にする<E,文字列>\nこと。\n",
+  "explain": "{\"schemaVersion\":1,\"command\":\"explain\",\"source\":\"tests/conformance/result-values/sources/RESULT-F008-failure-02.bsb\",\"success\":false,\"exitCode\":8,\"diagnostics\":[{\"code\":\"E_TYPE_CONSTRAINT_NOT_ALLOWED\",\"severity\":\"error\",\"stage\":\"typeAndStack\",\"message\":\"辞書専用の型制約を利用者定義へ使用できません。\",\"sourcePath\":\"tests/conformance/result-values/sources/RESULT-F008-failure-02.bsb\",\"span\":{\"start\":{\"line\":2,\"column\":11},\"endInclusive\":{\"line\":2,\"column\":11},\"utf8Start\":45,\"utf8EndExclusive\":46},\"fields\":{},\"expected\":\"整数・真偽・文字・文字列\",\"actual\":\"E\",\"relatedLocations\":[],\"fixes\":[\"具体的な言語コアの型へ変更してください\"]}],\"builtinWords\":[],\"userWords\":[],\"scopes\":[],\"bindings\":[]}\n"
+}

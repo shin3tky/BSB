@@ -1,0 +1,13 @@
+case_id	variant	format	table	output_hex	roundtrip
+WST-N017	empty	csv	[]	-	true
+WST-N017	one-empty	csv	_	0d0a	true
+WST-N017	simple	csv	61,62;63,64	612c620d0a632c640d0a	true
+WST-N017	quote-comma	csv	612c62,63	22612c62222c630d0a	true
+WST-N017	quote-quote	csv	612262	2261222262220d0a	true
+WST-N017	tab-unquoted	csv	610962	6109620d0a	true
+WST-N017	formula-unchanged	csv	3d312b31	3d312b310d0a	true
+WST-N018	simple	tsv	61,62	6109620d0a	true
+WST-N018	comma-unquoted	tsv	612c62,63	612c6209630d0a	true
+WST-N018	quote-tab	tsv	610962,63	226109622209630d0a	true
+WST-N019	leading-bom-cell	csv	efbbbf78,79	22efbbbf78222c790d0a	true
+WST-N019	newline-cells	csv	610d0a62,630a64	22610d0a62222c22630a64220d0a	true

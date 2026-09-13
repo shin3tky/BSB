@@ -1,0 +1,28 @@
+GET送信とは （HTTP要求 -- 結果<HTTP応答,HTTP送信失敗>）
+    HTTP要求を送信する<顧客管理API,GET>
+こと。
+
+HEAD送信とは （HTTP要求 -- 結果<HTTP応答,HTTP送信失敗>）
+    HTTP要求を送信する<顧客管理API,HEAD>
+こと。
+
+POST送信とは （HTTP要求 -- 結果<HTTP応答,HTTP送信失敗>）
+    HTTP要求を送信する<顧客管理API,POST>
+こと。
+
+PUT送信とは （HTTP要求 -- 結果<HTTP応答,HTTP送信失敗>）
+    HTTP要求を送信する<顧客管理API,PUT>
+こと。
+
+PATCH送信とは （HTTP要求 -- 結果<HTTP応答,HTTP送信失敗>）
+    HTTP要求を送信する<顧客管理API,PATCH>
+こと。
+
+DELETE送信とは （HTTP要求 -- 結果<HTTP応答,HTTP送信失敗>）
+    HTTP要求を送信する<顧客管理API,DELETE>
+こと。
+
+顧客管理APIは 論理接続。
+
+メインとは （--）
+こと。

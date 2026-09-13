@@ -1,0 +1,7 @@
+{
+  "check": "",
+  "checkJson": "{\"schemaVersion\":1,\"command\":\"check\",\"source\":\"tests/conformance/result-values/sources/RESULT-F035-word-04.bsb\",\"success\":false,\"exitCode\":8,\"diagnostics\":[{\"code\":\"E_RESERVED_NAME\",\"severity\":\"error\",\"stage\":\"name\",\"message\":\"この名前はBSBによって予約されています。\",\"sourcePath\":\"tests/conformance/result-values/sources/RESULT-F035-word-04.bsb\",\"span\":{\"start\":{\"line\":1,\"column\":1},\"endInclusive\":{\"line\":1,\"column\":5},\"utf8Start\":0,\"utf8EndExclusive\":15},\"fields\":{},\"expected\":\"利用者定義名\",\"actual\":\"失敗にする\",\"relatedLocations\":[{\"description\":\"組み込み単語 失敗にする\"}],\"fixes\":[\"別の名前に変更してください\"]}]}\n",
+  "run": "",
+  "format": "失敗にするとは （--）\nこと。\n\nメインとは （--）\nこと。\n",
+  "explain": "{\"schemaVersion\":1,\"command\":\"explain\",\"source\":\"tests/conformance/result-values/sources/RESULT-F035-word-04.bsb\",\"success\":false,\"exitCode\":8,\"diagnostics\":[{\"code\":\"E_RESERVED_NAME\",\"severity\":\"error\",\"stage\":\"name\",\"message\":\"この名前はBSBによって予約されています。\",\"sourcePath\":\"tests/conformance/result-values/sources/RESULT-F035-word-04.bsb\",\"span\":{\"start\":{\"line\":1,\"column\":1},\"endInclusive\":{\"line\":1,\"column\":5},\"utf8Start\":0,\"utf8EndExclusive\":15},\"fields\":{},\"expected\":\"利用者定義名\",\"actual\":\"失敗にする\",\"relatedLocations\":[{\"description\":\"組み込み単語 失敗にする\"}],\"fixes\":[\"別の名前に変更してください\"]}],\"builtinWords\":[],\"userWords\":[],\"scopes\":[],\"bindings\":[]}\n"
+}

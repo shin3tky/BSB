@@ -1,0 +1,6 @@
+{
+  "check": "",
+  "checkJson": "{\"schemaVersion\":1,\"command\":\"check\",\"source\":\"tests/conformance/result-values/sources/RESULT-N002-control-block.bsb\",\"success\":true,\"exitCode\":0,\"diagnostics\":[]}\n",
+  "run": "",
+  "format": "選ぶとは （真偽 -- 結果<整数,文字列>）\n    ならば\n        42 を 成功にする<整数,文字列>\n    さもなければ\n        「不一致」 を 失敗にする<整数,文字列>\n    つぎに\nこと。\n\nメインとは （--）\nこと。\n"
+}

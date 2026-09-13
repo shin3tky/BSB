@@ -1,0 +1,87 @@
+sequence	word	opcode	sourceLine	sourceColumn	dataBefore	dataAfter	callDepthBefore	callDepthAfter	outputHex	particles	controlBefore	controlAfter	target	branchTaken	bindingId	bindingName	bindingKind	storageScope	valueBefore	valueAfter	effect
+1	メイン	PushConst	31	5	[]	[文字列:<redacted>]	1	1			[]	[]			-	-	-	-	-	-	
+2	メイン	Call:JSONを解析する	31	34	[文字列:<redacted>]	[JSON:<redacted>]	1	1		を@31:32	[]	[]			-	-	-	-	-	-	
+3	メイン	Call:設定を検証する	32	5	[JSON:<redacted>]	[JSON:<redacted>]	1	2			[]	[]			-	-	-	-	-	-	
+4	設定を検証する	Call:JSONオブジェクトである	2	5	[JSON:<redacted>]	[JSON:<redacted>,真偽:はい]	2	2			[]	[]			-	-	-	-	-	-	
+5	設定を検証する	BranchIfFalse	2	19	[JSON:<redacted>,真偽:はい]	[JSON:<redacted>]	2	2			[]	[]	設定を検証する:7	false	-	-	-	-	-	-	
+6	設定を検証する	PushConst	3	9	[JSON:<redacted>]	[JSON:<redacted>,文字列:<redacted>]	2	2			[]	[]			-	-	-	-	-	-	
+7	設定を検証する	Call:JSONオブジェクトから任意値を取り出す	3	18	[JSON:<redacted>,文字列:<redacted>]	[任意<JSON>:<redacted>]	2	2		を@3:16	[]	[]			-	-	-	-	-	-	
+8	設定を検証する	Call:成功にする	4	9	[任意<JSON>:<redacted>]	[結果<任意<JSON>,文字列>:<redacted>]	2	2			[]	[]			-	-	-	-	-	-	
+9	設定を検証する	Jump	5	5	[結果<任意<JSON>,文字列>:<redacted>]	[結果<任意<JSON>,文字列>:<redacted>]	2	2			[]	[]	設定を検証する:11	true	-	-	-	-	-	-	
+10	設定を検証する	Return	9	1	[結果<任意<JSON>,文字列>:<redacted>]	[結果<任意<JSON>,文字列>:<redacted>]	2	1			[]	[]			-	-	-	-	-	-	
+11	メイン	Call:設定結果を読む	32	13	[結果<任意<JSON>,文字列>:<redacted>]	[結果<任意<JSON>,文字列>:<redacted>]	1	2			[]	[]			-	-	-	-	-	-	
+12	設定結果を読む	Call:結果が成功である	12	5	[結果<任意<JSON>,文字列>:<redacted>]	[結果<任意<JSON>,文字列>:<redacted>,真偽:はい]	2	2			[]	[]			-	-	-	-	-	-	
+13	設定結果を読む	BranchIfFalse	12	14	[結果<任意<JSON>,文字列>:<redacted>,真偽:はい]	[結果<任意<JSON>,文字列>:<redacted>]	2	2			[]	[]	設定結果を読む:16	false	-	-	-	-	-	-	
+14	設定結果を読む	Call:結果から成功値を取り出す	13	9	[結果<任意<JSON>,文字列>:<redacted>]	[任意<JSON>:<redacted>]	2	2			[]	[]			-	-	-	-	-	-	
+15	設定結果を読む	Call:任意に値がある	14	9	[任意<JSON>:<redacted>]	[任意<JSON>:<redacted>,真偽:はい]	2	2			[]	[]			-	-	-	-	-	-	
+16	設定結果を読む	BranchIfFalse	14	17	[任意<JSON>:<redacted>,真偽:はい]	[任意<JSON>:<redacted>]	2	2			[]	[]	設定結果を読む:13	false	-	-	-	-	-	-	
+17	設定結果を読む	Call:任意から値を取り出す	15	13	[任意<JSON>:<redacted>]	[JSON:<redacted>]	2	2			[]	[]			-	-	-	-	-	-	
+18	設定結果を読む	Call:JSON文字列である	16	13	[JSON:<redacted>]	[JSON:<redacted>,真偽:はい]	2	2			[]	[]			-	-	-	-	-	-	
+19	設定結果を読む	BranchIfFalse	16	24	[JSON:<redacted>,真偽:はい]	[JSON:<redacted>]	2	2			[]	[]	設定結果を読む:11	false	-	-	-	-	-	-	
+20	設定結果を読む	Call:JSONから文字列を取り出す	17	17	[JSON:<redacted>]	[文字列:<redacted>]	2	2			[]	[]			-	-	-	-	-	-	
+21	設定結果を読む	Jump	18	13	[文字列:<redacted>]	[文字列:<redacted>]	2	2			[]	[]	設定結果を読む:12	true	-	-	-	-	-	-	
+22	設定結果を読む	Jump	21	9	[文字列:<redacted>]	[文字列:<redacted>]	2	2			[]	[]	設定結果を読む:15	true	-	-	-	-	-	-	
+23	設定結果を読む	Jump	25	5	[文字列:<redacted>]	[文字列:<redacted>]	2	2			[]	[]	設定結果を読む:17	true	-	-	-	-	-	-	
+24	設定結果を読む	Return	28	1	[文字列:<redacted>]	[文字列:<redacted>]	2	1			[]	[]			-	-	-	-	-	-	
+25	メイン	Call:一行表示する	32	21	[文字列:<redacted>]	[]	1	1	636F6E666967757265640A		[]	[]			-	-	-	-	-	-	console.output:636F6E666967757265640A
+26	メイン	PushConst	33	5	[]	[文字列:<redacted>]	1	1			[]	[]			-	-	-	-	-	-	
+27	メイン	Call:JSONを解析する	33	24	[文字列:<redacted>]	[JSON:<redacted>]	1	1		を@33:22	[]	[]			-	-	-	-	-	-	
+28	メイン	Call:設定を検証する	34	5	[JSON:<redacted>]	[JSON:<redacted>]	1	2			[]	[]			-	-	-	-	-	-	
+29	設定を検証する	Call:JSONオブジェクトである	2	5	[JSON:<redacted>]	[JSON:<redacted>,真偽:はい]	2	2			[]	[]			-	-	-	-	-	-	
+30	設定を検証する	BranchIfFalse	2	19	[JSON:<redacted>,真偽:はい]	[JSON:<redacted>]	2	2			[]	[]	設定を検証する:7	false	-	-	-	-	-	-	
+31	設定を検証する	PushConst	3	9	[JSON:<redacted>]	[JSON:<redacted>,文字列:<redacted>]	2	2			[]	[]			-	-	-	-	-	-	
+32	設定を検証する	Call:JSONオブジェクトから任意値を取り出す	3	18	[JSON:<redacted>,文字列:<redacted>]	[任意<JSON>:<redacted>]	2	2		を@3:16	[]	[]			-	-	-	-	-	-	
+33	設定を検証する	Call:成功にする	4	9	[任意<JSON>:<redacted>]	[結果<任意<JSON>,文字列>:<redacted>]	2	2			[]	[]			-	-	-	-	-	-	
+34	設定を検証する	Jump	5	5	[結果<任意<JSON>,文字列>:<redacted>]	[結果<任意<JSON>,文字列>:<redacted>]	2	2			[]	[]	設定を検証する:11	true	-	-	-	-	-	-	
+35	設定を検証する	Return	9	1	[結果<任意<JSON>,文字列>:<redacted>]	[結果<任意<JSON>,文字列>:<redacted>]	2	1			[]	[]			-	-	-	-	-	-	
+36	メイン	Call:設定結果を読む	34	13	[結果<任意<JSON>,文字列>:<redacted>]	[結果<任意<JSON>,文字列>:<redacted>]	1	2			[]	[]			-	-	-	-	-	-	
+37	設定結果を読む	Call:結果が成功である	12	5	[結果<任意<JSON>,文字列>:<redacted>]	[結果<任意<JSON>,文字列>:<redacted>,真偽:はい]	2	2			[]	[]			-	-	-	-	-	-	
+38	設定結果を読む	BranchIfFalse	12	14	[結果<任意<JSON>,文字列>:<redacted>,真偽:はい]	[結果<任意<JSON>,文字列>:<redacted>]	2	2			[]	[]	設定結果を読む:16	false	-	-	-	-	-	-	
+39	設定結果を読む	Call:結果から成功値を取り出す	13	9	[結果<任意<JSON>,文字列>:<redacted>]	[任意<JSON>:<redacted>]	2	2			[]	[]			-	-	-	-	-	-	
+40	設定結果を読む	Call:任意に値がある	14	9	[任意<JSON>:<redacted>]	[任意<JSON>:<redacted>,真偽:はい]	2	2			[]	[]			-	-	-	-	-	-	
+41	設定結果を読む	BranchIfFalse	14	17	[任意<JSON>:<redacted>,真偽:はい]	[任意<JSON>:<redacted>]	2	2			[]	[]	設定結果を読む:13	false	-	-	-	-	-	-	
+42	設定結果を読む	Call:任意から値を取り出す	15	13	[任意<JSON>:<redacted>]	[JSON:<redacted>]	2	2			[]	[]			-	-	-	-	-	-	
+43	設定結果を読む	Call:JSON文字列である	16	13	[JSON:<redacted>]	[JSON:<redacted>,真偽:いいえ]	2	2			[]	[]			-	-	-	-	-	-	
+44	設定結果を読む	BranchIfFalse	16	24	[JSON:<redacted>,真偽:いいえ]	[JSON:<redacted>]	2	2			[]	[]	設定結果を読む:11	true	-	-	-	-	-	-	
+45	設定結果を読む	Call:JSONを文字列に変換する	19	17	[JSON:<redacted>]	[文字列:<redacted>]	2	2			[]	[]			-	-	-	-	-	-	
+46	設定結果を読む	Jump	21	9	[文字列:<redacted>]	[文字列:<redacted>]	2	2			[]	[]	設定結果を読む:15	true	-	-	-	-	-	-	
+47	設定結果を読む	Jump	25	5	[文字列:<redacted>]	[文字列:<redacted>]	2	2			[]	[]	設定結果を読む:17	true	-	-	-	-	-	-	
+48	設定結果を読む	Return	28	1	[文字列:<redacted>]	[文字列:<redacted>]	2	1			[]	[]			-	-	-	-	-	-	
+49	メイン	Call:一行表示する	34	21	[文字列:<redacted>]	[]	1	1	6E756C6C0A		[]	[]			-	-	-	-	-	-	console.output:6E756C6C0A
+50	メイン	Call:空のJSONオブジェクト	35	5	[]	[JSON:<redacted>]	1	1			[]	[]			-	-	-	-	-	-	
+51	メイン	Call:設定を検証する	36	5	[JSON:<redacted>]	[JSON:<redacted>]	1	2			[]	[]			-	-	-	-	-	-	
+52	設定を検証する	Call:JSONオブジェクトである	2	5	[JSON:<redacted>]	[JSON:<redacted>,真偽:はい]	2	2			[]	[]			-	-	-	-	-	-	
+53	設定を検証する	BranchIfFalse	2	19	[JSON:<redacted>,真偽:はい]	[JSON:<redacted>]	2	2			[]	[]	設定を検証する:7	false	-	-	-	-	-	-	
+54	設定を検証する	PushConst	3	9	[JSON:<redacted>]	[JSON:<redacted>,文字列:<redacted>]	2	2			[]	[]			-	-	-	-	-	-	
+55	設定を検証する	Call:JSONオブジェクトから任意値を取り出す	3	18	[JSON:<redacted>,文字列:<redacted>]	[任意<JSON>:<redacted>]	2	2		を@3:16	[]	[]			-	-	-	-	-	-	
+56	設定を検証する	Call:成功にする	4	9	[任意<JSON>:<redacted>]	[結果<任意<JSON>,文字列>:<redacted>]	2	2			[]	[]			-	-	-	-	-	-	
+57	設定を検証する	Jump	5	5	[結果<任意<JSON>,文字列>:<redacted>]	[結果<任意<JSON>,文字列>:<redacted>]	2	2			[]	[]	設定を検証する:11	true	-	-	-	-	-	-	
+58	設定を検証する	Return	9	1	[結果<任意<JSON>,文字列>:<redacted>]	[結果<任意<JSON>,文字列>:<redacted>]	2	1			[]	[]			-	-	-	-	-	-	
+59	メイン	Call:設定結果を読む	36	13	[結果<任意<JSON>,文字列>:<redacted>]	[結果<任意<JSON>,文字列>:<redacted>]	1	2			[]	[]			-	-	-	-	-	-	
+60	設定結果を読む	Call:結果が成功である	12	5	[結果<任意<JSON>,文字列>:<redacted>]	[結果<任意<JSON>,文字列>:<redacted>,真偽:はい]	2	2			[]	[]			-	-	-	-	-	-	
+61	設定結果を読む	BranchIfFalse	12	14	[結果<任意<JSON>,文字列>:<redacted>,真偽:はい]	[結果<任意<JSON>,文字列>:<redacted>]	2	2			[]	[]	設定結果を読む:16	false	-	-	-	-	-	-	
+62	設定結果を読む	Call:結果から成功値を取り出す	13	9	[結果<任意<JSON>,文字列>:<redacted>]	[任意<JSON>:<redacted>]	2	2			[]	[]			-	-	-	-	-	-	
+63	設定結果を読む	Call:任意に値がある	14	9	[任意<JSON>:<redacted>]	[任意<JSON>:<redacted>,真偽:いいえ]	2	2			[]	[]			-	-	-	-	-	-	
+64	設定結果を読む	BranchIfFalse	14	17	[任意<JSON>:<redacted>,真偽:いいえ]	[任意<JSON>:<redacted>]	2	2			[]	[]	設定結果を読む:13	true	-	-	-	-	-	-	
+65	設定結果を読む	Call:任意を捨てる	22	13	[任意<JSON>:<redacted>]	[]	2	2			[]	[]			-	-	-	-	-	-	
+66	設定結果を読む	PushConst	23	13	[]	[文字列:<redacted>]	2	2			[]	[]			-	-	-	-	-	-	
+67	設定結果を読む	Jump	25	5	[文字列:<redacted>]	[文字列:<redacted>]	2	2			[]	[]	設定結果を読む:17	true	-	-	-	-	-	-	
+68	設定結果を読む	Return	28	1	[文字列:<redacted>]	[文字列:<redacted>]	2	1			[]	[]			-	-	-	-	-	-	
+69	メイン	Call:一行表示する	36	21	[文字列:<redacted>]	[]	1	1	64656661756C740A		[]	[]			-	-	-	-	-	-	console.output:64656661756C740A
+70	メイン	PushConst	37	5	[]	[文字列:<redacted>]	1	1			[]	[]			-	-	-	-	-	-	
+71	メイン	Call:JSONを解析する	37	11	[文字列:<redacted>]	[JSON:<redacted>]	1	1		を@37:9	[]	[]			-	-	-	-	-	-	
+72	メイン	Call:設定を検証する	38	5	[JSON:<redacted>]	[JSON:<redacted>]	1	2			[]	[]			-	-	-	-	-	-	
+73	設定を検証する	Call:JSONオブジェクトである	2	5	[JSON:<redacted>]	[JSON:<redacted>,真偽:いいえ]	2	2			[]	[]			-	-	-	-	-	-	
+74	設定を検証する	BranchIfFalse	2	19	[JSON:<redacted>,真偽:いいえ]	[JSON:<redacted>]	2	2			[]	[]	設定を検証する:7	true	-	-	-	-	-	-	
+75	設定を検証する	Call:任意にする	6	9	[JSON:<redacted>]	[任意<JSON>:<redacted>]	2	2			[]	[]			-	-	-	-	-	-	
+76	設定を検証する	Call:任意を捨てる	6	15	[任意<JSON>:<redacted>]	[]	2	2			[]	[]			-	-	-	-	-	-	
+77	設定を検証する	PushConst	7	9	[]	[文字列:<redacted>]	2	2			[]	[]			-	-	-	-	-	-	
+78	設定を検証する	Call:失敗にする	7	23	[文字列:<redacted>]	[結果<任意<JSON>,文字列>:<redacted>]	2	2		を@7:21	[]	[]			-	-	-	-	-	-	
+79	設定を検証する	Return	9	1	[結果<任意<JSON>,文字列>:<redacted>]	[結果<任意<JSON>,文字列>:<redacted>]	2	1			[]	[]			-	-	-	-	-	-	
+80	メイン	Call:設定結果を読む	38	13	[結果<任意<JSON>,文字列>:<redacted>]	[結果<任意<JSON>,文字列>:<redacted>]	1	2			[]	[]			-	-	-	-	-	-	
+81	設定結果を読む	Call:結果が成功である	12	5	[結果<任意<JSON>,文字列>:<redacted>]	[結果<任意<JSON>,文字列>:<redacted>,真偽:いいえ]	2	2			[]	[]			-	-	-	-	-	-	
+82	設定結果を読む	BranchIfFalse	12	14	[結果<任意<JSON>,文字列>:<redacted>,真偽:いいえ]	[結果<任意<JSON>,文字列>:<redacted>]	2	2			[]	[]	設定結果を読む:16	true	-	-	-	-	-	-	
+83	設定結果を読む	Call:結果から失敗値を取り出す	26	9	[結果<任意<JSON>,文字列>:<redacted>]	[文字列:<redacted>]	2	2			[]	[]			-	-	-	-	-	-	
+84	設定結果を読む	Return	28	1	[文字列:<redacted>]	[文字列:<redacted>]	2	1			[]	[]			-	-	-	-	-	-	
+85	メイン	Call:一行表示する	38	21	[文字列:<redacted>]	[]	1	1	6E6F742D6F626A6563740A		[]	[]			-	-	-	-	-	-	console.output:6E6F742D6F626A6563740A
+86	メイン	Return	39	1	[]	[]	1	0			[]	[]			-	-	-	-	-	-\t

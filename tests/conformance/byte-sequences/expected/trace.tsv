@@ -1,0 +1,7 @@
+case_id	variant	type	expected_trace	forbidden_markers
+BYTES-R009	byte	バイト列	バイト列:<redacted>	SECRET_BYTE|67108864|00ff|sha256
+BYTES-R009	utf8-failure	UTF8復号失敗	UTF8復号失敗:<redacted>	invalidLeadingByte|0|SECRET_UTF8|80
+BYTES-R009	base64-failure	Base64復号失敗	Base64復号失敗:<redacted>	invalidPadding|2|SECRET_BASE64|AA=A
+BYTES-R009	utf8-result	結果<文字列,UTF8復号失敗>	結果<文字列,UTF8復号失敗>:<redacted>	success|failure|invalidLeadingByte|SECRET_RESULT
+BYTES-R009	base64-result	結果<バイト列,Base64復号失敗>	結果<バイト列,Base64復号失敗>:<redacted>	success|failure|invalidPadding|SECRET_RESULT
+BYTES-R009	optional-byte	任意<バイト列>	任意<バイト列>:<redacted>	present|absent|SECRET_BYTE|4

@@ -1,0 +1,7 @@
+case_id	variant	type	expected_trace	forbidden_markers
+HTTPS-N011	request	HTTP要求	HTTP要求:<redacted>	secret-uri|secret-header|secret-body|67108864
+HTTPS-N011	response	HTTP応答	HTTP応答:<redacted>	secret-status|secret-header|secret-body|67108864
+HTTPS-N011	failure	HTTP送信失敗	HTTP送信失敗:<redacted>	tlsFailure|secret-host|secret-exception
+HTTPS-R009	wrapped-request	結果<HTTP要求,文字列>	結果<HTTP要求,文字列>:<redacted>	success|secret-uri|secret-body
+HTTPS-R009	wrapped-response	任意<HTTP応答>	任意<HTTP応答>:<redacted>	present|secret-header|secret-body
+HTTPS-R009	credential-event	http.send	http.send:顧客管理API:POST:response	secret-api-key|secret-uri|secret-body

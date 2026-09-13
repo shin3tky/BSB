@@ -1,0 +1,33 @@
+case_id	input	reason
+JSON-F001	{EMPTY}	emptyInput
+JSON-F001	tru	unexpectedToken
+JSON-F001	"	unterminatedString
+JSON-F002	{BOM}null	unexpectedToken
+JSON-F002	{FULLWIDTH}null	unexpectedToken
+JSON-F002	/*x*/null	unexpectedToken
+JSON-F003	true false	trailingContent
+JSON-F003	null 0	trailingContent
+JSON-F004	[1,]	unexpectedToken
+JSON-F004	{"x":1,}	expectedObjectKey
+JSON-F004	{"x" 1}	expectedColon
+JSON-F004	[1	expectedCommaOrEnd
+JSON-F004	{"x":1	expectedCommaOrEnd
+JSON-F005	"{CTRL}"	unescapedControl
+JSON-F006	"\x"	invalidEscape
+JSON-F006	"\u12x4"	invalidUnicodeEscape
+JSON-F007	"\uD800"	isolatedSurrogate
+JSON-F007	"\uDC00"	isolatedSurrogate
+JSON-F008	01	invalidNumber
+JSON-F008	1.	invalidNumber
+JSON-F008	1e	invalidNumber
+JSON-F008	+1	unexpectedToken
+JSON-F008	NaN	unexpectedToken
+JSON-F008	Infinity	unexpectedToken
+JSON-F009	{"x":1,"x":2}	duplicateKey
+JSON-F010	{"x":1,"\u0078":2}	duplicateKey
+JSON-F011	{DIGITS4097}	inputDigits
+JSON-F012	1e-65537	scale
+JSON-F013	{DEPTH257}	depthLimit
+JSON-F014	{NODES250001}	nodeLimit
+JSON-F015	{ARRAY65537}	arrayLengthLimit
+JSON-F016	{OBJECT65537}	objectMemberLimit

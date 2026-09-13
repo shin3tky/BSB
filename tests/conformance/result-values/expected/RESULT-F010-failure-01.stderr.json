@@ -1,0 +1,7 @@
+{
+  "check": "tests/conformance/result-values/sources/RESULT-F010-failure-01.bsb:2:11: エラー[E_FEATURE_NOT_AVAILABLE]: 「JSONオブジェクト」は現在の言語では使用できません。\n  必要: 言語コアの型\n  実際: JSONオブジェクト\n  修正候補: 現在利用できる機能へ変更してください\n",
+  "checkJson": "",
+  "run": "tests/conformance/result-values/sources/RESULT-F010-failure-01.bsb:2:11: エラー[E_FEATURE_NOT_AVAILABLE]: 「JSONオブジェクト」は現在の言語では使用できません。\n  必要: 言語コアの型\n  実際: JSONオブジェクト\n  修正候補: 現在利用できる機能へ変更してください\n",
+  "format": "",
+  "explain": ""
+}

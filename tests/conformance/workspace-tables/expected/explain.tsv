@@ -1,0 +1,4 @@
+case_id	variant	workspace_declarations	summary_requirements	word_requirements	forbidden
+WST-N002	direct	帳票,画像	workspace:帳票:resolve,read;workspace:画像:resolve,write	読込:帳票:resolve,read;出力:画像:resolve,write	logical-name,os-path,access,content
+WST-N002	transitive	帳票	workspace:帳票:resolve,read,write	変換:帳票:resolve,read,write	logical-name,os-path,access,content
+WST-N002	unreachable	帳票	-	-	logical-name,os-path,access,content

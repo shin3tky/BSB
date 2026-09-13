@@ -1,0 +1,12 @@
+{
+  "checkExit": 0,
+  "formatExit": 0,
+  "maximumPathDepth": 256,
+  "selectedSide": "right",
+  "diagnostics": [],
+  "sourceSha256": "c2a8474c7247d5f11b6e7a8650f121c482e5f19558a08061973734dda358b60a",
+  "sourceUtf8Bytes": 7782,
+  "sourceUtf16Units": 3630,
+  "canonicalSha256": "c2a8474c7247d5f11b6e7a8650f121c482e5f19558a08061973734dda358b60a",
+  "canonicalUtf8Bytes": 7782
+}

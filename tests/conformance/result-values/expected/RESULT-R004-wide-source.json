@@ -1,0 +1,15 @@
+{
+  "checkExit": 0,
+  "formatExit": 0,
+  "maximumPathDepth": 15,
+  "constructors": 32767,
+  "leaves": 32768,
+  "typeNameSha256": "3488fff366b37d206202c7bb807783097b956e5d85024b8ae1b12e7abe73c5d2",
+  "typeNameUtf8Bytes": 491511,
+  "diagnostics": [],
+  "sourceSha256": "502c5009940d1587b6ceac6d9ed08b35fed7b1d8fd23887c8f9244168e17570d",
+  "sourceUtf8Bytes": 491606,
+  "sourceUtf16Units": 229414,
+  "canonicalSha256": "502c5009940d1587b6ceac6d9ed08b35fed7b1d8fd23887c8f9244168e17570d",
+  "canonicalUtf8Bytes": 491606
+}

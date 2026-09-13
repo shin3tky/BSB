@@ -1,0 +1,10 @@
+case_id	variant	base_uri	path	query_json	expected_uri	outcome	reason
+HTTPS-N003	ascii	https://api.example.test/root/	v1/items	[]	https://api.example.test/root/v1/items	success	-
+HTTPS-N003	unicode-space-percent	https://api.example.test/root/	顧客 一覧/%	[]	https://api.example.test/root/%E9%A1%A7%E5%AE%A2%20%E4%B8%80%E8%A6%A7/%25	success	-
+HTTPS-N003	double-slash	https://api.example.test/	a//b/	[]	https://api.example.test/a//b/	success	-
+HTTPS-N004	ordered-duplicates	https://api.example.test/	search	[["q","東京 駅"],["tag","a"],["tag","b"],["",""]]	https://api.example.test/search?q=%E6%9D%B1%E4%BA%AC%20%E9%A7%85&tag=a&tag=b&=	success	-
+HTTPS-F003	absolute	https://api.example.test/	/x	[]	-	diagnostic	absolutePath
+HTTPS-F003	query-delimiter	https://api.example.test/	a?b	[]	-	diagnostic	queryDelimiter
+HTTPS-F003	fragment-delimiter	https://api.example.test/	a#b	[]	-	diagnostic	fragmentDelimiter
+HTTPS-F003	dot	https://api.example.test/	a/./b	[]	-	diagnostic	dotSegment
+HTTPS-F003	dot-dot	https://api.example.test/	a/../b	[]	-	diagnostic	dotSegment

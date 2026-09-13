@@ -1,0 +1,37 @@
+case_id	command	severity	code	line	column	fields	expected	actual	fix	related
+CORE-F001	check	error	E_INVALID_UTF8	2	1	-	UTF-8	C3 28	UTF-8で保存し直してください	-
+CORE-F002	check	error	E_DISALLOWED_WHITESPACE	1	6	-	許可された区切り	U+00A0	ASCII空白へ置き換えてください	-
+CORE-F003	check	error	E_INVISIBLE_CHARACTER	1	2	-	可視の識別子文字	U+202E	この文字を削除してください	-
+CORE-F004	check	error	E_MISSING_SEPARATOR	2	8	-	数値後の区切り	円	123 円	-
+CORE-F005a	check	error	E_INVALID_NUMBER_LITERAL	2	5	-	0または0以外で始まる整数	01	1を使用してください	-
+CORE-F005b	check	error	E_INVALID_NUMBER_LITERAL	2	5	-	小数点前の数字	.5	0.5を使用してください	-
+CORE-F005c	check	error	E_INVALID_NUMBER_LITERAL	2	5	-	小数点後の数字	1.	1.0を使用してください	-
+CORE-F006	check	error	E_NUMBER_LIMIT	2	5	limit=4096;observed=4097	4096桁以下	4097桁	桁数を減らしてください	-
+CORE-F007	check	error	E_UNTERMINATED_STRING	2	13	-	」	改行	ここに」を追加してください	-
+CORE-F008	check	error	E_INVALID_ESCAPE	2	8	-	定義済みエスケープ	\\q	qを直接書くか定義済み表記を使ってください	-
+CORE-F009	check	error	E_INVALID_UNICODE_SCALAR	2	6	-	Unicodeスカラー値	U+D800	サロゲート以外を指定してください	-
+CORE-F010a	check	error	E_CHARACTER_LENGTH	2	5	-	1クラスタ	0クラスタ	1文字を指定してください	-
+CORE-F010b	check	error	E_CHARACTER_LENGTH	2	5	-	1クラスタ	2クラスタ	1文字だけを指定してください	-
+CORE-F011	check	error	E_MIXED_STACK_PARENTHESES	1	10	-	）	)	括弧の種類をそろえてください	-
+CORE-F012	check	error	E_EXPECTED_STACK_SEPARATOR	1	10	-	--	）	ここに -- を追加してください	-
+CORE-F012c	check	error	E_COMMENT_NOT_ALLOWED	1	7	-	スタック効果の後のコメント	# 効果	コメントを次の行へ移してください	-
+CORE-F013	check	error	E_DEFINITION_ADJACENCY	1	5	-	メインとは	メイン とは	空白を削除してください	-
+CORE-F014	check	error	E_EXPECTED_WORD_END	3	1	word=メイン	こと。	EOF	ここにこと。を追加してください	-
+CORE-F015	check	error	E_UNEXPECTED_TOP_LEVEL	1	1	-	単語定義	42	単語定義の本体へ移してください	-
+CORE-F016	check	error	E_RESERVED_NAME	1	1	-	利用者定義名	足す	別の名前に変更してください	組み込み単語 足す
+CORE-F017	check	error	E_DUPLICATE_NAME	4	1	actualName=請求A1;previousName=請求Ａ１	一意な名前	請求A1	別の名前に変更してください	1:1 請求Ａ１
+CORE-F018	check	error	E_MISSING_MAIN	4	1	-	メインとは （--）	EOF	メインを追加してください	-
+CORE-F019	check	error	E_INVALID_MAIN_EFFECT	1	1	-	（--）	（整数 --）	メインの効果を（--）にしてください	-
+CORE-F020	check	error	E_UNDEFINED_WORD	2	5	word=表示す	定義済み単語	表示す	表示するへ変更してください	-
+CORE-F020b	check	error	E_NAME_NOT_CALLABLE	2	5	word=整数;kind=型名	呼び出し可能な単語	型名 整数	単語名を指定してください	-
+CORE-F021	check	error	E_STACK_UNDERFLOW	2	9	word=足す;requiredCount=2;actualCount=1	[整数, 整数]	[整数]	整数をもう1つ置いてください	-
+CORE-F022	check	error	E_TYPE_MISMATCH	2	17	word=足す;inputIndex=1;expectedType=整数;actualType=文字列	[整数, 整数]	[文字列, 整数]	第1入力を整数にしてください	-
+CORE-F023	check	error	E_WORD_EFFECT_MISMATCH	1	1	word=捨てる	[]	[整数]	宣言または本体を一致させてください	-
+CORE-F024	check	error	E_MAIN_STACK_NOT_EMPTY	2	5	actualCount=1	[]	[整数]	値を消費してください	-
+CORE-F025	check	error	E_FEATURE_NOT_AVAILABLE	2	5	feature=小数;plannedFeature=NUM	言語コアの型	小数	現在利用できる機能へ変更してください	-
+CORE-F025b	check	error	E_UNKNOWN_TYPE	1	9	typeName=金額	整数・真偽・文字・文字列	金額	言語コアの型へ変更してください	-
+CORE-F026	check	warning	W_PARTICLE_POSITION	2	5	-	本体先頭以外	を	先頭のをを削除してください	-
+CORE-F027	check	error	E_INVALID_IDENTIFIER	2	5	candidate=名前?	Unicode Letterで始まる識別子	名前?	識別子に使用できる文字へ変更してください	-
+CORE-F028	check	error	E_UNEXPECTED_CHARACTER	2	5	codePoint=U+002C	BSBの構文で使用できる文字	U+002C	この文字を削除してください	-
+CORE-F029	check	error	E_EXPECTED_DEFINITION_END_MARK	2	1	-	。	。	ことの直後に。を置いてください	-
+CORE-F030	check	warning	W_CONFUSABLE_IDENTIFIER	4	1	actualName=Аlpha;normalizedName=Аlpha;previousName=Alpha;skeleton=Alpha	見分けられる名前	Аlpha	見た目の異なる名前へ変更してください	1:1 Alpha
