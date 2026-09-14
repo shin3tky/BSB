@@ -29,22 +29,22 @@ import jp.bsb.frontend.ast.WordDefinition;
 import jp.bsb.frontend.ast.WorkspaceDeclaration;
 
 /**
- * 構文的に有効なASTを、ホスト入出力までで一意に定められた正規表記へ変換します。
+ * 構文的に有効なASTを、ホスト入出力までで一意に定められた標準形へ変換します。
  *
- * <p>【コンピュータ科学の観点：正規形（Canonical Form）】 同じ構造を表す空白、改行、括弧、引用符の違いを1種類へそろえると、差分レビューが安定し、
+ * <p>【コンピュータ科学の観点：標準形（Canonical Form）】 同じ構造を表す空白、改行、括弧、引用符の違いを1種類へそろえると、差分レビューが安定し、
  * フォーマッタを繰り返しても結果が変わらない冪等性を実現できます。このクラスは名前解決や型検査を行わず、ASTに保存された構文情報だけを使用します。
  */
 public final class CanonicalFormatter {
   private static final String INDENT = "    ";
 
-  /** 状態を持たない正規フォーマッタを生成します。 */
+  /** 状態を持たない標準形フォーマッタを生成します。 */
   public CanonicalFormatter() {}
 
   /**
-   * プログラム全体をBOMなし・LF改行の正規表記へ変換します。
+   * プログラム全体をBOMなし・LF改行の標準形へ変換します。
    *
    * @param program 構文解析に成功したプログラムAST
-   * @return 正規表記。トークンもコメントもない場合は空文字列、それ以外はLFちょうど1個で終了
+   * @return 標準形。トークンもコメントもない場合は空文字列、それ以外はLFちょうど1個で終了
    */
   public String format(Program program) {
     Objects.requireNonNull(program, "program");
@@ -97,7 +97,7 @@ public final class CanonicalFormatter {
         || element instanceof WorkspaceDeclaration;
   }
 
-  /** 論理接続宣言を初期値のない正規形へ変換し、宣言内コメントの相対順を保ちます。 */
+  /** 論理接続宣言を初期値のない標準形へ変換し、宣言内コメントの相対順を保ちます。 */
   private static List<RenderedLine> formatLogicalConnectionDeclaration(
       LogicalConnectionDeclaration declaration) {
     return formatStaticResourceDeclaration(
@@ -108,7 +108,7 @@ public final class CanonicalFormatter {
         declaration.endSpan());
   }
 
-  /** 値を持たない静的資源宣言を共通の正規形へ変換します。 */
+  /** 値を持たない静的資源宣言を共通の標準形へ変換します。 */
   private static List<RenderedLine> formatStaticResourceDeclaration(
       String name,
       String kind,
@@ -271,7 +271,7 @@ public final class CanonicalFormatter {
     lines.add(new RenderedLine(initializerIndent + comment.text(), comment.span().end().line()));
   }
 
-  /** 初期値に許可される1要素の正規表記を返します。 */
+  /** 初期値に許可される1要素の標準形を返します。 */
   private static String initializerText(BodyElement element) {
     return switch (element) {
       case ArrayLiteral array -> formatInlineArray(array);
@@ -288,7 +288,7 @@ public final class CanonicalFormatter {
     };
   }
 
-  /** コメントを含まない配列を、要素内だけ空白を入れた1行正規形へ変換します。 */
+  /** コメントを含まない配列を、要素内だけ空白を入れた1行の標準形へ変換します。 */
   private static String formatInlineArray(ArrayLiteral array) {
     String elements =
         String.join(
@@ -305,7 +305,7 @@ public final class CanonicalFormatter {
     return String.join(" ", body.stream().map(CanonicalFormatter::arrayElementText).toList());
   }
 
-  /** 配列要素内で1行表示できる構文要素の正規表記を返します。 */
+  /** 配列要素内で1行表示できる構文要素の標準形を返します。 */
   private static String arrayElementText(BodyElement element) {
     return switch (element) {
       case ArrayLiteral array -> formatInlineArray(array);
@@ -321,7 +321,7 @@ public final class CanonicalFormatter {
     };
   }
 
-  /** 呼出し名と、結果構築語にだけ許される2個の明示型引数を正規表記へ変換します。 */
+  /** 呼出し名と、結果構築語にだけ許される2個の明示型引数を標準形へ変換します。 */
   private static String formatWordCall(WordCall wordCall) {
     if (wordCall.logicalConnectionArgument().isPresent()) {
       var argument = wordCall.logicalConnectionArgument().orElseThrow();
@@ -362,7 +362,7 @@ public final class CanonicalFormatter {
         .anyMatch(CanonicalFormatter::hasComment);
   }
 
-  /** コメント付き配列を、開始・要素・終了の字下げを保った複数行正規形へ変換します。 */
+  /** コメント付き配列を、開始・要素・終了の字下げを保った複数行の標準形へ変換します。 */
   private static void formatArrayLiteral(
       List<RenderedLine> lines, PendingBodyLine pending, ArrayLiteral array, int depth) {
     String indent = INDENT.repeat(depth);
@@ -615,7 +615,7 @@ public final class CanonicalFormatter {
     };
   }
 
-  /** 解釈済みの値を走査し、正規表記で直接書けないコードポイントだけをエスケープします。 */
+  /** 解釈済みの値を走査し、標準形で直接書けないコードポイントだけをエスケープします。 */
   private static String escapeLiteralValue(String value, boolean characterLiteral) {
     var result = new StringBuilder(value.length());
     value

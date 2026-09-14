@@ -10,7 +10,7 @@ import jp.bsb.frontend.SourceText;
 import jp.bsb.frontend.Utf8SourceReader;
 
 /**
- * 元のUTF-8入力から正規表記または構文診断を生成する、format用の処理パイプラインです。
+ * 元のUTF-8入力から標準形または構文診断を生成する、format用の処理パイプラインです。
  *
  * <p>処理はUTF-8検証、字句解析、構文解析で止めます。名前解決や型検査を呼ばないため、未定義単語、重複定義、小数などを含む構文的に有効な入力も整形できます。
  */

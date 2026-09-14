@@ -50,8 +50,8 @@ CORE〜BIND機能グループの全1287テストも同じテスト実行で維�
 | `ARRAY-N015` | 配列反復の`続ける` | check, run |
 | `ARRAY-N016` | 配列反復の`打ち切る` | check, run |
 | `ARRAY-N017` | 条件分岐と配列反復の入れ子 | check, run |
-| `ARRAY-N018` | コメントつき配列の正規形 | check, run, format |
-| `ARRAY-N019` | 全角コンマから正規読点 | check, run, format |
+| `ARRAY-N018` | コメントつき配列の標準形 | check, run, format |
+| `ARRAY-N019` | 全角コンマから標準の読点 | check, run, format |
 | `ARRAY-N020` | 文字・文字列要素の表示エスケープ | check, run |
 | `ARRAY-N021` | 9要素以上のトレース省略 | check, run + 内部trace |
 | `ARRAY-N022` | 合計・件数・各点数の章末統合 | check, run, format + 内部trace |

@@ -136,7 +136,7 @@ public record ArrayValue(ValueType elementType, List<RuntimeValue> elements, lon
     };
   }
 
-  /** フォーマッタと同じ規則で、値から文字・文字列リテラルの正規表記を再構成します。 */
+  /** フォーマッタと同じ規則で、値から文字・文字列リテラルの標準形を再構成します。 */
   static String escapeLiteral(String value, boolean characterLiteral) {
     var result = new StringBuilder(value.length());
     value

@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
  * <ul>
  *   <li>{@code check}: ソースコードの字句解析・構文解析・静的型検査のみを行い、誤りがないか確認する
  *   <li>{@code run}: 静的検査に合格した後、実際にプログラムを実行する
- *   <li>{@code format}: ソースコードを言語仕様で定められた一意な「正規表記」に自動整形する
+ *   <li>{@code format}: ソースコードを言語仕様で定められた一意な「標準形」に自動整形する
  * </ul>
  */
 public final class BsbMain {

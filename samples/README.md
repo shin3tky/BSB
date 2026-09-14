@@ -51,7 +51,7 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar check samples/17-recoverable-jso
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/17-recoverable-json.bsb
 ```
 
-有効なJSONの正規表現と、不正入力の安定種類を2行で表示します。入力内位置は同じ失敗値へ
+有効なJSONの標準形と、不正入力の安定種類を2行で表示します。入力内位置は同じ失敗値へ
 `JSON解析失敗のバイト位置を取り出す`、`JSON解析失敗の行を取り出す`、
 `JSON解析失敗の列を取り出す`を適用して取得できます。
 

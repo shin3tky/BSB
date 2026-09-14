@@ -8,7 +8,7 @@
 
 - [language-core-grammar.md](language-core-grammar.md): 字句、構文、予約機能、名前境界
 - [language-core-unicode.md](language-core-unicode.md): Unicode 16.0適合
-- [language-core-format.md](language-core-format.md): 一意な正規表記
+- [language-core-format.md](language-core-format.md): 一意な標準形
 - [language-core-builtins.md](language-core-builtins.md): 初期7組み込み単語の意味論と辞書情報
 - [language-core-diagnostics.md](language-core-diagnostics.md): 診断コード、資源上限、数え方
 - [language-core-conformance.md](language-core-conformance.md): 適合データ、章末プログラム、トレース
@@ -112,7 +112,7 @@ ASCII数字    := "0" | "1" | ... | "9"
 
 ### 3.4 文字列と文字
 
-文字列の正規表記は `「` と `」` で囲みます。ASCIIの `"` で囲む表記も入力として受理します。文字はASCIIの `'` で囲みます。
+文字列の標準形は `「` と `」` で囲みます。ASCIIの `"` で囲む表記も入力として受理します。文字はASCIIの `'` で囲みます。
 
 ```text
 「こんにちは」
@@ -163,7 +163,7 @@ ASCII数字    := "0" | "1" | ... | "9"
 本体要素       := リテラル | 識別子 | 助詞 | 区切り
 ```
 
-単語名と `とは` の間に空白は許しません。`こと` と `。` の間にはASCII空白、タブ、全角空白だけを受理します。改行、コメント、`、`、`，`は受理しません。正規表記は空白なしの `こと。` です。
+単語名と `とは` の間に空白は許しません。`こと` と `。` の間にはASCII空白、タブ、全角空白だけを受理します。改行、コメント、`、`、`，`は受理しません。標準形は空白なしの `こと。` です。
 
 全角とASCIIのスタック効果括弧を混在させません。入力と出力の区切りはASCIIハイフン2個の `--` だけです。
 
@@ -231,7 +231,7 @@ CORE機能グループでは日本語としての助詞選択までは判定せ�
 
 `bsb format` は字句解析と構文解析に成功したソースを標準出力へ書き、入力ファイルを変更しません。名前解決、型検査、スタック効果検査は行いません。
 
-BOM、改行、空行、コメント、行分け、引用符、エスケープ、整数、小数、識別子、ファイル末尾を含む完全な正規出力は [language-core-format.md](language-core-format.md) に従います。任意の有効なソース `S` について、バイト列として `format(format(S)) = format(S)` でなければなりません。
+BOM、改行、空行、コメント、行分け、引用符、エスケープ、整数、小数、識別子、ファイル末尾を含む完全な標準形は [language-core-format.md](language-core-format.md) に従います。任意の有効なソース `S` について、バイト列として `format(format(S)) = format(S)` でなければなりません。
 
 ## 9. 診断契約
 
@@ -254,7 +254,7 @@ BOM、改行、空行、コメント、行分け、引用符、エスケープ�
 | CORE-N009 | `、` と `，` | 区切りとして成功 |
 | CORE-N010 | 行コメント | 実行結果へ影響しない |
 | CORE-N011 | 文字列内の `#` と `。` | 通常の文字として出力 |
-| CORE-N012 | ASCII文字列引用符 | `format` で正規表記へ変換 |
+| CORE-N012 | ASCII文字列引用符 | `format` で標準形へ変換 |
 | CORE-N013 | 定義済みエスケープ | 規定の値へ展開 |
 | CORE-N014 | 結合濁点を含む文字 | 1書記素クラスタとして成功 |
 | CORE-N015 | 補助平面の漢字 | 1書記素クラスタとして成功 |
@@ -284,7 +284,7 @@ BOM、改行、空行、コメント、行分け、引用符、エスケープ�
 |---|---|---|---:|
 | `bsb check` | なし | なし | 0 |
 | `bsb run` | `42` とLF | なし | 0 |
-| `bsb format` | 正規表記 | なし | 0 |
+| `bsb format` | 標準形 | なし | 0 |
 
 ### CORE-N019: 空の本体
 

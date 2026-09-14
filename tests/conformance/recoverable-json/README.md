@@ -9,7 +9,7 @@
 - `resources.tsv`: 捕捉不能な上限と原子性の境界レシピ
 - `expected/diagnostics.tsv`: F14全10 IDの診断コード・段階・対象語・型・原子性期待
 - `expected/states.tsv`: 代表公開sourceの独立した終了状態
-- `sources`、`canonical`、`chapter`: 公開CLIへ通す物理sourceと正規形
+- `sources`、`canonical`、`chapter`: 公開CLIへ通す物理sourceと標準形
 - `manifest.tsv`: READMEとmanifest自身を除く全資源のSHA-256とバイト数
 
 仕様、独立期待、実行系、中央カタログからの全件実行適合まで完成しています。次でデータ整合と

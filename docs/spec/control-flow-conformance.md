@@ -55,7 +55,7 @@ CORE機能グループの全ケースも同じテスト実行で維持します�
 | `FLOW-N017` | 小さい比較が真 | check, run |
 | `FLOW-N018` | 小さい比較が偽・同値 | check, run |
 | `FLOW-N019` | 分岐と回数ループの入れ子 | check, run |
-| `FLOW-N020` | 空本体・コメント・正規字下げ | format |
+| `FLOW-N020` | 空本体・コメント・標準の字下げ | format |
 
 正常例の`check`と`format`は標準エラーが空です。`run`の標準出力は`cases.properties`に固定します。
 

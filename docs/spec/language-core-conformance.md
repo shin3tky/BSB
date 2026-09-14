@@ -41,7 +41,7 @@ tests/conformance/language-core/
 
 `run` は静的検査に失敗した場合、プログラムの出力を1バイトも書きません。
 
-成功するすべての `format` ケースは、指定された正規出力へもう一度 `format` を適用して同じバイト列になることも暗黙の期待値とします。
+成功するすべての `format` ケースは、指定された標準形へもう一度 `format` を適用して同じバイト列になることも暗黙の期待値とします。
 
 ## 3. 正常例
 
@@ -66,7 +66,7 @@ tests/conformance/language-core/
 | CORE-N017 | 文字列の厳密等価性 | `sources/CORE-N017.bsb` | check, run, format |
 | CORE-N018 | 助詞の非実行性 | `sources/CORE-N018.bsb` | check, run |
 | CORE-N019 | 空本体の恒等効果 | `sources/CORE-N019.bsb` | check, run, format |
-| CORE-N020 | フォーマッタ正規形・冪等性 | `sources/CORE-N020.bsb` | format |
+| CORE-N020 | フォーマッタの標準形・冪等性 | `sources/CORE-N020.bsb` | format |
 | CORE-N021 | 先頭BOM | `generated/CORE-N021.properties` | check, format |
 | CORE-N022 | 小数の構文整形 | `sources/CORE-N022.bsb` | format |
 

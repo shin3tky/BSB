@@ -53,7 +53,7 @@ CORE・FLOW機能グループの全862テストも同じテスト実行で維持
 | `BIND-N015` | 早期復帰と到達した局所値 | check, run |
 | `BIND-N016` | 全角英数字・NFCの名前参照 | check, run, format |
 | `BIND-N017` | コメントを含む複数行初期値 | check, run, format |
-| `BIND-N018` | 代替区切りから代入正規形 | check, run, format |
+| `BIND-N018` | 代替区切りから代入の標準形 | check, run, format |
 | `BIND-N019` | 等価・比較による真偽型推論 | check, run |
 | `BIND-N020` | 大域・局所・制御・説明の統合 | check, run, format + 内部束縛表 |
 

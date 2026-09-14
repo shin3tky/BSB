@@ -113,7 +113,7 @@ bsb run --file <作業領域名> <論理名> <read|write|read-write> <OSパス> 
 bsb format <ソース.bsb>
 ```
 
-`check` は実行前検査、`run` は検査後の実行、`format` は入力を上書きしない正規整形です。
+`check` は実行前検査、`run` は検査後の実行、`format` は入力を上書きせずソースを標準形へ整形します。
 `explain --json` は静的説明を返します。人間向け診断と CLI 自身のエラーは stderr、プログラム出力と
 整形結果は stdout へ分離します。
 
