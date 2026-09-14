@@ -82,6 +82,23 @@ class ControlFlowParserDiagnosticTest {
         parsed.diagnostics().diagnostics().stream().map(Diagnostic::code).toList());
   }
 
+  @Test
+  void reportsAMissingShortCircuitEndWithTheOperatorAndOpeningLocation() {
+    String source = "メインとは （--）\n    はい または\n        いいえ\nこと。\n";
+
+    var parsed = ParserTestSupport.parseText("短絡終端不足.bsb", source);
+
+    assertFalse(parsed.parseResult().successful());
+    Diagnostic diagnostic = parsed.diagnostics().diagnostics().getFirst();
+    assertEquals(DiagnosticCode.E_EXPECTED_SHORT_CIRCUIT_END, diagnostic.code());
+    assertEquals(
+        Map.of("operator", "または", "openingLine", "2", "openingColumn", "8"),
+        diagnostic.fields());
+    assertEquals("つぎに", diagnostic.expected().orElseThrow());
+    assertEquals("こと", diagnostic.actual().orElseThrow());
+    assertEquals("または", diagnostic.relatedLocations().getFirst().description());
+  }
+
   private static Stream<Arguments> syntaxFailures() {
     return Stream.of(
         Arguments.of(

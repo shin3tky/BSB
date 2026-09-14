@@ -25,6 +25,7 @@ import jp.bsb.frontend.ast.ConditionLoop;
 import jp.bsb.frontend.ast.Conditional;
 import jp.bsb.frontend.ast.CountedLoop;
 import jp.bsb.frontend.ast.LogicalConnectionDeclaration;
+import jp.bsb.frontend.ast.ShortCircuitEvaluation;
 import jp.bsb.frontend.ast.TopLevelElement;
 import jp.bsb.frontend.ast.WordCall;
 import jp.bsb.frontend.ast.WordDefinition;
@@ -182,6 +183,8 @@ public final class ProgramExplainer {
       } else if (element instanceof Conditional conditional) {
         pushReverse(pending, conditional.falseBody());
         pushReverse(pending, conditional.trueBody());
+      } else if (element instanceof ShortCircuitEvaluation evaluation) {
+        pushReverse(pending, evaluation.rightBody());
       } else if (element instanceof CountedLoop loop) {
         pushReverse(pending, loop.body());
       } else if (element instanceof ConditionLoop loop) {
@@ -574,6 +577,7 @@ public final class ProgramExplainer {
       case WORD_BODY -> "wordBody";
       case CONDITIONAL_TRUE -> "conditionalTrue";
       case CONDITIONAL_FALSE -> "conditionalFalse";
+      case SHORT_CIRCUIT_RIGHT -> "shortCircuitRight";
       case COUNTED_LOOP_BODY -> "countedLoopBody";
       case CONDITION_LOOP_CONDITION -> "conditionLoopCondition";
       case CONDITION_LOOP_BODY -> "conditionLoopBody";

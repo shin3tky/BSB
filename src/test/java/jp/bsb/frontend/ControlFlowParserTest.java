@@ -12,11 +12,39 @@ import jp.bsb.frontend.ast.ConditionLoop;
 import jp.bsb.frontend.ast.Conditional;
 import jp.bsb.frontend.ast.ControlTransfer;
 import jp.bsb.frontend.ast.CountedLoop;
+import jp.bsb.frontend.ast.ShortCircuitEvaluation;
+import jp.bsb.frontend.ast.ShortCircuitOperator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class ControlFlowParserTest {
+  @Test
+  void buildsNestedShortCircuitEvaluationBlocks() {
+    String source =
+        "メインとは （--）\n"
+            + "    はい または\n"
+            + "        いいえ かつ\n"
+            + "            はい\n"
+            + "        つぎに\n"
+            + "    つぎに\n"
+            + "    真偽を捨てる\n"
+            + "こと。\n";
+
+    var parsed = ParserTestSupport.parseText("short-circuit.bsb", source);
+
+    assertTrue(parsed.parseResult().successful(), parsed.diagnostics().diagnostics().toString());
+    var outer =
+        assertInstanceOf(
+            ShortCircuitEvaluation.class,
+            parsed.parseResult().programForAnalysis().definitions().getFirst().body().get(1));
+    var inner = assertInstanceOf(ShortCircuitEvaluation.class, outer.rightBody().get(1));
+    assertEquals(ShortCircuitOperator.OR, outer.operator());
+    assertEquals(ShortCircuitOperator.AND, inner.operator());
+    assertEquals(2, outer.openingSpan().start().line());
+    assertEquals(6, outer.endSpan().start().line());
+  }
+
   @ParameterizedTest
   @MethodSource("syntaxValidControlFlowSources")
   void parsesEveryTextBackedControlFlowSourceWithoutSyntaxErrors(String sourceName)

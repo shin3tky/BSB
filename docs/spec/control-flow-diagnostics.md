@@ -29,6 +29,7 @@ IR
 | `E_UNEXPECTED_ELSE` | 対応する`ならば`がない`さもなければ` | `さもなければ`のspan | 実際の語 |
 | `E_DUPLICATE_ELSE` | 同じ条件分岐に2個目の`さもなければ` | 2個目のspan | 最初の位置 |
 | `E_EXPECTED_IF_END` | `つぎに`より先に単語終端またはEOF | 欠落point | 開始位置、挿入候補 |
+| `E_EXPECTED_SHORT_CIRCUIT_END` | `または`・`かつ`を閉じる`つぎに`より先に単語終端またはEOF | 欠落point | 演算子、開始位置、挿入候補 |
 | `E_UNEXPECTED_BLOCK_END` | 対応する`ならば`がない`つぎに` | `つぎに`のspan | 実際の語 |
 | `E_UNEXPECTED_LOOP_END` | 対応するループがない`繰り返す` | `繰り返す`のspan | 実際の語 |
 | `E_EXPECTED_LOOP_END` | `繰り返す`より先に単語終端またはEOF | 欠落point | ループ種類、開始位置、挿入候補 |
@@ -47,6 +48,9 @@ IR
 | `E_CONDITION_STACK_UNDERFLOW` | `ならば`に値がない | `ならば`のspan | 必要型、実スタック |
 | `E_CONDITION_TYPE_MISMATCH` | `ならば`の最上部が`真偽`でない | `ならば`のspan | 必要型、実型、実スタック |
 | `E_BRANCH_STACK_MISMATCH` | 到達可能な分岐出口が合流できない | `さもなければ`または`つぎに`のspan | 基準、真側、偽側の型列と関連位置 |
+| `E_SHORT_CIRCUIT_LEFT_UNDERFLOW` | `または`・`かつ`に左辺値がない | 開始語のspan | 演算子、必要型、実スタック |
+| `E_SHORT_CIRCUIT_LEFT_TYPE_MISMATCH` | `または`・`かつ`の左辺が`真偽`でない | 開始語のspan | 演算子、必要型、実型 |
+| `E_SHORT_CIRCUIT_RIGHT_MISMATCH` | 右辺通常出口が`S + [真偽]`でない | `つぎに`のspan | 演算子、基準、必要型列、実型列 |
 | `E_REPEAT_COUNT_UNDERFLOW` | `回だけ`に値がない | `回だけ`のspan | 必要型、実スタック |
 | `E_REPEAT_COUNT_TYPE_MISMATCH` | `回だけ`の最上部が`整数`でない | `回だけ`のspan | 必要型、実型、実スタック |
 | `E_LOOP_CONDITION_MISMATCH` | `続く間`の状態が`S + [真偽]`でない | `続く間`のspan | 基準、必要型列、実型列 |
@@ -89,7 +93,7 @@ IR
 
 ## 7. 構文深さの数え方
 
-`ならば`、`回だけ`、`ここから`を開始語として各1段数えます。対応する`つぎに`または`繰り返す`でその段を終えます。`さもなければ`と`続く間`は新しい段を増やしません。
+`ならば`、`または`、`かつ`、`回だけ`、`ここから`を開始語として各1段数えます。対応する`つぎに`または`繰り返す`でその段を終えます。`さもなければ`と`続く間`は新しい段を増やしません。
 
 深さ256を受理し、257段目の開始語を処理する前に`E_SYNTAX_DEPTH_LIMIT`とします。コメント、単語定義、スタック効果、括弧はこの深さへ数えません。
 

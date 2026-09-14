@@ -75,6 +75,8 @@ public enum DiagnosticCode {
   E_DUPLICATE_ELSE,
   /** 条件分岐を閉じる「つぎに」が欠落している */
   E_EXPECTED_IF_END,
+  /** 短絡評価ブロックを閉じる「つぎに」が欠落している */
+  E_EXPECTED_SHORT_CIRCUIT_END,
   /** 対応する「ならば」がない「つぎに」が現れた */
   E_UNEXPECTED_BLOCK_END,
   /** 対応するループがない「繰り返す」が現れた */
@@ -233,6 +235,12 @@ public enum DiagnosticCode {
   E_CONDITION_TYPE_MISMATCH,
   /** 条件分岐の到達可能な出口でスタックの個数または型が一致しない */
   E_BRANCH_STACK_MISMATCH,
+  /** 「または」「かつ」が消費する左辺値がスタックにない */
+  E_SHORT_CIRCUIT_LEFT_UNDERFLOW,
+  /** 「または」「かつ」が消費する左辺値の型が真偽ではない */
+  E_SHORT_CIRCUIT_LEFT_TYPE_MISMATCH,
+  /** 短絡評価ブロックの右辺が基準スタックへ真偽値1個を追加していない */
+  E_SHORT_CIRCUIT_RIGHT_MISMATCH,
   /** 「回だけ」が消費する反復回数がスタックにない */
   E_REPEAT_COUNT_UNDERFLOW,
   /** 「回だけ」が消費する値の型が整数ではない */

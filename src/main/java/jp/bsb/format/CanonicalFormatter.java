@@ -19,6 +19,7 @@ import jp.bsb.frontend.ast.Literal;
 import jp.bsb.frontend.ast.LogicalConnectionDeclaration;
 import jp.bsb.frontend.ast.Particle;
 import jp.bsb.frontend.ast.Program;
+import jp.bsb.frontend.ast.ShortCircuitEvaluation;
 import jp.bsb.frontend.ast.StackEffect;
 import jp.bsb.frontend.ast.TopLevelElement;
 import jp.bsb.frontend.ast.TypeReference;
@@ -192,6 +193,8 @@ public final class CanonicalFormatter {
         }
         case Conditional conditional ->
             formatConditional(lines, pending, conditional, depth, indent);
+        case ShortCircuitEvaluation evaluation ->
+            formatShortCircuit(lines, pending, evaluation, depth, indent);
         case CountedLoop countedLoop ->
             formatCountedLoop(lines, pending, countedLoop, depth, indent);
         case ConditionLoop conditionLoop ->
@@ -482,6 +485,23 @@ public final class CanonicalFormatter {
     appendControlLine(lines, indent, "つぎに", conditional.endSpan().end().line());
   }
 
+  /** 短絡評価を開始行、右辺本体、終了行へ整形します。 */
+  private static void formatShortCircuit(
+      List<RenderedLine> lines,
+      PendingBodyLine pending,
+      ShortCircuitEvaluation evaluation,
+      int depth,
+      String indent) {
+    appendShareableControlStart(
+        lines,
+        pending,
+        indent,
+        evaluation.operator().sourceName(),
+        evaluation.openingSpan().end().line());
+    formatBody(lines, evaluation.rightBody(), depth + 1);
+    appendControlLine(lines, indent, "つぎに", evaluation.endSpan().end().line());
+  }
+
   /** 回数ループの開始行、本体、終了行を正規順に出力します。 */
   private static void formatCountedLoop(
       List<RenderedLine> lines,
@@ -539,6 +559,7 @@ public final class CanonicalFormatter {
     return next instanceof Assignment
         || next instanceof ArrayLoop
         || next instanceof Conditional
+        || next instanceof ShortCircuitEvaluation
         || next instanceof CountedLoop;
   }
 

@@ -64,6 +64,7 @@ class DiagnosticMessageCatalogTest {
       Diagnostic diagnostic =
           Diagnostic.builder(code, severity, stageFor(code), "入力.bsb", new SourcePosition(0, 1, 1))
               .field("loopKind", "条件")
+              .field("operator", "または")
               .field("actualType", "整数")
               .field("pathKind", "継続経路")
               .field("word", "試す")
@@ -292,6 +293,7 @@ class DiagnosticMessageCatalogTest {
         DiagnosticCode.E_UNEXPECTED_ELSE,
         DiagnosticCode.E_DUPLICATE_ELSE,
         DiagnosticCode.E_EXPECTED_IF_END,
+        DiagnosticCode.E_EXPECTED_SHORT_CIRCUIT_END,
         DiagnosticCode.E_UNEXPECTED_BLOCK_END,
         DiagnosticCode.E_UNEXPECTED_LOOP_END,
         DiagnosticCode.E_EXPECTED_LOOP_END,
@@ -301,6 +303,9 @@ class DiagnosticMessageCatalogTest {
         DiagnosticCode.E_CONDITION_STACK_UNDERFLOW,
         DiagnosticCode.E_CONDITION_TYPE_MISMATCH,
         DiagnosticCode.E_BRANCH_STACK_MISMATCH,
+        DiagnosticCode.E_SHORT_CIRCUIT_LEFT_UNDERFLOW,
+        DiagnosticCode.E_SHORT_CIRCUIT_LEFT_TYPE_MISMATCH,
+        DiagnosticCode.E_SHORT_CIRCUIT_RIGHT_MISMATCH,
         DiagnosticCode.E_REPEAT_COUNT_UNDERFLOW,
         DiagnosticCode.E_REPEAT_COUNT_TYPE_MISMATCH,
         DiagnosticCode.E_LOOP_CONDITION_MISMATCH,

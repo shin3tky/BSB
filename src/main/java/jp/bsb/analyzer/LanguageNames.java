@@ -20,7 +20,7 @@ final class LanguageNames {
   static final Set<String> PARTICLES = Set.of("を", "に", "と", "から", "で");
   static final Set<String> SYNTAX_NAMES =
       Set.of(
-          "とは", "こと", "ならば", "さもなければ", "つぎに", "回だけ", "ここから", "続く間", "繰り返す", "打ち切る", "続ける", "戻る",
+          "とは", "こと", "ならば", "さもなければ", "つぎに", "または", "かつ", "回だけ", "ここから", "続く間", "繰り返す", "打ち切る", "続ける", "戻る",
           "各要素について", "は", "定数", "変数", "論理接続", "作業領域", "入れる");
   static final Map<String, String> FUTURE_FEATURES = futureFeatures();
 

@@ -37,6 +37,7 @@ import jp.bsb.frontend.ast.CountedLoop;
 import jp.bsb.frontend.ast.Literal;
 import jp.bsb.frontend.ast.LogicalConnectionDeclaration;
 import jp.bsb.frontend.ast.Particle;
+import jp.bsb.frontend.ast.ShortCircuitEvaluation;
 import jp.bsb.frontend.ast.Program;
 import jp.bsb.frontend.ast.TopLevelElement;
 import jp.bsb.frontend.ast.TypeReference;
@@ -155,6 +156,8 @@ public final class SemanticAnalyzer {
         } else if (element instanceof Conditional conditional) {
           validateDecimalLiterals(conditional.trueBody());
           validateDecimalLiterals(conditional.falseBody());
+        } else if (element instanceof ShortCircuitEvaluation evaluation) {
+          validateDecimalLiterals(evaluation.rightBody());
         } else if (element instanceof CountedLoop loop) {
           validateDecimalLiterals(loop.body());
         } else if (element instanceof ConditionLoop loop) {
@@ -616,6 +619,10 @@ public final class SemanticAnalyzer {
             trueSummary.fallsThrough() || falseSummary.fallsThrough(),
             trueSummary.returnsFromWord() || falseSummary.returnsFromWord());
       }
+      if (element instanceof ShortCircuitEvaluation evaluation) {
+        ReturnSummary rightSummary = summarizeReturns(evaluation.rightBody());
+        return new ReturnSummary(true, rightSummary.returnsFromWord());
+      }
       if (element instanceof CountedLoop loop) {
         ReturnSummary bodySummary = summarizeReturns(loop.body());
         return new ReturnSummary(true, bodySummary.returnsFromWord());
@@ -715,6 +722,15 @@ public final class SemanticAnalyzer {
             trueFlow.canContinue() || falseFlow.canContinue(),
             fallsThrough ? null : earlierCause(trueFlow.cause(), falseFlow.cause()));
       }
+      if (element instanceof ShortCircuitEvaluation evaluation) {
+        StructuralFlow rightFlow = identifyBodyReachability(evaluation.rightBody());
+        return new StructuralFlow(
+            true,
+            rightFlow.canReturn(),
+            rightFlow.canBreak(),
+            rightFlow.canContinue(),
+            null);
+      }
       if (element instanceof CountedLoop loop) {
         StructuralFlow bodyFlow = identifyBodyReachability(loop.body());
         // 回数ループには0回経路が必ずあるため、ループ後は構造上到達可能です。
@@ -783,6 +799,8 @@ public final class SemanticAnalyzer {
       } else if (element instanceof Conditional conditional) {
         conditional.trueBody().forEach(this::markUnreachableTree);
         conditional.falseBody().forEach(this::markUnreachableTree);
+      } else if (element instanceof ShortCircuitEvaluation evaluation) {
+        evaluation.rightBody().forEach(this::markUnreachableTree);
       } else if (element instanceof CountedLoop loop) {
         loop.body().forEach(this::markUnreachableTree);
       } else if (element instanceof ConditionLoop loop) {
@@ -829,6 +847,7 @@ public final class SemanticAnalyzer {
         case WordCall call -> call.lexeme();
         case ControlTransfer transfer -> transfer.lexeme();
         case Conditional ignored -> "ならば";
+        case ShortCircuitEvaluation evaluation -> evaluation.operator().sourceName();
         case CountedLoop ignored -> "回だけ";
         case ConditionLoop ignored -> "ここから";
         case Comment comment -> comment.text();
@@ -876,6 +895,10 @@ public final class SemanticAnalyzer {
         if (element instanceof Conditional conditional) {
           resolveBodyNames(definition, conditional.trueBody());
           resolveBodyNames(definition, conditional.falseBody());
+          continue;
+        }
+        if (element instanceof ShortCircuitEvaluation evaluation) {
+          resolveBodyNames(definition, evaluation.rightBody());
           continue;
         }
         if (element instanceof CountedLoop loop) {
@@ -1776,6 +1799,9 @@ public final class SemanticAnalyzer {
       if (element instanceof Conditional conditional) {
         return checkConditional(definition, signature, conditional, state, frames);
       }
+      if (element instanceof ShortCircuitEvaluation evaluation) {
+        return checkShortCircuit(definition, signature, evaluation, state, frames);
+      }
       if (element instanceof CountedLoop loop) {
         return checkCountedLoop(definition, signature, loop, state, frames);
       }
@@ -1902,6 +1928,109 @@ public final class SemanticAnalyzer {
 
       ControlFlowState branchState = ((ControlFlowJoinResult.Joined) joinResult).state();
       return BodyCheckResult.valid(prependTransfers(entryState.transfers(), branchState));
+    }
+
+    /** 左辺を消費し、選択された場合だけ右辺が同じ基準へ真偽値を1個追加することを検査します。 */
+    private BodyCheckResult checkShortCircuit(
+        WordDefinition definition,
+        WordSignature signature,
+        ShortCircuitEvaluation evaluation,
+        ControlFlowState entryState,
+        List<ControlFrame> frames) {
+      AbstractStack leftStack = currentStack(entryState);
+      if (leftStack.isEmpty()) {
+        reportShortCircuitLeftUnderflow(evaluation, leftStack);
+        return BodyCheckResult.invalid(entryState);
+      }
+      ValueType actualType = leftStack.top().orElseThrow().type();
+      if (!actualType.equals(ValueType.BOOLEAN)) {
+        reportShortCircuitLeftTypeMismatch(evaluation, actualType);
+        return BodyCheckResult.invalid(entryState);
+      }
+
+      AbstractStack baseStack = leftStack.removeTop(1);
+      BodyCheckResult rightResult =
+          checkBody(
+              definition,
+              signature,
+              evaluation.rightBody(),
+              ControlFlowState.reachable(baseStack, evaluation.openingSpan()),
+              frames);
+      if (!rightResult.valid()) {
+        return BodyCheckResult.invalid(entryState);
+      }
+      AbstractStack resultStack = baseStack.push(ValueType.BOOLEAN, evaluation.endSpan());
+      if (rightResult.state().isReachable()
+          && !currentStack(rightResult.state()).hasSameShape(resultStack)) {
+        reportShortCircuitRightMismatch(
+            evaluation, baseStack, resultStack, currentStack(rightResult.state()));
+        return BodyCheckResult.invalid(entryState);
+      }
+      ControlFlowState resultState =
+          ControlFlowState.joined(
+              ControlPath.fallthrough(resultStack, evaluation.endSpan()),
+              rightResult.state().transfers());
+      return BodyCheckResult.valid(prependTransfers(entryState.transfers(), resultState));
+    }
+
+    private void reportShortCircuitLeftUnderflow(
+        ShortCircuitEvaluation evaluation, AbstractStack stack) {
+      diagnostics.add(
+          Diagnostic.builder(
+                  DiagnosticCode.E_SHORT_CIRCUIT_LEFT_UNDERFLOW,
+                  Severity.ERROR,
+                  DiagnosticStage.TYPE_AND_STACK,
+                  program.sourcePath(),
+                  evaluation.openingSpan())
+              .field("operator", evaluation.operator().sourceName())
+              .expected("[真偽]")
+              .actual(formatStack(stack))
+              .fix(evaluation.operator().sourceName() + "の左辺となる真偽値を置いてください")
+              .build());
+    }
+
+    private void reportShortCircuitLeftTypeMismatch(
+        ShortCircuitEvaluation evaluation, ValueType actualType) {
+      diagnostics.add(
+          Diagnostic.builder(
+                  DiagnosticCode.E_SHORT_CIRCUIT_LEFT_TYPE_MISMATCH,
+                  Severity.ERROR,
+                  DiagnosticStage.TYPE_AND_STACK,
+                  program.sourcePath(),
+                  evaluation.openingSpan())
+              .field("actualType", actualType.sourceName())
+              .field("operator", evaluation.operator().sourceName())
+              .expected(ValueType.BOOLEAN.sourceName())
+              .actual(actualType.sourceName())
+              .fix(evaluation.operator().sourceName() + "の左辺を真偽にしてください")
+              .build());
+    }
+
+    private void reportShortCircuitRightMismatch(
+        ShortCircuitEvaluation evaluation,
+        AbstractStack baseStack,
+        AbstractStack expectedStack,
+        AbstractStack actualStack) {
+      diagnostics.add(
+          Diagnostic.builder(
+                  DiagnosticCode.E_SHORT_CIRCUIT_RIGHT_MISMATCH,
+                  Severity.ERROR,
+                  DiagnosticStage.TYPE_AND_STACK,
+                  program.sourcePath(),
+                  evaluation.endSpan())
+              .field("operator", evaluation.operator().sourceName())
+              .field("base", formatStackField(baseStack))
+              .field("expectedStack", formatStackField(expectedStack))
+              .field("actualStack", formatStackField(actualStack))
+              .expected(formatStack(expectedStack))
+              .actual(formatStack(actualStack))
+              .fix("右辺評価ブロックが真偽値を1個だけ残すようにしてください")
+              .relatedLocation(
+                  new RelatedLocation(
+                      program.sourcePath(),
+                      evaluation.openingSpan().start(),
+                      evaluation.operator().sourceName()))
+              .build());
     }
 
     /** 回数を消費して基準スタックを固定し、0回経路をループ後の通常経路として保持します。 */
@@ -3238,6 +3367,8 @@ public final class SemanticAnalyzer {
         if (element instanceof Conditional conditional) {
           checkParticles(conditional.trueBody());
           checkParticles(conditional.falseBody());
+        } else if (element instanceof ShortCircuitEvaluation evaluation) {
+          checkParticles(evaluation.rightBody());
         } else if (element instanceof CountedLoop loop) {
           checkParticles(loop.body());
         } else if (element instanceof ConditionLoop loop) {
@@ -3956,6 +4087,10 @@ public final class SemanticAnalyzer {
       if (element instanceof Conditional conditional
           && (containsBindingSyntax(conditional.trueBody())
               || containsBindingSyntax(conditional.falseBody()))) {
+        return true;
+      }
+      if (element instanceof ShortCircuitEvaluation evaluation
+          && containsBindingSyntax(evaluation.rightBody())) {
         return true;
       }
       if (element instanceof CountedLoop loop && containsBindingSyntax(loop.body())) {

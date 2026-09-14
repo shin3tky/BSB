@@ -41,6 +41,7 @@ import jp.bsb.frontend.ast.CountedLoop;
 import jp.bsb.frontend.ast.Literal;
 import jp.bsb.frontend.ast.LogicalConnectionDeclaration;
 import jp.bsb.frontend.ast.Program;
+import jp.bsb.frontend.ast.ShortCircuitEvaluation;
 import jp.bsb.frontend.ast.ValueDeclaration;
 import jp.bsb.frontend.ast.ValueReference;
 import jp.bsb.frontend.ast.WordDefinition;
@@ -67,6 +68,8 @@ final class BindingResolver {
   private final Map<WordDefinition, ScopeFrame> wordScopes = new IdentityHashMap<>();
   private final Map<Conditional, ScopeFrame> trueScopes = new IdentityHashMap<>();
   private final Map<Conditional, ScopeFrame> falseScopes = new IdentityHashMap<>();
+  private final Map<ShortCircuitEvaluation, ScopeFrame> shortCircuitScopes =
+      new IdentityHashMap<>();
   private final Map<CountedLoop, ScopeFrame> countedScopes = new IdentityHashMap<>();
   private final Map<ConditionLoop, ScopeFrame> conditionScopes = new IdentityHashMap<>();
   private final Map<ConditionLoop, ScopeFrame> conditionBodyScopes = new IdentityHashMap<>();
@@ -215,6 +218,15 @@ final class BindingResolver {
           falseScopes.put(conditional, falseScope);
           registerBody(conditional.falseBody(), falseScope, visible, ownerWord, counters);
         }
+      } else if (element instanceof ShortCircuitEvaluation evaluation) {
+        ScopeFrame rightScope =
+            createScope(
+                LexicalScopeKind.SHORT_CIRCUIT_RIGHT,
+                scope,
+                ownerWord,
+                evaluation.span());
+        shortCircuitScopes.put(evaluation, rightScope);
+        registerBody(evaluation.rightBody(), rightScope, visible, ownerWord, counters);
       } else if (element instanceof CountedLoop loop) {
         ScopeFrame loopScope =
             createScope(LexicalScopeKind.COUNTED_LOOP_BODY, scope, ownerWord, loop.span());
@@ -358,6 +370,8 @@ final class BindingResolver {
         if (conditional.hasElse()) {
           resolveBody(conditional.falseBody(), falseScopes.get(conditional), visible);
         }
+      } else if (element instanceof ShortCircuitEvaluation evaluation) {
+        resolveBody(evaluation.rightBody(), shortCircuitScopes.get(evaluation), visible);
       } else if (element instanceof CountedLoop loop) {
         resolveBody(loop.body(), countedScopes.get(loop), visible);
       } else if (element instanceof ConditionLoop loop) {
@@ -848,6 +862,7 @@ final class BindingResolver {
       case WORD_BODY -> "単語本体";
       case CONDITIONAL_TRUE -> "条件分岐の真側";
       case CONDITIONAL_FALSE -> "条件分岐の偽側";
+      case SHORT_CIRCUIT_RIGHT -> "短絡評価の右辺";
       case COUNTED_LOOP_BODY -> "回数ループ本体";
       case CONDITION_LOOP_CONDITION -> "条件ループの条件計算部";
       case CONDITION_LOOP_BODY -> "条件ループ本体";

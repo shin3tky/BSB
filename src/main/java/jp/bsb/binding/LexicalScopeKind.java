@@ -10,6 +10,8 @@ public enum LexicalScopeKind {
   CONDITIONAL_TRUE,
   /** 条件分岐の偽側 */
   CONDITIONAL_FALSE,
+  /** 短絡評価ブロックの右辺 */
+  SHORT_CIRCUIT_RIGHT,
   /** 回数ループの本体 */
   COUNTED_LOOP_BODY,
   /** 条件ループの条件計算部 */

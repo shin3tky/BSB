@@ -34,6 +34,8 @@ import jp.bsb.frontend.ast.LogicalConnectionArgument;
 import jp.bsb.frontend.ast.LogicalConnectionDeclaration;
 import jp.bsb.frontend.ast.Particle;
 import jp.bsb.frontend.ast.Program;
+import jp.bsb.frontend.ast.ShortCircuitEvaluation;
+import jp.bsb.frontend.ast.ShortCircuitOperator;
 import jp.bsb.frontend.ast.StackEffect;
 import jp.bsb.frontend.ast.TopLevelElement;
 import jp.bsb.frontend.ast.TypeReference;
@@ -637,7 +639,12 @@ public final class Parser {
           Token word = advance().token();
           initializer.add(new WordCall(word.value(), word.lexeme(), word.span()));
         }
-        case CONDITIONAL_START, COUNTED_LOOP_START, CONDITION_LOOP_START, ARRAY_LOOP_START -> {
+        case CONDITIONAL_START,
+            SHORT_CIRCUIT_OR,
+            SHORT_CIRCUIT_AND,
+            COUNTED_LOOP_START,
+            CONDITION_LOOP_START,
+            ARRAY_LOOP_START -> {
           Token forbidden = advance().token();
           reportInitializerElementNotAllowed(forbidden, forbidden.lexeme());
           skipForbiddenInitializerControl();
@@ -670,6 +677,8 @@ public final class Parser {
       while (!atEnd() && !check(TokenKind.DECLARATION_END) && depth > 0) {
         TokenKind kind = current().token().kind();
         if (kind == TokenKind.CONDITIONAL_START
+            || kind == TokenKind.SHORT_CIRCUIT_OR
+            || kind == TokenKind.SHORT_CIRCUIT_AND
             || kind == TokenKind.COUNTED_LOOP_START
             || kind == TokenKind.CONDITION_LOOP_START) {
           depth++;
@@ -867,7 +876,11 @@ public final class Parser {
             Token word = advance().token();
             body.add(new WordCall(word.value(), word.lexeme(), word.span()));
           }
-          case CONDITIONAL_START, COUNTED_LOOP_START, CONDITION_LOOP_START -> {
+          case CONDITIONAL_START,
+              SHORT_CIRCUIT_OR,
+              SHORT_CIRCUIT_AND,
+              COUNTED_LOOP_START,
+              CONDITION_LOOP_START -> {
             if (!tryEnterControl()) {
               break;
             }
@@ -1067,10 +1080,31 @@ public final class Parser {
     private BodyElement parseControl(TokenKind kind) {
       return switch (kind) {
         case CONDITIONAL_START -> parseConditional();
+        case SHORT_CIRCUIT_OR, SHORT_CIRCUIT_AND -> parseShortCircuit();
         case COUNTED_LOOP_START -> parseCountedLoop();
         case CONDITION_LOOP_START -> parseConditionLoop();
         default -> throw new IllegalArgumentException("token is not a control opener: " + kind);
       };
+    }
+
+    /** {@code または} または {@code かつ} から対応する {@code つぎに} までを解析します。 */
+    private ShortCircuitEvaluation parseShortCircuit() {
+      Token opening = advance().token();
+      List<BodyElement> rightBody = parseBody(Set.of(TokenKind.CONDITIONAL_END));
+      if (abortCurrentDefinition) {
+        return null;
+      }
+      if (!check(TokenKind.CONDITIONAL_END)) {
+        reportExpectedShortCircuitEnd(opening);
+        return null;
+      }
+      Token end = advance().token();
+      ShortCircuitOperator operator =
+          opening.kind() == TokenKind.SHORT_CIRCUIT_OR
+              ? ShortCircuitOperator.OR
+              : ShortCircuitOperator.AND;
+      return new ShortCircuitEvaluation(
+          operator, opening.span(), rightBody, end.span(), span(opening.span(), end.span()));
     }
 
     /** {@code ならば} から対応する {@code つぎに} までを解析します。 */
@@ -1331,7 +1365,12 @@ public final class Parser {
             body.add(new WordCall(word.value(), word.lexeme(), word.span()));
             lastSpan = word.span();
           }
-          case CONDITIONAL_START, COUNTED_LOOP_START, CONDITION_LOOP_START, ARRAY_LOOP_START -> {
+          case CONDITIONAL_START,
+              SHORT_CIRCUIT_OR,
+              SHORT_CIRCUIT_AND,
+              COUNTED_LOOP_START,
+              CONDITION_LOOP_START,
+              ARRAY_LOOP_START -> {
             Token forbidden = advance().token();
             reportArrayElementNotAllowed(opening, forbidden, elementIndex, forbidden.lexeme());
             skipForbiddenArrayControl();
@@ -2008,7 +2047,29 @@ public final class Parser {
               .expected("つぎに")
               .actual(currentText())
               .fix("ここにつぎにを追加してください")
-              .relatedLocation(new RelatedLocation(source.sourcePath(), position, "ならば"))
+              .relatedLocation(new RelatedLocation(source.sourcePath(), position, opening.lexeme()))
+              .build());
+      syntaxError = true;
+    }
+
+    /** 短絡評価ブロックの終了語不足を開始位置と演算子つきで報告します。 */
+    private void reportExpectedShortCircuitEnd(Token opening) {
+      SourcePosition position = opening.span().start();
+      diagnostics.add(
+          Diagnostic.builder(
+                  DiagnosticCode.E_EXPECTED_SHORT_CIRCUIT_END,
+                  Severity.ERROR,
+                  DiagnosticStage.SYNTAX,
+                  source.sourcePath(),
+                  currentPosition())
+              .field("operator", opening.lexeme())
+              .field("openingLine", Integer.toString(position.line()))
+              .field("openingColumn", Integer.toString(position.column()))
+              .expected("つぎに")
+              .actual(currentText())
+              .fix("ここにつぎにを追加してください")
+              .relatedLocation(
+                  new RelatedLocation(source.sourcePath(), position, opening.lexeme()))
               .build());
       syntaxError = true;
     }

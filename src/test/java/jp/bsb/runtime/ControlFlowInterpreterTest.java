@@ -21,6 +21,62 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 /** 制御フローの分岐、ループ、制御移行を、公開実行パイプラインから検証します。 */
 class ControlFlowInterpreterTest {
+  @Test
+  void evaluatesAllShortCircuitTruthTableRows() {
+    String source =
+        "メインとは （--）\n"
+            + "    いいえ または\n        いいえ\n    つぎに 一行表示する\n"
+            + "    いいえ または\n        はい\n    つぎに 一行表示する\n"
+            + "    はい かつ\n        いいえ\n    つぎに 一行表示する\n"
+            + "    はい かつ\n        はい\n    つぎに 一行表示する\n"
+            + "こと。\n";
+    var output = new MemoryOutputSink();
+
+    ProgramRunResult result =
+        new ProgramRunner()
+            .run(
+                "short-circuit-truth-table.bsb",
+                source.getBytes(StandardCharsets.UTF_8),
+                deterministic(output, TraceSink.none()));
+
+    assertTrue(
+        result.successful(),
+        result.diagnostics().stream()
+            .map(d -> d.code() + " " + d.fields() + " " + d.actual())
+            .toList()
+            .toString());
+    assertEquals("いいえ\nはい\nいいえ\nはい\n", output.utf8Text());
+  }
+
+  @Test
+  void skipsRightHandSideEffectsWhenLeftDeterminesTheResult() {
+    String source =
+        "メインとは （--）\n"
+            + "    はい または\n"
+            + "        「OR右辺」 一行表示する いいえ\n"
+            + "    つぎに 一行表示する\n"
+            + "    いいえ かつ\n"
+            + "        「AND右辺」 一行表示する はい\n"
+            + "    つぎに 一行表示する\n"
+            + "こと。\n";
+    var output = new MemoryOutputSink();
+
+    ProgramRunResult result =
+        new ProgramRunner()
+            .run(
+                "short-circuit-side-effects.bsb",
+                source.getBytes(StandardCharsets.UTF_8),
+                deterministic(output, TraceSink.none()));
+
+    assertTrue(
+        result.successful(),
+        result.diagnostics().stream()
+            .map(d -> d.code() + " " + d.fields() + " " + d.actual())
+            .toList()
+            .toString());
+    assertEquals("はい\nいいえ\n", output.utf8Text());
+  }
+
   @ParameterizedTest
   @MethodSource("normalControlCases")
   void runsEveryControlCaseAndTracingDoesNotChangeTheResult(

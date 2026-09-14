@@ -27,6 +27,8 @@ import jp.bsb.frontend.ast.ControlTransfer;
 import jp.bsb.frontend.ast.CountedLoop;
 import jp.bsb.frontend.ast.Literal;
 import jp.bsb.frontend.ast.Particle;
+import jp.bsb.frontend.ast.ShortCircuitEvaluation;
+import jp.bsb.frontend.ast.ShortCircuitOperator;
 import jp.bsb.frontend.ast.ValueDeclaration;
 import jp.bsb.frontend.ast.ValueReference;
 import jp.bsb.frontend.ast.WordCall;
@@ -383,6 +385,8 @@ public final class IrGenerator {
           switch (element) {
             case Conditional conditional ->
                 emitConditional(conditional, builder, symbolsByName, analyzed, slots, loops);
+            case ShortCircuitEvaluation evaluation ->
+                emitShortCircuit(evaluation, builder, symbolsByName, analyzed, slots, loops);
             case CountedLoop loop ->
                 emitCountedLoop(loop, builder, symbolsByName, analyzed, slots, loops);
             case ConditionLoop loop ->
@@ -453,6 +457,53 @@ public final class IrGenerator {
     builder.mark(falseStart);
     if (!emitBody(conditional.falseBody(), builder, symbolsByName, analyzed, slots, loops)) {
       return false;
+    }
+    builder.mark(end);
+    return true;
+  }
+
+  /** 左辺を分岐命令で消費し、必要な場合だけ右辺本体へ進むIRを生成します。 */
+  private static boolean emitShortCircuit(
+      ShortCircuitEvaluation evaluation,
+      WordBuilder builder,
+      Map<String, SymbolId> symbolsByName,
+      AnalyzedProgram analyzed,
+      SlotLayout slots,
+      ArrayList<LoopTarget> loops) {
+    Label rightOrShortCircuit = builder.newLabel();
+    Label end = builder.newLabel();
+    if (!builder.add(
+        evaluation.openingSpan(),
+        () ->
+            new BranchIfFalse(
+                rightOrShortCircuit.instructionIndex(), evaluation.openingSpan()))) {
+      return false;
+    }
+
+    if (evaluation.operator() == ShortCircuitOperator.OR) {
+      if (!builder.add(
+              evaluation.openingSpan(),
+              () -> new PushConst(new BooleanValue(true), evaluation.openingSpan()))
+          || !builder.add(
+              evaluation.endSpan(), () -> new Jump(end.instructionIndex(), 0, evaluation.endSpan()))) {
+        return false;
+      }
+      builder.mark(rightOrShortCircuit);
+      if (!emitBody(evaluation.rightBody(), builder, symbolsByName, analyzed, slots, loops)) {
+        return false;
+      }
+    } else {
+      if (!emitBody(evaluation.rightBody(), builder, symbolsByName, analyzed, slots, loops)
+          || !builder.add(
+              evaluation.endSpan(), () -> new Jump(end.instructionIndex(), 0, evaluation.endSpan()))) {
+        return false;
+      }
+      builder.mark(rightOrShortCircuit);
+      if (!builder.add(
+          evaluation.openingSpan(),
+          () -> new PushConst(new BooleanValue(false), evaluation.openingSpan()))) {
+        return false;
+      }
     }
     builder.mark(end);
     return true;

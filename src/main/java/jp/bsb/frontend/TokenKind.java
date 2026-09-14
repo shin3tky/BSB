@@ -45,6 +45,12 @@ public enum TokenKind {
   /** 条件分岐を終了する {@code つぎに} */
   CONDITIONAL_END,
 
+  /** 短絡論理和の右辺評価ブロックを開始する {@code または} */
+  SHORT_CIRCUIT_OR,
+
+  /** 短絡論理積の右辺評価ブロックを開始する {@code かつ} */
+  SHORT_CIRCUIT_AND,
+
   /** 回数ループを開始する {@code 回だけ} */
   COUNTED_LOOP_START,
 

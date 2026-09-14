@@ -77,6 +77,8 @@ public final class Lexer {
           Map.entry("ならば", TokenKind.CONDITIONAL_START),
           Map.entry("さもなければ", TokenKind.CONDITIONAL_ELSE),
           Map.entry("つぎに", TokenKind.CONDITIONAL_END),
+          Map.entry("または", TokenKind.SHORT_CIRCUIT_OR),
+          Map.entry("かつ", TokenKind.SHORT_CIRCUIT_AND),
           Map.entry("回だけ", TokenKind.COUNTED_LOOP_START),
           Map.entry("ここから", TokenKind.CONDITION_LOOP_START),
           Map.entry("続く間", TokenKind.LOOP_CONDITION_SEPARATOR),
