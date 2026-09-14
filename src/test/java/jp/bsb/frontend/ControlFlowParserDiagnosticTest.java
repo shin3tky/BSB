@@ -92,8 +92,7 @@ class ControlFlowParserDiagnosticTest {
     Diagnostic diagnostic = parsed.diagnostics().diagnostics().getFirst();
     assertEquals(DiagnosticCode.E_EXPECTED_SHORT_CIRCUIT_END, diagnostic.code());
     assertEquals(
-        Map.of("operator", "または", "openingLine", "2", "openingColumn", "8"),
-        diagnostic.fields());
+        Map.of("operator", "または", "openingLine", "2", "openingColumn", "8"), diagnostic.fields());
     assertEquals("つぎに", diagnostic.expected().orElseThrow());
     assertEquals("こと", diagnostic.actual().orElseThrow());
     assertEquals("または", diagnostic.relatedLocations().getFirst().description());

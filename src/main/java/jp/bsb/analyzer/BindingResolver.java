@@ -220,11 +220,7 @@ final class BindingResolver {
         }
       } else if (element instanceof ShortCircuitEvaluation evaluation) {
         ScopeFrame rightScope =
-            createScope(
-                LexicalScopeKind.SHORT_CIRCUIT_RIGHT,
-                scope,
-                ownerWord,
-                evaluation.span());
+            createScope(LexicalScopeKind.SHORT_CIRCUIT_RIGHT, scope, ownerWord, evaluation.span());
         shortCircuitScopes.put(evaluation, rightScope);
         registerBody(evaluation.rightBody(), rightScope, visible, ownerWord, counters);
       } else if (element instanceof CountedLoop loop) {

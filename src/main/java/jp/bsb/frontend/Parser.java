@@ -2068,8 +2068,7 @@ public final class Parser {
               .expected("つぎに")
               .actual(currentText())
               .fix("ここにつぎにを追加してください")
-              .relatedLocation(
-                  new RelatedLocation(source.sourcePath(), position, opening.lexeme()))
+              .relatedLocation(new RelatedLocation(source.sourcePath(), position, opening.lexeme()))
               .build());
       syntaxError = true;
     }

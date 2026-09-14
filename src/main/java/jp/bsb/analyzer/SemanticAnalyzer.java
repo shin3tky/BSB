@@ -37,8 +37,8 @@ import jp.bsb.frontend.ast.CountedLoop;
 import jp.bsb.frontend.ast.Literal;
 import jp.bsb.frontend.ast.LogicalConnectionDeclaration;
 import jp.bsb.frontend.ast.Particle;
-import jp.bsb.frontend.ast.ShortCircuitEvaluation;
 import jp.bsb.frontend.ast.Program;
+import jp.bsb.frontend.ast.ShortCircuitEvaluation;
 import jp.bsb.frontend.ast.TopLevelElement;
 import jp.bsb.frontend.ast.TypeReference;
 import jp.bsb.frontend.ast.ValueDeclaration;
@@ -725,11 +725,7 @@ public final class SemanticAnalyzer {
       if (element instanceof ShortCircuitEvaluation evaluation) {
         StructuralFlow rightFlow = identifyBodyReachability(evaluation.rightBody());
         return new StructuralFlow(
-            true,
-            rightFlow.canReturn(),
-            rightFlow.canBreak(),
-            rightFlow.canContinue(),
-            null);
+            true, rightFlow.canReturn(), rightFlow.canBreak(), rightFlow.canContinue(), null);
       }
       if (element instanceof CountedLoop loop) {
         StructuralFlow bodyFlow = identifyBodyReachability(loop.body());

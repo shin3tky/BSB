@@ -475,8 +475,7 @@ public final class IrGenerator {
     if (!builder.add(
         evaluation.openingSpan(),
         () ->
-            new BranchIfFalse(
-                rightOrShortCircuit.instructionIndex(), evaluation.openingSpan()))) {
+            new BranchIfFalse(rightOrShortCircuit.instructionIndex(), evaluation.openingSpan()))) {
       return false;
     }
 
@@ -485,7 +484,8 @@ public final class IrGenerator {
               evaluation.openingSpan(),
               () -> new PushConst(new BooleanValue(true), evaluation.openingSpan()))
           || !builder.add(
-              evaluation.endSpan(), () -> new Jump(end.instructionIndex(), 0, evaluation.endSpan()))) {
+              evaluation.endSpan(),
+              () -> new Jump(end.instructionIndex(), 0, evaluation.endSpan()))) {
         return false;
       }
       builder.mark(rightOrShortCircuit);
@@ -495,7 +495,8 @@ public final class IrGenerator {
     } else {
       if (!emitBody(evaluation.rightBody(), builder, symbolsByName, analyzed, slots, loops)
           || !builder.add(
-              evaluation.endSpan(), () -> new Jump(end.instructionIndex(), 0, evaluation.endSpan()))) {
+              evaluation.endSpan(),
+              () -> new Jump(end.instructionIndex(), 0, evaluation.endSpan()))) {
         return false;
       }
       builder.mark(rightOrShortCircuit);

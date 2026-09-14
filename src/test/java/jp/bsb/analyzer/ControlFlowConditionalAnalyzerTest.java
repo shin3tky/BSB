@@ -20,16 +20,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class ControlFlowConditionalAnalyzerTest {
   @ParameterizedTest
-  @ValueSource(
-      strings = {
-        "はい または\n        いいえ\n    つぎに",
-        "いいえ かつ\n        はい\n    つぎに"
-      })
+  @ValueSource(strings = {"はい または\n        いいえ\n    つぎに", "いいえ かつ\n        はい\n    つぎに"})
   void acceptsShortCircuitBlocksThatProduceOneBoolean(String expression) {
-    String source =
-        "メインとは （--）\n    "
-            + expression
-            + "\n    一行表示する\nこと。\n";
+    String source = "メインとは （--）\n    " + expression + "\n    一行表示する\nこと。\n";
 
     AnalysisResult result = AnalyzerTestSupport.checkText(source);
 
@@ -39,8 +32,7 @@ class ControlFlowConditionalAnalyzerTest {
   @ParameterizedTest
   @MethodSource("shortCircuitFailureCases")
   void rejectsInvalidShortCircuitStacks(String body, DiagnosticCode expectedCode) {
-    AnalysisResult result =
-        AnalyzerTestSupport.checkText("メインとは （--）\n    " + body + "\nこと。\n");
+    AnalysisResult result = AnalyzerTestSupport.checkText("メインとは （--）\n    " + body + "\nこと。\n");
 
     assertFalse(result.successful());
     assertEquals(List.of(expectedCode), result.diagnostics().stream().map(d -> d.code()).toList());
@@ -48,15 +40,11 @@ class ControlFlowConditionalAnalyzerTest {
 
   private static Stream<Arguments> shortCircuitFailureCases() {
     return Stream.of(
+        Arguments.of("または\n        はい\n    つぎに", DiagnosticCode.E_SHORT_CIRCUIT_LEFT_UNDERFLOW),
         Arguments.of(
-            "または\n        はい\n    つぎに",
-            DiagnosticCode.E_SHORT_CIRCUIT_LEFT_UNDERFLOW),
+            "1 かつ\n        はい\n    つぎに", DiagnosticCode.E_SHORT_CIRCUIT_LEFT_TYPE_MISMATCH),
         Arguments.of(
-            "1 かつ\n        はい\n    つぎに",
-            DiagnosticCode.E_SHORT_CIRCUIT_LEFT_TYPE_MISMATCH),
-        Arguments.of(
-            "はい または\n        1\n    つぎに 一行表示する",
-            DiagnosticCode.E_SHORT_CIRCUIT_RIGHT_MISMATCH));
+            "はい または\n        1\n    つぎに 一行表示する", DiagnosticCode.E_SHORT_CIRCUIT_RIGHT_MISMATCH));
   }
 
   @ParameterizedTest
