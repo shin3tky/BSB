@@ -29,7 +29,7 @@ public final class TextRegexConformanceData {
 
   private TextRegexConformanceData() {}
 
-  /** N7/F7の全54ケースとコマンド期待値を厳密に読み込みます。 */
+  /** N7/F7の全56ケースとコマンド期待値を厳密に読み込みます。 */
   public static CaseCatalog loadCases() throws IOException {
     CheckedProperties properties = loadProperties("cases.properties");
     assertEquals("1", properties.require("schema.version"));
@@ -100,7 +100,7 @@ public final class TextRegexConformanceData {
     assertTrue(
         ids.containsAll(staticallyRejected.ids()), "failure.static.ids contains an unknown case");
     assertTrue(ids.containsAll(runtime.ids()), "failure.runtime.ids contains an unknown case");
-    assertEquals(24, ids.stream().filter(id -> id.startsWith("TEXT-N")).count(), "N7 count");
+    assertEquals(26, ids.stream().filter(id -> id.startsWith("TEXT-N")).count(), "N7 count");
     assertEquals(30, ids.stream().filter(id -> id.startsWith("TEXT-F")).count(), "F7 count");
     properties.assertFullyConsumed();
     return new CaseCatalog(
@@ -147,7 +147,7 @@ public final class TextRegexConformanceData {
     return Collections.unmodifiableMap(result);
   }
 
-  /** R7の全25境界・内部ケースを文字列variantも保って読み込みます。 */
+  /** R7の全27境界・内部ケースを文字列variantも保って読み込みます。 */
   public static List<ResourceSpec> loadResources() throws IOException {
     List<List<String>> rows =
         loadTsv(

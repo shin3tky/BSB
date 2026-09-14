@@ -12,6 +12,7 @@ import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import jp.bsb.adapter.IcuUnicodeAdapter;
 import jp.bsb.diagnostics.Diagnostic;
 import jp.bsb.diagnostics.DiagnosticCode;
 import jp.bsb.diagnostics.DiagnosticStage;
@@ -163,6 +164,9 @@ final class BuiltinExecutor {
           throw new IllegalStateException("ROUNDING_MODE_VALUE calls must be lowered to PushConst");
       case STRING_CONCAT -> concatenate(word, stack, span);
       case STRING_COMPARE -> compareStrings(stack);
+      case STRING_TO_UPPER_CASE -> mapStringCase(word, stack, span, true);
+      case STRING_TO_LOWER_CASE -> mapStringCase(word, stack, span, false);
+      case STRING_CASE_INSENSITIVE_COMPARE -> compareStringsIgnoringCase(stack);
       case STRING_TRIM -> trimString(stack);
       case GRAPHEME_LENGTH -> stringLength(stack, true);
       case GRAPHEME_GET -> stringGet(word, stack, span, true);
@@ -3652,6 +3656,31 @@ final class BuiltinExecutor {
     int firstIndex = stack.size() - 2;
     String first = ((StringValue) stack.get(firstIndex)).value();
     String second = ((StringValue) stack.get(firstIndex + 1)).value();
+    int comparison = Integer.signum(UnicodeText.compareScalars(first, second));
+    stack.removeLast();
+    stack.set(firstIndex, new IntegerValue(BigInteger.valueOf(comparison)));
+    return new byte[0];
+  }
+
+  private byte[] mapStringCase(
+      BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span, boolean upper)
+      throws RuntimeFailure {
+    int index = stack.size() - 1;
+    String input = ((StringValue) stack.get(index)).value();
+    String mapped =
+        upper ? IcuUnicodeAdapter.toUpperCase(input) : IcuUnicodeAdapter.toLowerCase(input);
+    long observed = Utf8Length.measureUpTo(mapped, Long.MAX_VALUE).bytes();
+    if (observed > StringLimits.MAX_UTF8_BYTES) {
+      throw stringUtf8Limit(word, span, observed);
+    }
+    stack.set(index, new StringValue(mapped));
+    return new byte[0];
+  }
+
+  private static byte[] compareStringsIgnoringCase(ArrayList<RuntimeValue> stack) {
+    int firstIndex = stack.size() - 2;
+    String first = IcuUnicodeAdapter.foldCase(((StringValue) stack.get(firstIndex)).value());
+    String second = IcuUnicodeAdapter.foldCase(((StringValue) stack.get(firstIndex + 1)).value());
     int comparison = Integer.signum(UnicodeText.compareScalars(first, second));
     stack.removeLast();
     stack.set(firstIndex, new IntegerValue(BigInteger.valueOf(comparison)));

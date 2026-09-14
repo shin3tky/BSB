@@ -1143,7 +1143,16 @@ public final class BuiltinDictionary {
               "同じ長さのキー配列とJSON値配列から不変オブジェクトを構築します。",
               List.of("配列<文字列>", "配列<JSON>"),
               List.of("JSON"),
-              "【「id」】と 【1を 整数をJSONに変換する】を JSONオブジェクトを構築する"));
+              "【「id」】と 【1を 整数をJSONに変換する】を JSONオブジェクトを構築する"),
+          fixedText(
+              "大文字に変換する", BuiltinOperation.STRING_TO_UPPER_CASE, List.of("文字列"), List.of("文字列")),
+          fixedText(
+              "小文字に変換する", BuiltinOperation.STRING_TO_LOWER_CASE, List.of("文字列"), List.of("文字列")),
+          fixedText(
+              "大小文字を無視して比較する",
+              BuiltinOperation.STRING_CASE_INSENSITIVE_COMPARE,
+              List.of("文字列", "文字列"),
+              List.of("整数")));
 
   private static final Map<String, BuiltinWord> BY_NAME = indexByName();
   private static final Set<String> CANONICAL_NAMES = canonicalNameSet();
@@ -1540,6 +1549,9 @@ public final class BuiltinDictionary {
     return switch (operation) {
       case STRING_CONCAT -> "2文字列を順に連結します。";
       case STRING_COMPARE -> "2文字列をUnicodeスカラー値順で比較します。";
+      case STRING_TO_UPPER_CASE -> "Unicode 16.0の既定完全大文字写像を適用します。";
+      case STRING_TO_LOWER_CASE -> "Unicode 16.0の既定完全小文字写像を適用します。";
+      case STRING_CASE_INSENSITIVE_COMPARE -> "Unicode 16.0の既定完全ケースフォールド後に比較します。";
       case STRING_TRIM -> "文字列の前後から規定の空白を除きます。";
       case GRAPHEME_LENGTH -> "文字列の拡張書記素クラスタ数を返します。";
       case GRAPHEME_GET -> "書記素位置で文字を1つ取り出します。";
@@ -1569,6 +1581,9 @@ public final class BuiltinDictionary {
     return switch (operation) {
       case STRING_CONCAT -> "「こん」と「にちは」を つなぐ";
       case STRING_COMPARE -> "「あ」と「い」を 文字列を比較する";
+      case STRING_TO_UPPER_CASE -> "「Straße」を 大文字に変換する";
+      case STRING_TO_LOWER_CASE -> "「ΟΣ」を 小文字に変換する";
+      case STRING_CASE_INSENSITIVE_COMPARE -> "「Straße」と「STRASSE」を 大小文字を無視して比較する";
       case STRING_TRIM -> "「 前後 」を 前後の空白を除く";
       case GRAPHEME_LENGTH -> "「が𠮷」を 文字列の長さ";
       case GRAPHEME_GET -> "「赤青」と1を 文字列から取り出す";

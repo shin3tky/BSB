@@ -38,7 +38,7 @@ class JsonPublishedContractConformanceTest {
             .filter(word -> word.featureGroup().equals("JSON"))
             .toList();
 
-    assertEquals(184, explanation.builtinWords().size());
+    assertEquals(187, explanation.builtinWords().size());
     assertEquals(33, jsonFeature.size());
     assertTrue(jsonFeature.stream().allMatch(word -> word.typeRule().equals("fixed")));
     assertTrue(jsonFeature.stream().allMatch(word -> word.capabilities().isEmpty()));

@@ -46,4 +46,19 @@ class TextRegexBuiltinDictionaryTest {
     assertEquals(
         List.of("配列<文字列>"), BuiltinDictionary.find("正規表現で分割する").orElseThrow().outputTypeNames());
   }
+
+  @Test
+  void appendsUnicodeCaseWordsWithoutRenumberingExistingWords() {
+    List<BuiltinWord> words = BuiltinDictionary.words();
+
+    assertEquals(
+        List.of("大文字に変換する", "小文字に変換する", "大小文字を無視して比較する"),
+        words.subList(184, 187).stream().map(BuiltinWord::canonicalName).toList());
+    assertTrue(
+        words.subList(184, 187).stream().allMatch(word -> word.featureGroup().equals("TEXT")));
+    assertTrue(
+        words.subList(184, 187).stream()
+            .allMatch(word -> word.typeRule() == BuiltinTypeRule.FIXED));
+    assertTrue(words.subList(184, 187).stream().allMatch(word -> word.sideEffects().isEmpty()));
+  }
 }

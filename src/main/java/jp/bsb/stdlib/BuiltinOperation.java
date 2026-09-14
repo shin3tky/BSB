@@ -45,6 +45,12 @@ public enum BuiltinOperation {
   STRING_CONCAT,
   /** Unicodeスカラー値順の文字列比較。 */
   STRING_COMPARE,
+  /** Unicode既定完全大文字写像。 */
+  STRING_TO_UPPER_CASE,
+  /** Unicode既定完全小文字写像。 */
+  STRING_TO_LOWER_CASE,
+  /** Unicode既定完全ケースフォールド後のスカラー値順比較。 */
+  STRING_CASE_INSENSITIVE_COMPARE,
   /** Unicode White_Spaceに基づく前後空白除去。 */
   STRING_TRIM,
   /** 書記素クラスタ数。 */

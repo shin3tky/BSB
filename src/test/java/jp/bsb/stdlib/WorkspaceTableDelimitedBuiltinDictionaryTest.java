@@ -15,7 +15,7 @@ class WorkspaceTableDelimitedBuiltinDictionaryTest {
     int first = words.indexOf(BuiltinDictionary.find("CSVを表として解析する").orElseThrow());
     List<BuiltinWord> delimited = words.subList(first, first + 8);
 
-    assertEquals(184, words.size());
+    assertEquals(187, words.size());
     assertEquals(
         List.of(
             "CSVを表として解析する",

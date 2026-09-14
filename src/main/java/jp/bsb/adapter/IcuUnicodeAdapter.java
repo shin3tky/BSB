@@ -87,6 +87,22 @@ public final class IcuUnicodeAdapter {
     return UCharacter.hasBinaryProperty(codePoint, UProperty.WHITE_SPACE);
   }
 
+  /** Unicode 16.0の既定完全大文字写像を、言語環境に依存しないroot localeで適用します。 */
+  public static String toUpperCase(String value) {
+    return UCharacter.toUpperCase(ULocale.ROOT, Objects.requireNonNull(value, "value"));
+  }
+
+  /** Unicode 16.0の既定完全小文字写像を、言語環境に依存しないroot localeで適用します。 */
+  public static String toLowerCase(String value) {
+    return UCharacter.toLowerCase(ULocale.ROOT, Objects.requireNonNull(value, "value"));
+  }
+
+  /** Unicode 16.0の既定完全ケースフォールドを適用します。 */
+  public static String foldCase(String value) {
+    return UCharacter.foldCase(
+        Objects.requireNonNull(value, "value"), UCharacter.FOLD_CASE_DEFAULT);
+  }
+
   public static List<Integer> graphemeBoundaries(String value) {
     GraphemeCursor cursor = graphemeCursor(value);
     var boundaries = new ArrayList<Integer>();

@@ -3921,6 +3921,8 @@ public final class SemanticAnalyzer {
   private static boolean isSingleInputConversion(String wordName) {
     return wordName.equals("小数に変換する")
         || wordName.equals("整数に変換する")
+        || wordName.equals("大文字に変換する")
+        || wordName.equals("小文字に変換する")
         || wordName.equals("入力行である")
         || wordName.equals("入力終端である")
         || wordName.equals("入力キャンセルである")
@@ -3932,6 +3934,7 @@ public final class SemanticAnalyzer {
   private static String builtinTypeFix(WordCall call, int inputIndex, ValueType expectedType) {
     return switch (call.name()) {
       case "つなぐ" -> "第" + inputIndex + "入力を明示的に文字列へ変換してください";
+      case "大文字に変換する", "小文字に変換する", "大小文字を無視して比較する" -> "文字列を渡してください";
       case "文字列からコードポイントを取り出す" -> inputIndex == 2 ? "0始まりの整数位置を渡してください" : "文字列を渡してください";
       case "正規表現に完全一致する", "正規表現を含む", "正規表現で最初を取り出す", "正規表現で置き換える", "正規表現で分割する" ->
           expectedType.equals(ValueType.REGEX) ? "正規表現リテラルを使用してください" : "文字列を渡してください";

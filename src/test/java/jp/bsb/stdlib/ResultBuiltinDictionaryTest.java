@@ -14,7 +14,7 @@ class ResultBuiltinDictionaryTest {
             .filter(word -> word.featureGroup().equals("RESULT"))
             .toList();
 
-    assertEquals(184, BuiltinDictionary.words().size());
+    assertEquals(187, BuiltinDictionary.words().size());
     assertEquals(
         List.of("成功にする", "失敗にする", "結果が成功である", "結果が失敗である", "結果から成功値を取り出す", "結果から失敗値を取り出す", "結果を捨てる"),
         words.stream().map(BuiltinWord::canonicalName).toList());

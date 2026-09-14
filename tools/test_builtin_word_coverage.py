@@ -6,6 +6,13 @@ import builtin_word_coverage
 
 
 class BuiltinWordCoverageTest(unittest.TestCase):
+    def test_classifies_group_prefixed_and_legacy_case_names(self):
+        self.assertEqual("N", builtin_word_coverage.classify_bsb_prefix("TEXT-N025"))
+        self.assertEqual("F", builtin_word_coverage.classify_bsb_prefix("RESULT-F-type"))
+        self.assertEqual("N", builtin_word_coverage.classify_bsb_prefix("N001"))
+        self.assertEqual("F", builtin_word_coverage.classify_bsb_prefix("F001"))
+        self.assertIsNone(builtin_word_coverage.classify_bsb_prefix("chapter"))
+
     def test_static_arguments_are_separate_from_the_called_word(self):
         tokens = builtin_word_coverage.tokenize_bsb(
             """

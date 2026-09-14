@@ -24,3 +24,5 @@ TEXT-R009	traceArrayElementCodePoints	17	truncated	0	-	16	17
 TEXT-R009	traceDisclosure	0	redacted	0	-	0	0
 TEXT-R010	stringRegexIrTypes	matching	accepted	0	-	-	-
 TEXT-R010	stringRegexIrTypes	mismatch	internal-error	70	INTERNAL	-	-
+TEXT-R011	caseMappingResultUtf8Bytes	16777216	accepted	0	-	16777216	16777216
+TEXT-R011	caseMappingResultUtf8Bytes	16777217	error	10	E_STRING_UTF8_LIMIT	16777216	16777217

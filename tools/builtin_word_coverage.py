@@ -308,7 +308,7 @@ def tokenize_bsb(text: str) -> set[str]:
 # tests/conformance の走査
 # ---------------------------------------------------------------------------
 
-CATEGORY_PREFIX = re.compile(r"^([A-Za-z]+)")
+CATEGORY_PREFIX = re.compile(r"^(?:[A-Za-z]+-)?([NF])")
 
 
 def classify_bsb_prefix(stem: str) -> str | None:
@@ -316,9 +316,9 @@ def classify_bsb_prefix(stem: str) -> str | None:
     if not m:
         return None
     prefix = m.group(1)
-    if prefix.startswith("N"):
+    if prefix == "N":
         return "N"
-    if prefix.startswith("F"):
+    if prefix == "F":
         return "F"
     return None
 

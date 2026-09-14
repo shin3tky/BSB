@@ -110,6 +110,20 @@ class TextRegexStaticTypeAnalyzerTest {
     assertEquals("正規表現", result.diagnostics().getFirst().fields().get("actualType"));
   }
 
+  @Test
+  void requiresStringInputsForUnicodeCaseOperations() {
+    AnalysisResult mapping =
+        AnalyzerTestSupport.checkText("メインとは （--）\n" + "    42 を 大文字に変換する\n" + "こと。\n");
+    AnalysisResult comparison =
+        AnalyzerTestSupport.checkText("メインとは （--）\n" + "    「a」と 1 を 大小文字を無視して比較する\n" + "こと。\n");
+
+    for (AnalysisResult result : List.of(mapping, comparison)) {
+      assertFalse(result.successful());
+      assertEquals(List.of(DiagnosticCode.E_TYPE_MISMATCH), codes(result));
+      assertEquals(List.of("文字列を渡してください"), result.diagnostics().getFirst().fixes());
+    }
+  }
+
   private static void assertDiagnostic(
       String sourceName,
       DiagnosticCode code,

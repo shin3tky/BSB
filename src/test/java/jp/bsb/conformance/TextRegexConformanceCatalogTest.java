@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 /** N7、F7、R7と全参照・生成成果物を欠落・重複・未使用なく発見できることを固定します。 */
 class TextRegexConformanceCatalogTest {
   @Test
-  void discoversAllSixtyFourIdsAndEveryReferencedArtifact() throws IOException {
+  void discoversAllSixtySevenIdsAndEveryReferencedArtifact() throws IOException {
     ConformanceData.validateMessages();
     var catalog = TextRegexConformanceData.loadCases();
     var diagnostics = TextRegexConformanceData.loadDiagnostics();
@@ -25,17 +25,17 @@ class TextRegexConformanceCatalogTest {
     List<String> caseIds = catalog.cases().stream().map(CaseSpec::id).toList();
     List<String> resourceIds =
         resources.stream().map(TextRegexConformanceData.ResourceSpec::id).distinct().toList();
-    List<String> expectedCases = Stream.concat(ids("TEXT-N", 24), ids("TEXT-F", 30)).toList();
-    List<String> expectedResources = ids("TEXT-R", 10).toList();
+    List<String> expectedCases = Stream.concat(ids("TEXT-N", 26), ids("TEXT-F", 30)).toList();
+    List<String> expectedResources = ids("TEXT-R", 11).toList();
 
     assertEquals(expectedCases, caseIds);
     assertEquals(expectedResources, resourceIds);
     var allIds = new LinkedHashSet<String>();
     allIds.addAll(caseIds);
     allIds.addAll(resourceIds);
-    assertEquals(64, allIds.size());
+    assertEquals(67, allIds.size());
     assertEquals(30, diagnostics.size());
-    assertEquals(25, resources.size());
+    assertEquals(27, resources.size());
 
     for (CaseSpec spec : catalog.cases()) {
       byte[] first = TextRegexConformanceData.generateCaseSource(spec).bytes();
@@ -63,7 +63,7 @@ class TextRegexConformanceCatalogTest {
   }
 
   @Test
-  void consumesEveryKeyFromAllTenGeneratedDefinitions() throws IOException {
+  void consumesEveryKeyFromAllElevenGeneratedDefinitions() throws IOException {
     Map<String, List<String>> keys =
         Map.ofEntries(
             Map.entry(
@@ -107,10 +107,13 @@ class TextRegexConformanceCatalogTest {
                     "redacted.regex",
                     "redacted.array")),
             Map.entry(
-                "TEXT-R010", List.of("generator", "variants", "value.types", "mismatch.outcome")));
+                "TEXT-R010", List.of("generator", "variants", "value.types", "mismatch.outcome")),
+            Map.entry(
+                "TEXT-R011",
+                List.of("generator", "variants", "unicode.version", "mapping", "atomicity")));
 
-    assertEquals(ids("TEXT-R", 10).toList(), keys.keySet().stream().sorted().toList());
-    for (String id : ids("TEXT-R", 10).toList()) {
+    assertEquals(ids("TEXT-R", 11).toList(), keys.keySet().stream().sorted().toList());
+    for (String id : ids("TEXT-R", 11).toList()) {
       CheckedProperties properties = TextRegexConformanceData.loadGeneratedResource(id);
       keys.get(id).forEach(properties::require);
       properties.assertFullyConsumed();
