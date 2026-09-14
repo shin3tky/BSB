@@ -5,7 +5,7 @@ import org.gradle.api.tasks.wrapper.Wrapper
 plugins {
     application
     id("com.gradleup.shadow") version "9.6.1"
-    id("com.diffplug.spotless") version "8.10.0"
+    id("com.diffplug.spotless") version "8.10.2"
     jacoco
 }
 
@@ -25,7 +25,7 @@ java {
 // JDK 25(クラスファイルバージョン69)のカバレッジ計測にはJava 25公式対応版が必要。
 // 0.8.14でJava 25の公式対応が入った(JaCoCoのリリース履歴を参照)。
 jacoco {
-    toolVersion = "0.8.14"
+    toolVersion = "0.8.15"
 }
 
 application {
@@ -53,7 +53,7 @@ spotless {
     java {
         target("src/*/java/**/*.java")
         removeUnusedImports()
-        googleJavaFormat("1.36.0")
+        googleJavaFormat("1.36.1")
         formatAnnotations()
         trimTrailingWhitespace()
         endWithNewline()
