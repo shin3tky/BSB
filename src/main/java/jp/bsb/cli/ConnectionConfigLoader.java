@@ -19,15 +19,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import jp.bsb.adapter.TomlAdapter;
+import jp.bsb.adapter.TomlAdapter.Array;
+import jp.bsb.adapter.TomlAdapter.Table;
 import jp.bsb.runtime.ConnectionPolicy;
 import jp.bsb.runtime.ConnectionResolution;
 import jp.bsb.runtime.CredentialReference;
 import jp.bsb.runtime.HttpRetryPolicy;
 import jp.bsb.runtime.JdkHttpsTransport;
-import org.tomlj.Toml;
-import org.tomlj.TomlArray;
-import org.tomlj.TomlParseResult;
-import org.tomlj.TomlTable;
 
 /** 公開CLIの版付きTOML接続設定を、既存の実行環境能力へ変換します。 */
 final class ConnectionConfigLoader {
@@ -89,18 +88,18 @@ final class ConnectionConfigLoader {
   LoadedConnectionConfig load(Path path) throws ConnectionConfigException {
     byte[] bytes = read(path);
     String text = decode(bytes);
-    TomlParseResult document = Toml.parse(text);
-    if (document.hasErrors()) {
-      var position = document.errors().getFirst().position();
+    TomlAdapter.ParseResult parsed = TomlAdapter.parse(text);
+    if (parsed.error().isPresent()) {
+      var position = parsed.error().orElseThrow();
       throw problem("TOML構文が正しくありません（行" + position.line() + "、列" + position.column() + "）。");
     }
+    Table document = parsed.document();
     rejectUnknownKeys(document, ROOT_KEYS, "ルート");
-    requireLong(document, "schema-version", "schema-version");
-    long schemaVersion = document.getLong("schema-version");
+    long schemaVersion = requireLong(document, "schema-version", "schema-version");
     if (schemaVersion != 1L && schemaVersion != 2L) {
       throw problem("schema-version は1または2でなければなりません。");
     }
-    TomlTable connections = requireTable(document, "connections", "connections");
+    Table connections = requireTable(document, "connections", "connections");
     if (connections.isEmpty()) {
       throw problem("connectionsには1個以上の接続を指定してください。");
     }
@@ -112,8 +111,8 @@ final class ConnectionConfigLoader {
     var transport = JdkHttpsTransport.builder();
     for (String name : connections.keySet()) {
       validateConnectionName(name);
-      Object raw = connections.get(List.of(name));
-      if (!(raw instanceof TomlTable table)) {
+      Object raw = connections.get(name);
+      if (!(raw instanceof Table table)) {
         throw problem("connectionsの各項目はテーブルでなければなりません。");
       }
       rejectUnknownKeys(table, schemaVersion == 1 ? CONNECTION_KEYS : CONNECTION_KEYS_V2, "接続");
@@ -138,7 +137,7 @@ final class ConnectionConfigLoader {
   }
 
   private ConnectionPolicy parseConnection(
-      TomlTable table, JdkHttpsTransport.Builder transport, long schemaVersion)
+      Table table, JdkHttpsTransport.Builder transport, long schemaVersion)
       throws ConnectionConfigException {
     String baseUri = requireString(table, "base-uri", "base-uri");
     String origin = origin(baseUri);
@@ -151,7 +150,7 @@ final class ConnectionConfigLoader {
         optionalLong(table, "maximum-request-bytes", DEFAULT_MAXIMUM_REQUEST_BYTES);
     long maximumResponse =
         optionalLong(table, "maximum-response-bytes", DEFAULT_MAXIMUM_RESPONSE_BYTES);
-    TomlTable authentication = requireTable(table, "authentication", "authentication");
+    Table authentication = requireTable(table, "authentication", "authentication");
     rejectUnknownKeys(authentication, AUTHENTICATION_KEYS, "authentication");
     String kind = requireString(authentication, "kind", "authentication.kind");
 
@@ -218,8 +217,7 @@ final class ConnectionConfigLoader {
     return policy;
   }
 
-  private static HttpRetryPolicy parseReliability(TomlTable table)
-      throws ConnectionConfigException {
+  private static HttpRetryPolicy parseReliability(Table table) throws ConnectionConfigException {
     rejectUnknownKeys(table, RELIABILITY_KEYS, "reliability");
     int attempts = optionalInt(table, "maximum-attempts", 3);
     List<String> failures =
@@ -305,7 +303,7 @@ final class ConnectionConfigLoader {
     }
   }
 
-  private static void rejectUnknownKeys(TomlTable table, Set<String> allowed, String scope)
+  private static void rejectUnknownKeys(Table table, Set<String> allowed, String scope)
       throws ConnectionConfigException {
     var unknown = new HashSet<>(table.keySet());
     unknown.removeAll(allowed);
@@ -314,37 +312,37 @@ final class ConnectionConfigLoader {
     }
   }
 
-  private static String requireString(TomlTable table, String key, String display)
+  private static String requireString(Table table, String key, String display)
       throws ConnectionConfigException {
-    Object value = table.get(List.of(key));
+    Object value = table.get(key);
     if (!(value instanceof String text) || text.isEmpty()) {
       throw problem(display + "には空でない文字列を指定してください。");
     }
     return text;
   }
 
-  private static String optionalString(TomlTable table, String key, String defaultValue)
+  private static String optionalString(Table table, String key, String defaultValue)
       throws ConnectionConfigException {
-    if (!table.contains(List.of(key))) return defaultValue;
+    if (!table.contains(key)) return defaultValue;
     return requireString(table, key, key);
   }
 
-  private static long requireLong(TomlTable table, String key, String display)
+  private static long requireLong(Table table, String key, String display)
       throws ConnectionConfigException {
-    Object value = table.get(List.of(key));
+    Object value = table.get(key);
     if (!(value instanceof Long number)) {
       throw problem(display + "には整数を指定してください。");
     }
     return number;
   }
 
-  private static long optionalLong(TomlTable table, String key, long defaultValue)
+  private static long optionalLong(Table table, String key, long defaultValue)
       throws ConnectionConfigException {
-    if (!table.contains(List.of(key))) return defaultValue;
+    if (!table.contains(key)) return defaultValue;
     return requireLong(table, key, key);
   }
 
-  private static int optionalInt(TomlTable table, String key, int defaultValue)
+  private static int optionalInt(Table table, String key, int defaultValue)
       throws ConnectionConfigException {
     long value = optionalLong(table, key, defaultValue);
     try {
@@ -354,19 +352,19 @@ final class ConnectionConfigLoader {
     }
   }
 
-  private static boolean optionalBoolean(TomlTable table, String key, boolean defaultValue)
+  private static boolean optionalBoolean(Table table, String key, boolean defaultValue)
       throws ConnectionConfigException {
-    if (!table.contains(List.of(key))) return defaultValue;
-    Object value = table.get(List.of(key));
+    if (!table.contains(key)) return defaultValue;
+    Object value = table.get(key);
     if (!(value instanceof Boolean flag)) throw problem(key + "には真偽値を指定してください。");
     return flag;
   }
 
   private static List<String> optionalStringArray(
-      TomlTable table, String key, List<String> defaultValue) throws ConnectionConfigException {
-    if (!table.contains(List.of(key))) return defaultValue;
-    Object value = table.get(List.of(key));
-    if (!(value instanceof TomlArray array)) throw problem(key + "には文字列配列を指定してください。");
+      Table table, String key, List<String> defaultValue) throws ConnectionConfigException {
+    if (!table.contains(key)) return defaultValue;
+    Object value = table.get(key);
+    if (!(value instanceof Array array)) throw problem(key + "には文字列配列を指定してください。");
     var result = new ArrayList<String>();
     for (int index = 0; index < array.size(); index++) {
       if (!(array.get(index) instanceof String text) || text.isEmpty())
@@ -377,10 +375,10 @@ final class ConnectionConfigLoader {
   }
 
   private static List<Integer> optionalIntegerArray(
-      TomlTable table, String key, List<Integer> defaultValue) throws ConnectionConfigException {
-    if (!table.contains(List.of(key))) return defaultValue;
-    Object value = table.get(List.of(key));
-    if (!(value instanceof TomlArray array)) throw problem(key + "には整数配列を指定してください。");
+      Table table, String key, List<Integer> defaultValue) throws ConnectionConfigException {
+    if (!table.contains(key)) return defaultValue;
+    Object value = table.get(key);
+    if (!(value instanceof Array array)) throw problem(key + "には整数配列を指定してください。");
     var result = new ArrayList<Integer>();
     for (int index = 0; index < array.size(); index++) {
       if (!(array.get(index) instanceof Long number)) throw problem(key + "には整数だけを指定してください。");
@@ -393,19 +391,19 @@ final class ConnectionConfigLoader {
     return List.copyOf(result);
   }
 
-  private static TomlTable requireTable(TomlTable table, String key, String display)
+  private static Table requireTable(Table table, String key, String display)
       throws ConnectionConfigException {
-    Object value = table.get(List.of(key));
-    if (!(value instanceof TomlTable nested)) {
+    Object value = table.get(key);
+    if (!(value instanceof Table nested)) {
       throw problem(display + "にはテーブルを指定してください。");
     }
     return nested;
   }
 
-  private static List<String> requireStringArray(TomlTable table, String key, String display)
+  private static List<String> requireStringArray(Table table, String key, String display)
       throws ConnectionConfigException {
-    Object value = table.get(List.of(key));
-    if (!(value instanceof TomlArray array) || array.isEmpty()) {
+    Object value = table.get(key);
+    if (!(value instanceof Array array) || array.isEmpty()) {
       throw problem(display + "には1個以上の文字列配列を指定してください。");
     }
     var result = new ArrayList<String>();

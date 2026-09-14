@@ -1,10 +1,10 @@
 package jp.bsb.frontend;
 
-import com.ibm.icu.text.BreakIterator;
-import com.ibm.icu.util.ULocale;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import jp.bsb.adapter.IcuUnicodeAdapter;
+import jp.bsb.adapter.IcuUnicodeAdapter.GraphemeCursor;
 import jp.bsb.diagnostics.SourcePosition;
 import jp.bsb.diagnostics.SourceSpan;
 
@@ -19,7 +19,7 @@ import jp.bsb.diagnostics.SourceSpan;
  *       は、API上UTF-16コード単位として扱われます。 1コード単位は16ビットですが、補助平面の文字はサロゲートペアという2コード単位で表します。一方、元のソースファイルは
  *       UTF-8 であり、ASCIIは1バイト、日本語は3バイト、絵文字は4バイトとなります。 そのため、Javaの文字列インデックスと元ファイルのバイト位置は単純には一致しません。
  *   <li><b>書記素クラスタ（Grapheme Cluster）</b>: 人間が視覚的に認識する「1文字」は、結合文字（濁点分離など）によって
- *       複数のUnicodeコードポイントから構成されることがあります。列番号（column）の計算には ICU4J の {@link BreakIterator} を使用します。
+ *       複数のUnicodeコードポイントから構成されることがあります。列番号（column）の計算にはUnicode境界アダプターを使用します。
  *   <li><b>チェックポイントと二分探索（O(log N)）</b>: およそ4,096 UTF-16コード単位ごとに位置情報のスナップショット（{@link
  *       Checkpoint}）を事前計算して保持することで、 ランダムアクセス時の位置計算コストを最小限に抑えます。
  *   <li><b>位置カーソル（{@link PositionCursor}）による高速化（償却 O(1)）</b>: 字句解析のようにソースを先頭から末尾へ順番に走査する場合、
@@ -130,15 +130,14 @@ public final class SourceText {
     }
 
     Checkpoint checkpoint = checkpointBeforeUtf8(utf8EndExclusive);
-    BreakIterator iterator = BreakIterator.getCharacterInstance(ULocale.ROOT);
-    iterator.setText(text);
+    GraphemeCursor iterator = IcuUnicodeAdapter.graphemeCursor(text);
     int clusterStart = checkpoint.utf16Index();
     int clusterEnd = iterator.following(clusterStart);
     long utf8Offset = checkpoint.position().utf8Offset();
     int line = checkpoint.position().line();
     int column = checkpoint.position().column();
 
-    while (clusterEnd != BreakIterator.DONE) {
+    while (clusterEnd != IcuUnicodeAdapter.DONE) {
       long nextUtf8Offset = utf8Offset + utf8Length(text, clusterStart, clusterEnd);
       if (utf8EndExclusive <= nextUtf8Offset) {
         return new SourcePosition(utf8Offset, line, column);
@@ -204,15 +203,14 @@ public final class SourceText {
 
   /** チェックポイントの位置から目的のインデックスまでを走査し、正確な位置を計算します。 */
   private SourcePosition scanPosition(Checkpoint checkpoint, int targetIndex) {
-    BreakIterator iterator = BreakIterator.getCharacterInstance(ULocale.ROOT);
-    iterator.setText(text);
+    GraphemeCursor iterator = IcuUnicodeAdapter.graphemeCursor(text);
     int clusterStart = checkpoint.utf16Index();
     int clusterEnd = iterator.following(clusterStart);
     long utf8Offset = checkpoint.position().utf8Offset();
     int line = checkpoint.position().line();
     int column = checkpoint.position().column();
 
-    while (clusterEnd != BreakIterator.DONE) {
+    while (clusterEnd != IcuUnicodeAdapter.DONE) {
       if (targetIndex < clusterEnd) {
         return new SourcePosition(
             utf8Offset + utf8Length(text, clusterStart, targetIndex), line, column);
@@ -259,11 +257,10 @@ public final class SourceText {
     int lastCheckpoint = 0;
     result.add(new Checkpoint(0, new SourcePosition(utf8Offset, line, column)));
 
-    BreakIterator iterator = BreakIterator.getCharacterInstance(ULocale.ROOT);
-    iterator.setText(text);
+    GraphemeCursor iterator = IcuUnicodeAdapter.graphemeCursor(text);
     int clusterStart = iterator.first();
     for (int clusterEnd = iterator.next();
-        clusterEnd != BreakIterator.DONE;
+        clusterEnd != IcuUnicodeAdapter.DONE;
         clusterEnd = iterator.next()) {
       utf8Offset += utf8Length(text, clusterStart, clusterEnd);
       if (isNewlineCluster(text, clusterStart, clusterEnd)) {
@@ -330,7 +327,7 @@ public final class SourceText {
 
   /** 先頭から順方向にのみ移動し、位置計算を高速に行うステートフルなカーソルクラスです。 */
   public final class PositionCursor {
-    private final BreakIterator iterator;
+    private final GraphemeCursor iterator;
     private int clusterStart;
     private int clusterEnd;
     private int lastRequestedIndex;
@@ -339,8 +336,7 @@ public final class SourceText {
     private int column = 1;
 
     private PositionCursor() {
-      iterator = BreakIterator.getCharacterInstance(ULocale.ROOT);
-      iterator.setText(text);
+      iterator = IcuUnicodeAdapter.graphemeCursor(text);
       clusterStart = iterator.first();
       clusterEnd = iterator.next();
       utf8Offset = checkpoints.getFirst().position().utf8Offset();
@@ -363,7 +359,7 @@ public final class SourceText {
         throw new IllegalArgumentException("utf16Index must be on a code point boundary");
       }
 
-      while (clusterEnd != BreakIterator.DONE && utf16Index >= clusterEnd) {
+      while (clusterEnd != IcuUnicodeAdapter.DONE && utf16Index >= clusterEnd) {
         utf8Offset += utf8Length(text, clusterStart, clusterEnd);
         if (isNewlineCluster(text, clusterStart, clusterEnd)) {
           line++;

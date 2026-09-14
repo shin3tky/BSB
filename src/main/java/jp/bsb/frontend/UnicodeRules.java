@@ -1,20 +1,10 @@
 package jp.bsb.frontend;
 
-import com.ibm.icu.lang.UCharacter;
-import com.ibm.icu.lang.UCharacterCategory;
-import com.ibm.icu.lang.UProperty;
-import com.ibm.icu.text.BreakIterator;
-import com.ibm.icu.text.Normalizer2;
-import com.ibm.icu.text.SpoofChecker;
-import com.ibm.icu.text.UnicodeSet;
-import com.ibm.icu.util.ULocale;
-import com.ibm.icu.util.VersionInfo;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.OptionalInt;
+import jp.bsb.adapter.IcuUnicodeAdapter;
 
 /**
  * Unicode 16.0.0 規格に基づき、識別子の正規化・文字種別判定・不可視文字検査・書記素クラスタ分割を提供するクラスです。
@@ -33,43 +23,13 @@ import java.util.OptionalInt;
  *       アラビア語等で文字の並び順を反転させる制御文字）、 異体字セレクタ（Variation Selector）などの「見た目で判別できない文字」が混入すると、
  *       悪意あるコードの隠蔽（トロイの木馬攻撃 / Trojan Source）に繋がります。そのため、これらを識別子内で厳格に禁止しています。
  *   <li><b>ホモグリフ・混同可能文字（Confusable Skeletons / UTS #39）</b>: 例えばキリル文字の 'а'（U+0430）とラテン文字の
- *       'a'（U+0061）はフォントによって見分けにくい場合があります。ICU4J の {@link SpoofChecker}
+ *       'a'（U+0061）はフォントによって見分けにくい場合があります。ICU4Jのなりすまし検出機能
  *       を利用して「骨格文字列（Skeleton）」を抽出し、後続の名前検査が紛らわしい識別子の警告判定に利用します。
  * </ul>
  */
 public final class UnicodeRules {
   /** 本処理系が準拠する Unicode の固定バージョン文字列 */
   public static final String UNICODE_VERSION = "16.0.0";
-
-  /** バージョン検証用の ICU VersionInfo インスタンス */
-  private static final VersionInfo REQUIRED_VERSION = VersionInfo.getInstance(16, 0, 0, 0);
-
-  /** Unicode正規化形式C（NFC）のノーマライザ */
-  private static final Normalizer2 NFC = Normalizer2.getNFCInstance();
-
-  /** デフォルトで無視されるコードポイント集合（Default_Ignorable_Code_Point） */
-  private static final UnicodeSet DEFAULT_IGNORABLE =
-      new UnicodeSet("[:Default_Ignorable_Code_Point:]").freeze();
-
-  /** 双方向テキスト制御文字集合（Bidi_Control） */
-  private static final UnicodeSet BIDI_CONTROL = new UnicodeSet("[:Bidi_Control:]").freeze();
-
-  /** 異体字セレクタ集合（Variation_Selector） */
-  private static final UnicodeSet VARIATION_SELECTOR =
-      new UnicodeSet("[:Variation_Selector:]").freeze();
-
-  /** 混同可能文字・なりすまし検出チェッカー（UTS #39） */
-  private static final SpoofChecker SPOOF_CHECKER =
-      new SpoofChecker.Builder().setChecks(SpoofChecker.ALL_CHECKS).build();
-
-  static {
-    // 実行環境の ICU4J の Unicode バージョンが 16.0.0 であることを起動時に厳密に検証
-    VersionInfo actual = UCharacter.getUnicodeVersion();
-    if (!REQUIRED_VERSION.equals(actual)) {
-      throw new ExceptionInInitializerError(
-          "ICU Unicode version must be " + REQUIRED_VERSION + " but was " + actual);
-    }
-  }
 
   private UnicodeRules() {}
 
@@ -86,7 +46,7 @@ public final class UnicodeRules {
         .codePoints()
         .map(UnicodeRules::convertFullwidthAlphanumeric)
         .forEach(converted::appendCodePoint);
-    return NFC.normalize(converted);
+    return IcuUnicodeAdapter.normalizeNfc(converted);
   }
 
   /**
@@ -98,15 +58,7 @@ public final class UnicodeRules {
    * @return 先頭文字として有効な場合は true
    */
   public static boolean isIdentifierStart(int codePoint) {
-    return switch (UCharacter.getType(codePoint)) {
-      case UCharacterCategory.UPPERCASE_LETTER,
-          UCharacterCategory.LOWERCASE_LETTER,
-          UCharacterCategory.TITLECASE_LETTER,
-          UCharacterCategory.MODIFIER_LETTER,
-          UCharacterCategory.OTHER_LETTER ->
-          true;
-      default -> false;
-    };
+    return IcuUnicodeAdapter.isLetter(codePoint);
   }
 
   /**
@@ -121,16 +73,7 @@ public final class UnicodeRules {
     if (isIdentifierStart(codePoint) || codePoint == '_' || codePoint == '・') {
       return true;
     }
-    return switch (UCharacter.getType(codePoint)) {
-      case UCharacterCategory.NON_SPACING_MARK,
-          UCharacterCategory.COMBINING_SPACING_MARK,
-          UCharacterCategory.ENCLOSING_MARK,
-          UCharacterCategory.DECIMAL_DIGIT_NUMBER,
-          UCharacterCategory.LETTER_NUMBER,
-          UCharacterCategory.OTHER_NUMBER ->
-          true;
-      default -> false;
-    };
+    return IcuUnicodeAdapter.isMarkOrNumber(codePoint);
   }
 
   /**
@@ -140,13 +83,7 @@ public final class UnicodeRules {
    * @return 禁止文字であれば true
    */
   public static boolean isForbiddenIdentifierCodePoint(int codePoint) {
-    int type = UCharacter.getType(codePoint);
-    return DEFAULT_IGNORABLE.contains(codePoint)
-        || BIDI_CONTROL.contains(codePoint)
-        || VARIATION_SELECTOR.contains(codePoint)
-        || type == UCharacterCategory.CONTROL
-        || type == UCharacterCategory.FORMAT
-        || type == UCharacterCategory.SURROGATE
+    return IcuUnicodeAdapter.isInvisibleOrNonScalarCategory(codePoint)
         || codePoint == 0x200C // ゼロ幅非接合子（ZWNJ）
         || codePoint == 0x200D; // ゼロ幅接合子（ZWJ）
   }
@@ -158,7 +95,7 @@ public final class UnicodeRules {
    * @return 空白文字であれば true
    */
   public static boolean isUnicodeWhitespace(int codePoint) {
-    return UCharacter.hasBinaryProperty(codePoint, UProperty.WHITE_SPACE);
+    return IcuUnicodeAdapter.isWhitespace(codePoint);
   }
 
   /**
@@ -211,16 +148,7 @@ public final class UnicodeRules {
    * @return 境界インデックス（先頭の 0 と末尾の length() を含む）のリスト
    */
   public static List<Integer> graphemeBoundaries(String value) {
-    Objects.requireNonNull(value, "value");
-    BreakIterator iterator = BreakIterator.getCharacterInstance(ULocale.ROOT);
-    iterator.setText(value);
-    var boundaries = new ArrayList<Integer>();
-    for (int boundary = iterator.first();
-        boundary != BreakIterator.DONE;
-        boundary = iterator.next()) {
-      boundaries.add(boundary);
-    }
-    return Collections.unmodifiableList(boundaries);
+    return IcuUnicodeAdapter.graphemeBoundaries(value);
   }
 
   /**
@@ -241,7 +169,7 @@ public final class UnicodeRules {
    */
   public static String confusableSkeleton(String normalizedIdentifier) {
     Objects.requireNonNull(normalizedIdentifier, "normalizedIdentifier");
-    return SPOOF_CHECKER.getSkeleton(normalizedIdentifier);
+    return IcuUnicodeAdapter.confusableSkeleton(normalizedIdentifier);
   }
 
   /**
@@ -251,8 +179,7 @@ public final class UnicodeRules {
    * @return 文字名称
    */
   public static String unicodeName(int codePoint) {
-    String name = UCharacter.getName(codePoint);
-    return name == null ? "<unassigned>" : name;
+    return IcuUnicodeAdapter.unicodeName(codePoint);
   }
 
   /**

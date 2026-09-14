@@ -2,11 +2,10 @@ package jp.bsb.regex;
 
 import com.google.re2j.Pattern;
 import com.google.re2j.PatternSyntaxException;
-import com.ibm.icu.text.UnicodeSet;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
+import jp.bsb.adapter.IcuUnicodeAdapter;
 import jp.bsb.diagnostics.DiagnosticCode;
 
 /** Unicode 16.0適合層で検査・展開した後、RE2/Jを照合核として使うコンパイラです。 */
@@ -270,12 +269,15 @@ public final class Re2RegexCompiler implements RegexCompiler {
           if (close < 0) {
             throw new PropertyFailure(offset, pattern.substring(index + 3));
           }
-          UnicodeSet set = unicodeProperty(pattern.substring(index + 3, close), offset);
-          if (kind == 'P') {
-            set.complement(0, 0x10FFFF).remove(0xD800, 0xDFFF);
-          }
-          addAsciiCaseVariants(set, asciiCaseInsensitive);
-          result.append('[').append(rangeContents(set)).append(']');
+          result
+              .append('[')
+              .append(
+                  unicodePropertyRanges(
+                      pattern.substring(index + 3, close),
+                      kind == 'P',
+                      asciiCaseInsensitive,
+                      offset))
+              .append(']');
           index = close + 1;
           continue;
         }
@@ -329,12 +331,9 @@ public final class Re2RegexCompiler implements RegexCompiler {
                 pattern.codePointCount(0, index), pattern.substring(index + 3, end));
           }
           int offset = pattern.codePointCount(0, index);
-          UnicodeSet set = unicodeProperty(pattern.substring(index + 3, close), offset);
-          if (kind == 'P') {
-            set.complement(0, 0x10FFFF).remove(0xD800, 0xDFFF);
-          }
-          addAsciiCaseVariants(set, asciiCaseInsensitive);
-          base.append(rangeContents(set));
+          base.append(
+              unicodePropertyRanges(
+                  pattern.substring(index + 3, close), kind == 'P', asciiCaseInsensitive, offset));
           index = close + 1;
           continue;
         }
@@ -370,48 +369,13 @@ public final class Re2RegexCompiler implements RegexCompiler {
     return "[" + (negated ? "^" : "") + base + additions + "]";
   }
 
-  private static UnicodeSet unicodeProperty(String alias, int patternOffset) {
+  private static String unicodePropertyRanges(
+      String alias, boolean complement, boolean asciiCaseInsensitive, int patternOffset) {
     try {
-      return new UnicodeSet().applyPropertyAlias("General_Category", alias);
-    } catch (IllegalArgumentException ignored) {
-      try {
-        return new UnicodeSet().applyPropertyAlias("Script", alias);
-      } catch (IllegalArgumentException failure) {
-        throw new PropertyFailure(patternOffset, alias);
-      }
+      return IcuUnicodeAdapter.regexPropertyRanges(alias, complement, asciiCaseInsensitive);
+    } catch (IllegalArgumentException failure) {
+      throw new PropertyFailure(patternOffset, alias);
     }
-  }
-
-  private static void addAsciiCaseVariants(UnicodeSet set, boolean enabled) {
-    if (!enabled) {
-      return;
-    }
-    for (int letter = 'A'; letter <= 'Z'; letter++) {
-      if (set.contains(letter) || set.contains(letter + ('a' - 'A'))) {
-        set.add(letter).add(letter + ('a' - 'A'));
-      }
-    }
-  }
-
-  private static String rangeContents(UnicodeSet set) {
-    var result = new StringBuilder();
-    for (int index = 0; index < set.getRangeCount(); index++) {
-      int start = set.getRangeStart(index);
-      int end = set.getRangeEnd(index);
-      appendHexEscape(result, start);
-      if (end != start) {
-        result.append('-');
-        appendHexEscape(result, end);
-      }
-    }
-    return result.toString();
-  }
-
-  private static void appendHexEscape(StringBuilder result, int codePoint) {
-    result
-        .append("\\x{")
-        .append(Integer.toHexString(codePoint).toUpperCase(Locale.ROOT))
-        .append('}');
   }
 
   private static int classEnd(String pattern, int start) {

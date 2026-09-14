@@ -13,6 +13,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import jp.bsb.adapter.TomlAdapter;
+import jp.bsb.adapter.TomlAdapter.Table;
 import jp.bsb.frontend.IdentifierValidator;
 import jp.bsb.frontend.UnicodeRules;
 import jp.bsb.runtime.FileReadResult;
@@ -21,9 +23,6 @@ import jp.bsb.runtime.LogicalFileName;
 import jp.bsb.runtime.WorkspaceHandle;
 import jp.bsb.runtime.WorkspacePolicy;
 import jp.bsb.runtime.WorkspaceResolution;
-import org.tomlj.Toml;
-import org.tomlj.TomlParseResult;
-import org.tomlj.TomlTable;
 
 /** direct指定と版1 TOMLを同じ有限登録能力へ変換します。 */
 final class WorkspaceConfigLoader {
@@ -77,15 +76,16 @@ final class WorkspaceConfigLoader {
     Path absoluteConfig = configPath.toAbsolutePath().normalize();
     byte[] bytes = read(absoluteConfig);
     String text = decode(bytes);
-    TomlParseResult document = Toml.parse(text);
-    if (document.hasErrors()) {
-      var position = document.errors().getFirst().position();
+    TomlAdapter.ParseResult parsed = TomlAdapter.parse(text);
+    if (parsed.error().isPresent()) {
+      var position = parsed.error().orElseThrow();
       throw problem("TOML構文が正しくありません（行" + position.line() + "、列" + position.column() + "）。");
     }
+    Table document = parsed.document();
     rejectUnknownKeys(document, ROOT_KEYS, "ルート");
     long schema = requireLong(document, "schema-version", "schema-version");
     if (schema != 1) throw problem("schema-versionは1でなければなりません。");
-    TomlTable workspaces = requireTable(document, "workspaces", "workspaces");
+    Table workspaces = requireTable(document, "workspaces", "workspaces");
     if (workspaces.isEmpty() || workspaces.size() > MAX_WORKSPACES) {
       throw problem("workspacesは1個以上" + MAX_WORKSPACES + "個以下で指定してください。");
     }
@@ -95,8 +95,8 @@ final class WorkspaceConfigLoader {
     int totalFiles = 0;
     for (String workspaceName : workspaces.keySet()) {
       validateWorkspaceName(workspaceName);
-      Object rawWorkspace = workspaces.get(List.of(workspaceName));
-      if (!(rawWorkspace instanceof TomlTable workspaceTable)) {
+      Object rawWorkspace = workspaces.get(workspaceName);
+      if (!(rawWorkspace instanceof Table workspaceTable)) {
         throw problem("workspacesの各項目はテーブルでなければなりません。");
       }
       rejectUnknownKeys(workspaceTable, WORKSPACE_KEYS, "作業領域");
@@ -112,7 +112,7 @@ final class WorkspaceConfigLoader {
       } catch (IllegalArgumentException failure) {
         throw problem("作業領域の操作別上限が規範範囲外です。");
       }
-      TomlTable files = requireTable(workspaceTable, "files", "files");
+      Table files = requireTable(workspaceTable, "files", "files");
       if (files.isEmpty()) throw problem("各作業領域のfilesは1件以上必要です。");
       var builder = new WorkspaceBuilder(policy);
       for (String logicalName : files.keySet()) {
@@ -120,8 +120,8 @@ final class WorkspaceConfigLoader {
           throw problem("全作業領域のfilesは" + MAX_FILES + "件以下で指定してください。");
         }
         validateLogicalName(logicalName);
-        Object rawFile = files.get(List.of(logicalName));
-        if (!(rawFile instanceof TomlTable fileTable)) {
+        Object rawFile = files.get(logicalName);
+        if (!(rawFile instanceof Table fileTable)) {
           throw problem("filesの各項目はテーブルでなければなりません。");
         }
         rejectUnknownKeys(fileTable, FILE_KEYS, "ファイル登録");
@@ -251,38 +251,38 @@ final class WorkspaceConfigLoader {
     }
   }
 
-  private static void rejectUnknownKeys(TomlTable table, Set<String> allowed, String scope)
+  private static void rejectUnknownKeys(Table table, Set<String> allowed, String scope)
       throws WorkspaceConfigException {
     var unknown = new HashSet<>(table.keySet());
     unknown.removeAll(allowed);
     if (!unknown.isEmpty()) throw problem(scope + "に未対応の項目があります。");
   }
 
-  private static long requireLong(TomlTable table, String key, String display)
+  private static long requireLong(Table table, String key, String display)
       throws WorkspaceConfigException {
-    Object value = table.get(List.of(key));
+    Object value = table.get(key);
     if (!(value instanceof Long number)) throw problem(display + "には整数を指定してください。");
     return number;
   }
 
-  private static long optionalLong(TomlTable table, String key, long defaultValue, String display)
+  private static long optionalLong(Table table, String key, long defaultValue, String display)
       throws WorkspaceConfigException {
-    return table.contains(List.of(key)) ? requireLong(table, key, display) : defaultValue;
+    return table.contains(key) ? requireLong(table, key, display) : defaultValue;
   }
 
-  private static String requireString(TomlTable table, String key, String display)
+  private static String requireString(Table table, String key, String display)
       throws WorkspaceConfigException {
-    Object value = table.get(List.of(key));
+    Object value = table.get(key);
     if (!(value instanceof String text) || text.isEmpty() || text.indexOf('\u0000') >= 0) {
       throw problem(display + "には空でない文字列を指定してください。");
     }
     return text;
   }
 
-  private static TomlTable requireTable(TomlTable table, String key, String display)
+  private static Table requireTable(Table table, String key, String display)
       throws WorkspaceConfigException {
-    Object value = table.get(List.of(key));
-    if (!(value instanceof TomlTable nested)) throw problem(display + "にはテーブルを指定してください。");
+    Object value = table.get(key);
+    if (!(value instanceof Table nested)) throw problem(display + "にはテーブルを指定してください。");
     return nested;
   }
 

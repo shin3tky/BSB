@@ -1,11 +1,10 @@
 package jp.bsb.runtime;
 
-import com.ibm.icu.text.BreakIterator;
-import com.ibm.icu.util.ULocale;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import jp.bsb.adapter.IcuUnicodeAdapter;
 import jp.bsb.frontend.UnicodeRules;
 
 /** Unicode 16.0の書記素・スカラー境界をUTF-16位置として公開せず扱う不変文字列ビューです。 */
@@ -300,10 +299,9 @@ public final class UnicodeText {
       int maximum = value.codePointCount(0, value.length()) + 1;
       int[] result = new int[maximum];
       int count = 0;
-      BreakIterator iterator = BreakIterator.getCharacterInstance(ULocale.ROOT);
-      iterator.setText(value);
+      var iterator = IcuUnicodeAdapter.graphemeCursor(value);
       for (int boundary = iterator.first();
-          boundary != BreakIterator.DONE;
+          boundary != IcuUnicodeAdapter.DONE;
           boundary = iterator.next()) {
         result[count++] = boundary;
       }
