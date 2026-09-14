@@ -56,6 +56,19 @@ NEW_CODES = {
     "E_HTTP_CREDENTIAL_INVALID",
     "E_HTTP_CANCELLED",
 }
+HTTP_RELIABILITY_CODES = {
+    "E_HTTP_RETRY_POLICY_INVALID",
+    "E_HTTP_RETRY_WAIT_LIMIT",
+    "E_HTTP_RETRY_WAIT_UNAVAILABLE",
+    "E_HTTP_RETRY_WAIT_FAILURE",
+    "E_HTTP_RETRY_WAIT_CANCELLED",
+    "E_HTTP_RETRY_CLOCK_UNAVAILABLE",
+    "E_HTTP_RETRY_CLOCK_FAILURE",
+    "E_HTTP_FINAL_FAILURE_UNAVAILABLE",
+    "E_HTTP_FINAL_FAILURE_FAILURE",
+    "E_HTTP_FINAL_FAILURE_CANCELLED",
+    "E_HTTP_FINAL_FAILURE_LIMIT",
+}
 HEADERS = {
     "catalog.tsv": ["case_id", "kind", "evidence", "scope"],
     "vectors/uri.tsv": [
@@ -344,8 +357,8 @@ def check_expected(catalog_ids: set[str]) -> None:
         if not separator or not value or key in messages:
             raise ValueError("invalid messages.properties")
         messages[key] = value
-    if set(messages) != NEW_CODES:
-        raise ValueError("messages do not cover the exact 26 new codes")
+    if set(messages) != NEW_CODES | HTTP_RELIABILITY_CODES:
+        raise ValueError("messages do not cover the exact HTTPS and HTTP-REL codes")
 
 
 def check_sources() -> None:

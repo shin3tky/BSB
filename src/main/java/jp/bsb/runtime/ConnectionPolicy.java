@@ -20,7 +20,8 @@ public record ConnectionPolicy(
     long maximumRequestBytes,
     long maximumResponseBytes,
     String redirectPolicy,
-    String retryPolicy) {
+    String retryPolicy,
+    HttpRetryPolicy httpRetryPolicy) {
   /** nullを拒否し、可変コレクションから切り離します。 */
   public ConnectionPolicy {
     Objects.requireNonNull(baseUri, "baseUri");
@@ -30,6 +31,35 @@ public record ConnectionPolicy(
     credentialReference = Objects.requireNonNull(credentialReference, "credentialReference");
     Objects.requireNonNull(redirectPolicy, "redirectPolicy");
     Objects.requireNonNull(retryPolicy, "retryPolicy");
+    httpRetryPolicy = Objects.requireNonNull(httpRetryPolicy, "httpRetryPolicy");
+  }
+
+  /** HTTP信頼性方針を追加する前の埋込みAPIと版1設定を、再試行なしとして保つ互換コンストラクタです。 */
+  public ConnectionPolicy(
+      String baseUri,
+      List<String> allowedOrigins,
+      List<String> allowedMethods,
+      String authenticationKind,
+      Optional<CredentialReference> credentialReference,
+      long connectTimeoutMilliseconds,
+      long responseTimeoutMilliseconds,
+      long maximumRequestBytes,
+      long maximumResponseBytes,
+      String redirectPolicy,
+      String retryPolicy) {
+    this(
+        baseUri,
+        allowedOrigins,
+        allowedMethods,
+        authenticationKind,
+        credentialReference,
+        connectTimeoutMilliseconds,
+        responseTimeoutMilliseconds,
+        maximumRequestBytes,
+        maximumResponseBytes,
+        redirectPolicy,
+        retryPolicy,
+        HttpRetryPolicy.none());
   }
 
   /**

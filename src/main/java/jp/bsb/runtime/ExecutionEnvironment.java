@@ -19,6 +19,7 @@ public final class ExecutionEnvironment {
   private final Optional<WallTime> wallTime;
   private final Optional<ConnectionResolver> connectionResolver;
   private final Optional<HttpTransport> httpTransport;
+  private final Optional<HttpFinalFailureSink> httpFinalFailureSink;
   private final Optional<WorkspaceResolver> workspaceResolver;
   private final Optional<FileReadCapability> fileReadCapability;
   private final Optional<FileWriteCapability> fileWriteCapability;
@@ -39,6 +40,7 @@ public final class ExecutionEnvironment {
     wallTime = Optional.ofNullable(builder.wallTime);
     connectionResolver = Optional.ofNullable(builder.connectionResolver);
     httpTransport = Optional.ofNullable(builder.httpTransport);
+    httpFinalFailureSink = Optional.ofNullable(builder.httpFinalFailureSink);
     workspaceResolver = Optional.ofNullable(builder.workspaceResolver);
     fileReadCapability = Optional.ofNullable(builder.fileReadCapability);
     fileWriteCapability = Optional.ofNullable(builder.fileWriteCapability);
@@ -57,6 +59,7 @@ public final class ExecutionEnvironment {
     wallTime.ifPresent(ignored -> present.add(RuntimeCapability.TIME_WALL));
     connectionResolver.ifPresent(ignored -> present.add(RuntimeCapability.CONNECTION_RESOLVE));
     httpTransport.ifPresent(ignored -> present.add(RuntimeCapability.HTTP_SEND));
+    httpFinalFailureSink.ifPresent(ignored -> present.add(RuntimeCapability.HTTP_FINAL_FAILURE));
     workspaceResolver.ifPresent(ignored -> present.add(RuntimeCapability.WORKSPACE_RESOLVE));
     fileReadCapability.ifPresent(ignored -> present.add(RuntimeCapability.FILE_READ));
     fileWriteCapability.ifPresent(ignored -> present.add(RuntimeCapability.FILE_WRITE));
@@ -159,6 +162,13 @@ public final class ExecutionEnvironment {
   }
 
   /**
+   * @return HTTP最終失敗記録能力
+   */
+  public Optional<HttpFinalFailureSink> httpFinalFailureSink() {
+    return httpFinalFailureSink;
+  }
+
+  /**
    * @return 作業領域解決能力
    */
   public Optional<WorkspaceResolver> workspaceResolver() {
@@ -221,6 +231,7 @@ public final class ExecutionEnvironment {
     private WallTime wallTime;
     private ConnectionResolver connectionResolver;
     private HttpTransport httpTransport;
+    private HttpFinalFailureSink httpFinalFailureSink;
     private WorkspaceResolver workspaceResolver;
     private FileReadCapability fileReadCapability;
     private FileWriteCapability fileWriteCapability;
@@ -316,6 +327,12 @@ public final class ExecutionEnvironment {
      */
     public Builder httpTransport(HttpTransport value) {
       httpTransport = Objects.requireNonNull(value, "value");
+      return this;
+    }
+
+    /** HTTP最終失敗記録能力を追加します。 */
+    public Builder httpFinalFailureSink(HttpFinalFailureSink value) {
+      httpFinalFailureSink = Objects.requireNonNull(value, "value");
       return this;
     }
 

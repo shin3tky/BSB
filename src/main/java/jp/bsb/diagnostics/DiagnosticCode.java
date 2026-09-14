@@ -513,6 +513,28 @@ public enum DiagnosticCode {
   E_HTTP_CREDENTIAL_INVALID,
   /** HTTP送信中に実行が取り消された */
   E_HTTP_CANCELLED,
+  /** HTTP再試行方針が不正だった */
+  E_HTTP_RETRY_POLICY_INVALID,
+  /** HTTP信頼性待機の累積上限を超えた */
+  E_HTTP_RETRY_WAIT_LIMIT,
+  /** HTTP再試行に必要な待機能力がなかった */
+  E_HTTP_RETRY_WAIT_UNAVAILABLE,
+  /** HTTP再試行の待機能力が失敗した */
+  E_HTTP_RETRY_WAIT_FAILURE,
+  /** HTTP再試行の待機が取り消された */
+  E_HTTP_RETRY_WAIT_CANCELLED,
+  /** Retry-After HTTP-dateに必要な壁時計能力がなかった */
+  E_HTTP_RETRY_CLOCK_UNAVAILABLE,
+  /** Retry-After HTTP-dateの壁時計能力が失敗した */
+  E_HTTP_RETRY_CLOCK_FAILURE,
+  /** 必須の最終失敗記録能力がなかった */
+  E_HTTP_FINAL_FAILURE_UNAVAILABLE,
+  /** 最終失敗記録能力が失敗した */
+  E_HTTP_FINAL_FAILURE_FAILURE,
+  /** 最終失敗記録が取り消された */
+  E_HTTP_FINAL_FAILURE_CANCELLED,
+  /** 最終失敗記録数が上限を超えた */
+  E_HTTP_FINAL_FAILURE_LIMIT,
 
   // --- 診断システム自体の制限 ---
   /** 1回の解析で検出された診断数が上限（100件）に到達したため以降を抑止 */

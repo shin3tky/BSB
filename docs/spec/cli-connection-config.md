@@ -1,4 +1,4 @@
-# CLI接続設定TOML 版1
+# CLI接続設定TOML 版1・版2
 
 ## 1. 目的と境界
 
@@ -6,7 +6,8 @@
 実行できるようにします。BSB言語の値、語、静的説明、論理接続の送信時再解決は変更しません。
 
 設定は`run`へ指定した1ファイルからだけ読みます。自動探索、複数ファイルのマージ、汎用環境変数読取り、
-TOML文字列展開、Basic・OAuth、redirect、retryは版1に含めません。
+TOML文字列展開、Basic・OAuth、redirect、retryは版1に含めません。版2は版1を保ったまま
+[HTTP信頼性方針](http-reliability.md)を加算します。
 
 ## 2. CLI構文
 
@@ -100,3 +101,27 @@ CLIはJVM全体を所有するため、JDKの接続再試行抑止propertyが未
 - secret専用ファイル、OS keychain、外部secret manager
 - Basic、OAuth 2.0、redirect、retry、proxy、独自trust store
 - 解決済み接続計画の公開、`run --json`
+
+## 8. 版2のHTTP信頼性設定
+
+`schema-version = 2`では接続ごとに任意の`reliability`テーブルを指定できます。省略時は版1と同じ
+再試行なしです。次は既定値を含む例です。
+
+```toml
+[connections.API.reliability]
+maximum-attempts = 3
+retryable-failure-kinds = ["connectTimeout", "connectionFailure", "responseTimeout", "transportFailure"]
+retryable-status-codes = [429, 502, 503, 504]
+initial-delay-ms = 200
+maximum-delay-ms = 5000
+backoff-multiplier = 2
+respect-retry-after = true
+maximum-retry-after-ms = 60000
+method-safety = "safeOnly"
+minimum-start-interval-ms = 0
+final-failure-policy = "disabled"
+```
+
+`method-safety = "idempotencyKey"`では`idempotency-key-header`も必須です。`apiGuaranteed`はAPI側の
+保証を確認した設定だけに使用します。標準CLIは永続記録先をまだ提供しないため、
+`final-failure-policy`は`disabled`だけを受理します。全範囲と意味論はHTTP-REL仕様に従います。

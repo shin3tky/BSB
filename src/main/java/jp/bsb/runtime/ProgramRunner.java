@@ -90,6 +90,9 @@ public final class ProgramRunner {
         execution.fileWriteAttemptBytes(),
         execution.delimitedTextWorkUnits(),
         execution.errorOutputBytes(),
-        execution.termination());
+        execution.termination(),
+        execution.httpReliabilityWaitMilliseconds(),
+        execution.httpRetryAttempts(),
+        execution.httpFinalFailureRecords());
   }
 }

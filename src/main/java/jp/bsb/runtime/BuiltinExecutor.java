@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HexFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import jp.bsb.diagnostics.Diagnostic;
 import jp.bsb.diagnostics.DiagnosticCode;
@@ -80,6 +81,7 @@ final class BuiltinExecutor {
   private String effect = "";
   private long waitedMilliseconds;
   private long lastMonotonicMilliseconds = -1;
+  private final Map<String, Long> lastHttpAttemptStartNanos = new java.util.HashMap<>();
 
   BuiltinExecutor(String sourcePath, BoundedOutput output, ExecutionBudget budget) {
     this.sourcePath = sourcePath;
@@ -887,8 +889,8 @@ final class BuiltinExecutor {
                 () ->
                     capabilityUnavailable(
                         word, wordSpan, RuntimeCapability.HTTP_SEND, "HTTP送信能力を持つ実行環境で実行してください"));
+    // 初回はHTTPS機能グループの判定順を保ち、追加試行だけを待機後に予約する。
     budget.beforeHttpSend(bodyBytes, wordSpan, word.canonicalName());
-
     ConnectionPolicy policy = resolveLogicalConnection(word, span, reference);
     if (!policy.allowedMethods().contains(method)) {
       throw httpSendDiagnostic(
@@ -948,24 +950,144 @@ final class BuiltinExecutor {
         request.headers().stream()
             .map(header -> new HttpTransportHeader(header.name(), header.value()))
             .toList();
-    long responseRemaining = budget.httpResponseRemainingBytes();
-    var transportRequest =
-        new HttpTransportRequest(
-            reference.name(),
-            method,
-            target,
-            headers,
-            request.body().map(HttpRequestValue.Body::bytes),
-            policy,
-            Math.min(policy.maximumResponseBytes(), responseRemaining),
-            responseRemaining <= policy.maximumResponseBytes());
     String traceName =
         environment.redactLogicalConnectionNamesInTrace() ? "<redacted>" : reference.name();
-    effect = httpSendEffect(traceName, method, "capabilityFailure");
+    HttpRetryPolicy retry = policy.httpRetryPolicy();
+    String retryProblem = HttpRetryPolicyValidator.validate(retry);
+    if (retryProblem != null) {
+      throw httpReliabilityDiagnostic(
+          DiagnosticCode.E_HTTP_RETRY_POLICY_INVALID,
+          word,
+          wordSpan,
+          reference,
+          Map.of("reason", retryProblem),
+          "有効なHTTP再試行方針",
+          retryProblem,
+          "論理接続のHTTP再試行方針を確認してください");
+    }
+    boolean retryMethod = httpRetryMethodAllowed(retry, method, request);
+    long retryAfter = 0;
+    for (int attempt = 1; attempt <= retry.maximumAttempts(); attempt++) {
+      long backoff = attempt == 1 ? 0 : retryBackoff(retry, attempt);
+      waitBeforeHttpAttempt(
+          word, wordSpan, reference, method, retry, Math.max(backoff, retryAfter));
+      if (attempt > 1) {
+        budget.beforeHttpSend(bodyBytes, wordSpan, word.canonicalName());
+        budget.recordHttpRetryAttempt();
+      }
+      long responseRemaining = budget.httpResponseRemainingBytes();
+      var transportRequest =
+          new HttpTransportRequest(
+              reference.name(),
+              method,
+              target,
+              headers,
+              request.body().map(HttpRequestValue.Body::bytes),
+              policy,
+              Math.min(policy.maximumResponseBytes(), responseRemaining),
+              responseRemaining <= policy.maximumResponseBytes());
+      lastHttpAttemptStartNanos.put(reference.name(), environment.resourceClock().nanoTime());
+      HttpTransportResult result =
+          invokeHttpTransport(
+              word, wordSpan, reference, method, transport, transportRequest, traceName, attempt);
+      boolean retryable =
+          retryMethod && attempt < retry.maximumAttempts() && httpResultRetryable(retry, result);
+      if (!retryable) {
+        if (retryMethod
+            && attempt == retry.maximumAttempts()
+            && httpResultRetryable(retry, result)
+            && !retry.finalFailurePolicy().equals("disabled")) {
+          recordFinalHttpFailure(word, wordSpan, reference, method, retry, result, attempt);
+        }
+        return applyHttpTransportResult(
+            word, stack, wordSpan, reference, policy, result, traceName);
+      }
+      chargeDiscardedHttpResult(word, wordSpan, policy, result);
+      retryAfter = retryAfterDelay(word, wordSpan, reference, method, retry, result);
+    }
+    throw new IllegalStateException("HTTP retry loop did not return");
+  }
+
+  private void recordFinalHttpFailure(
+      BuiltinWord word,
+      SourceSpan span,
+      LogicalConnectionReference reference,
+      String method,
+      HttpRetryPolicy policy,
+      HttpTransportResult result,
+      int attempts)
+      throws RuntimeFailure {
+    Optional<HttpFinalFailureSink> configured = environment.httpFinalFailureSink();
+    if (configured.isEmpty()) {
+      if (policy.finalFailurePolicy().equals("optional")) return;
+      throw httpReliabilityDiagnostic(
+          DiagnosticCode.E_HTTP_FINAL_FAILURE_UNAVAILABLE,
+          word,
+          span,
+          reference,
+          Map.of("method", method),
+          "利用可能なHTTP最終失敗記録能力",
+          "能力なし",
+          "実行環境へ最終失敗記録能力を設定してください");
+    }
+    budget.beforeHttpFinalFailureRecord(span, word.canonicalName());
+    HttpFinalFailureRecord record =
+        result.state() == HttpTransportResult.State.RESPONSE
+            ? new HttpFinalFailureRecord(
+                reference.name(), method, attempts, "httpStatus", Optional.empty(), result.status())
+            : new HttpFinalFailureRecord(
+                reference.name(),
+                method,
+                attempts,
+                "transportFailure",
+                result.failureKind(),
+                java.util.OptionalInt.empty());
+    HttpFinalFailureSink.Result recorded;
+    long blockedAt = budget.beginBlocking();
+    try {
+      recorded = configured.orElseThrow().record(record);
+    } catch (CapabilityException | RuntimeException failure) {
+      throw httpReliabilityDiagnostic(
+          DiagnosticCode.E_HTTP_FINAL_FAILURE_FAILURE,
+          word,
+          span,
+          reference,
+          Map.of("method", method),
+          "成功するHTTP最終失敗記録能力",
+          "能力失敗",
+          "実行環境の最終失敗記録能力を確認してください");
+    } finally {
+      budget.endBlocking(blockedAt);
+    }
+    if (recorded == null) throw new IllegalStateException("HTTP final failure sink returned null");
+    if (recorded == HttpFinalFailureSink.Result.CANCELLED) {
+      throw httpReliabilityDiagnostic(
+          DiagnosticCode.E_HTTP_FINAL_FAILURE_CANCELLED,
+          word,
+          span,
+          reference,
+          Map.of("method", method),
+          "完了するHTTP最終失敗記録",
+          "取消",
+          "取消を扱う上位実行環境を確認してください");
+    }
+  }
+
+  private HttpTransportResult invokeHttpTransport(
+      BuiltinWord word,
+      SourceSpan span,
+      LogicalConnectionReference reference,
+      String method,
+      HttpTransport transport,
+      HttpTransportRequest request,
+      String traceName,
+      int attempt)
+      throws RuntimeFailure {
+    effect = httpSendEffect(traceName, method, "attempt:" + attempt + ":capabilityFailure");
     HttpTransportResult result;
     long blockedAt = budget.beginBlocking();
     try {
-      result = transport.send(transportRequest);
+      result = transport.send(request);
     } catch (CapabilityException failure) {
       if (failure.kind() != CapabilityException.Kind.FAILURE
           || failure.capability() != RuntimeCapability.HTTP_SEND
@@ -974,7 +1096,7 @@ final class BuiltinExecutor {
       }
       throw capabilityFailure(
           word,
-          wordSpan,
+          span,
           RuntimeCapability.HTTP_SEND,
           "send",
           "成功するHTTP送信能力",
@@ -982,7 +1104,7 @@ final class BuiltinExecutor {
     } catch (RuntimeException failure) {
       throw capabilityFailure(
           word,
-          wordSpan,
+          span,
           RuntimeCapability.HTTP_SEND,
           "send",
           "成功するHTTP送信能力",
@@ -995,10 +1117,226 @@ final class BuiltinExecutor {
         || !result.method().equals(method)) {
       throw new IllegalStateException("HTTP transport returned a mismatched response");
     }
-    if (result.receivedBodyBytes() > transportRequest.responseBodyLimit() + 1) {
+    if (result.receivedBodyBytes() > request.responseBodyLimit() + 1) {
       throw new IllegalStateException("HTTP transport read beyond its response limit");
     }
-    return applyHttpTransportResult(word, stack, wordSpan, reference, policy, result, traceName);
+    return result;
+  }
+
+  private static boolean httpRetryMethodAllowed(
+      HttpRetryPolicy policy, String method, HttpRequestValue request) {
+    if (method.equals("GET") || method.equals("HEAD")) return true;
+    if (policy.methodSafety().equals("apiGuaranteed")) return true;
+    if (!policy.methodSafety().equals("idempotencyKey")) return false;
+    String expected =
+        policy.idempotencyKeyHeader().orElseThrow().toLowerCase(java.util.Locale.ROOT);
+    return request.headers().stream()
+        .anyMatch(header -> header.name().equals(expected) && !header.value().isEmpty());
+  }
+
+  private static long retryBackoff(HttpRetryPolicy policy, int attempt) {
+    long delay = policy.initialDelayMilliseconds();
+    for (int index = 2; index < attempt; index++) {
+      delay = Math.min(policy.maximumDelayMilliseconds(), delay * policy.backoffMultiplier());
+    }
+    return delay;
+  }
+
+  private static boolean httpResultRetryable(HttpRetryPolicy policy, HttpTransportResult result) {
+    return switch (result.state()) {
+      case RESPONSE ->
+          result.status().isPresent()
+              && policy.retryableStatusCodes().contains(result.status().getAsInt());
+      case FAILURE ->
+          result.failureKind().isPresent()
+              && policy.retryableFailureKinds().contains(result.failureKind().orElseThrow());
+      default -> false;
+    };
+  }
+
+  private void chargeDiscardedHttpResult(
+      BuiltinWord word, SourceSpan span, ConnectionPolicy policy, HttpTransportResult result)
+      throws RuntimeFailure {
+    if (result.state() == HttpTransportResult.State.RESPONSE) {
+      if (result.body().isEmpty() || result.status().isEmpty()) {
+        throw new IllegalStateException("retryable HTTP response violated its contract");
+      }
+      requireValidHttpResponseHeaders(result.headers());
+      budget.afterHttpResponseBytes(result.receivedBodyBytes(), span, word.canonicalName());
+      budget.beforeByteSequenceWork(
+          result.body().orElseThrow().length(), 0, span, word.canonicalName());
+    } else if (result.state() == HttpTransportResult.State.FAILURE) {
+      if (result.knownResponseTotalBytes().isPresent()) {
+        budget.rejectKnownHttpResponseBytes(
+            result.knownResponseTotalBytes().orElseThrow(), span, word.canonicalName());
+      }
+      budget.afterHttpResponseBytes(result.receivedBodyBytes(), span, word.canonicalName());
+    } else {
+      throw new IllegalStateException("non-retryable HTTP result selected for retry");
+    }
+  }
+
+  private void waitBeforeHttpAttempt(
+      BuiltinWord word,
+      SourceSpan span,
+      LogicalConnectionReference reference,
+      String method,
+      HttpRetryPolicy policy,
+      long retryDelay)
+      throws RuntimeFailure {
+    long intervalDelay = 0;
+    Long lastStart = lastHttpAttemptStartNanos.get(reference.name());
+    if (lastStart != null && policy.minimumStartIntervalMilliseconds() > 0) {
+      long now = environment.resourceClock().nanoTime();
+      if (now < lastStart) throw new IllegalStateException("HTTP rate-limit clock moved backwards");
+      long intervalNanos = policy.minimumStartIntervalMilliseconds() * 1_000_000L;
+      long remaining = intervalNanos - (now - lastStart);
+      if (remaining > 0) intervalDelay = (remaining + 999_999L) / 1_000_000L;
+    }
+    long delay = Math.max(retryDelay, intervalDelay);
+    if (delay == 0) return;
+    budget.beforeHttpReliabilityWait(delay, span, word.canonicalName());
+    SleepCapability sleeper =
+        environment
+            .sleepCapability()
+            .orElseThrow(
+                () ->
+                    httpReliabilityDiagnostic(
+                        DiagnosticCode.E_HTTP_RETRY_WAIT_UNAVAILABLE,
+                        word,
+                        span,
+                        reference,
+                        Map.of("method", method),
+                        "利用可能な待機能力",
+                        "能力なし",
+                        "実行環境へ待機能力を設定してください"));
+    SleepCapability.Result result;
+    long blockedAt = budget.beginBlocking();
+    try {
+      result = sleeper.sleep(delay);
+    } catch (CapabilityException | RuntimeException failure) {
+      throw httpReliabilityDiagnostic(
+          DiagnosticCode.E_HTTP_RETRY_WAIT_FAILURE,
+          word,
+          span,
+          reference,
+          Map.of("method", method),
+          "成功する待機能力",
+          "能力失敗",
+          "実行環境の待機能力を確認してください");
+    } finally {
+      budget.endBlocking(blockedAt);
+    }
+    if (result == null) throw new IllegalStateException("sleep capability returned null");
+    if (result == SleepCapability.Result.CANCELLED) {
+      throw httpReliabilityDiagnostic(
+          DiagnosticCode.E_HTTP_RETRY_WAIT_CANCELLED,
+          word,
+          span,
+          reference,
+          Map.of("method", method),
+          "完了する待機",
+          "取消",
+          "取消を扱う上位実行環境を確認してください");
+    }
+  }
+
+  private long retryAfterDelay(
+      BuiltinWord word,
+      SourceSpan span,
+      LogicalConnectionReference reference,
+      String method,
+      HttpRetryPolicy policy,
+      HttpTransportResult result)
+      throws RuntimeFailure {
+    if (!policy.respectRetryAfter() || result.state() != HttpTransportResult.State.RESPONSE)
+      return 0;
+    List<String> values =
+        result.headers().stream()
+            .filter(header -> header.name().equalsIgnoreCase("retry-after"))
+            .map(HttpTransportHeader::value)
+            .toList();
+    if (values.size() != 1) return 0;
+    String value = values.getFirst();
+    long delay;
+    if (!value.isEmpty() && value.chars().allMatch(c -> c >= '0' && c <= '9')) {
+      try {
+        delay = Math.multiplyExact(Long.parseLong(value), 1_000L);
+      } catch (ArithmeticException | NumberFormatException ignored) {
+        delay = Long.MAX_VALUE;
+      }
+    } else {
+      if (!value.matches(
+          "(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun), [0-9]{2} (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2} GMT")) {
+        return 0;
+      }
+      java.time.Instant target;
+      try {
+        target =
+            java.time.ZonedDateTime.parse(
+                    value, java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME)
+                .toInstant();
+      } catch (java.time.DateTimeException invalid) {
+        return 0;
+      }
+      WallTime wall =
+          environment
+              .wallTime()
+              .orElseThrow(
+                  () ->
+                      httpReliabilityDiagnostic(
+                          DiagnosticCode.E_HTTP_RETRY_CLOCK_UNAVAILABLE,
+                          word,
+                          span,
+                          reference,
+                          Map.of("method", method),
+                          "利用可能な壁時計能力",
+                          "能力なし",
+                          "実行環境へ壁時計能力を設定してください"));
+      WallTimeReading reading;
+      try {
+        reading = wall.now();
+      } catch (CapabilityException | RuntimeException failure) {
+        throw httpReliabilityDiagnostic(
+            DiagnosticCode.E_HTTP_RETRY_CLOCK_FAILURE,
+            word,
+            span,
+            reference,
+            Map.of("method", method),
+            "成功する壁時計能力",
+            "能力失敗",
+            "実行環境の壁時計能力を確認してください");
+      }
+      if (reading == null) throw new IllegalStateException("wall clock returned null");
+      long targetMilliseconds = target.toEpochMilli();
+      long currentMilliseconds = reading.epochMilliseconds();
+      if (targetMilliseconds <= currentMilliseconds) {
+        delay = 0;
+      } else if (currentMilliseconds < 0
+          && targetMilliseconds > Long.MAX_VALUE + currentMilliseconds) {
+        delay = Long.MAX_VALUE;
+      } else {
+        delay = targetMilliseconds - currentMilliseconds;
+      }
+    }
+    return Math.min(delay, policy.maximumRetryAfterMilliseconds());
+  }
+
+  private RuntimeFailure httpReliabilityDiagnostic(
+      DiagnosticCode code,
+      BuiltinWord word,
+      SourceSpan span,
+      LogicalConnectionReference reference,
+      Map<String, String> additional,
+      String expected,
+      String actual,
+      String fix) {
+    var builder =
+        Diagnostic.builder(code, Severity.ERROR, DiagnosticStage.RUNTIME, sourcePath, span)
+            .field("word", word.canonicalName())
+            .field("connection", reference.name());
+    additional.forEach(builder::field);
+    return new RuntimeFailure(builder.expected(expected).actual(actual).fix(fix).build());
   }
 
   private byte[] applyHttpTransportResult(
@@ -1809,7 +2147,21 @@ final class BuiltinExecutor {
           throw new IllegalStateException(
               "connection resolver returned an invalid resolved contract");
         }
-        String reason = ConnectionPolicyValidator.validate(resolution.policy().orElseThrow());
+        ConnectionPolicy resolvedPolicy = resolution.policy().orElseThrow();
+        String retryReason = HttpRetryPolicyValidator.validate(resolvedPolicy.httpRetryPolicy());
+        if (reference.httpMethod().isPresent() && retryReason != null) {
+          effect = connectionEffect(traceName, "invalid");
+          throw httpReliabilityDiagnostic(
+              DiagnosticCode.E_HTTP_RETRY_POLICY_INVALID,
+              word,
+              wordSpan,
+              reference,
+              Map.of("reason", retryReason),
+              "有効なHTTP再試行方針",
+              retryReason,
+              "実行環境のHTTP再試行方針を確認してください");
+        }
+        String reason = ConnectionPolicyValidator.validate(resolvedPolicy);
         if (reason != null) {
           effect = connectionEffect(traceName, "invalid");
           throw logicalConnectionFailure(
@@ -1823,7 +2175,7 @@ final class BuiltinExecutor {
               "実行環境の論理接続設定を確認してください");
         }
         effect = connectionEffect(traceName, "resolved");
-        yield resolution.policy().orElseThrow();
+        yield resolvedPolicy;
       }
     };
   }

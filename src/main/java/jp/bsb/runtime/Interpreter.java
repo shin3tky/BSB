@@ -320,7 +320,10 @@ public final class Interpreter {
               budget.fileWriteAttemptBytes(),
               budget.delimitedTextWorkUnits(),
               ExecutionTermination.programExit(programExitCode.getAsInt()),
-              builtins.errorOutputBytes());
+              builtins.errorOutputBytes(),
+              budget.httpReliabilityWaitMilliseconds(),
+              budget.httpRetryAttempts(),
+              budget.httpFinalFailureRecords());
         }
         if (startNextStartupWord) {
           callStack.add(new Frame(startupWords.get(++startupWordIndex)));
@@ -348,7 +351,10 @@ public final class Interpreter {
           budget.fileWriteAttemptBytes(),
           budget.delimitedTextWorkUnits(),
           ExecutionTermination.completed(),
-          builtins.errorOutputBytes());
+          builtins.errorOutputBytes(),
+          budget.httpReliabilityWaitMilliseconds(),
+          budget.httpRetryAttempts(),
+          budget.httpFinalFailureRecords());
     } catch (RuntimeFailure failure) {
       return new ExecutionResult(
           java.util.Optional.of(withRuntimeContext(failure.diagnostic(), dataStack, callStack)),
@@ -372,7 +378,10 @@ public final class Interpreter {
           budget.fileWriteAttemptBytes(),
           budget.delimitedTextWorkUnits(),
           ExecutionTermination.diagnosticFailure(),
-          builtins.errorOutputBytes());
+          builtins.errorOutputBytes(),
+          budget.httpReliabilityWaitMilliseconds(),
+          budget.httpRetryAttempts(),
+          budget.httpFinalFailureRecords());
     }
   }
 

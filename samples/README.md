@@ -195,6 +195,15 @@ java -Djdk.httpclient.disableRetryConnect=true -cp build/libs/bsb-0.1.0-SNAPSHOT
 表示される値は実行環境からhttpbinに見える送信元です。通常テストでは`203.0.113.10`を返す偽transportを使い、
 httpbinの稼働状況や実行環境のネットワークには依存しません。
 
+同じプログラムへ有限再試行を設定する版2例は`http-reliability-connections.toml.example`です。
+GETだけを最大3試行し、`Retry-After`と接続単位100ミリ秒の開始間隔を尊重します。実endpointを使用する
+任意smokeは次の形です。
+
+```shell
+java -Djdk.httpclient.disableRetryConnect=true -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run \
+  --connections samples/http-reliability-connections.toml.example samples/21-httpbin-ip.bsb
+```
+
 APIキー付きの参照例を標準CLIで実行する場合は、
 `samples/minimal-https-connections.toml.example`の`base-uri`を対象endpointへ変更し、秘密だけを
 環境変数から渡せます。
@@ -240,6 +249,7 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/131-tic-tac-toe.bsb
 | `19-byte-sequences.bsb`            | 不変バイト列の変換と検査         | UTF-8、Base64、slice、等値、復号失敗     |
 | `20-minimal-https.bsb`              | stdin JSONからHTTPS API連携       | 不変要求、論理接続、status、header、JSON応答 |
 | `21-httpbin-ip.bsb`                 | httpbinから送信元IPを取得         | HTTPS GET、応答JSON、文字列取出し             |
+| `http-reliability-connections.toml.example` | HTTP信頼性のCLI設定例 | 有限再試行、Retry-After、開始間隔 |
 | `22-two-dimensional-arrays.bsb`     | raggedな二次元配列                | 二重反復、構造表示、配列内配列                 |
 | `23-named-workspaces-files.bsb`     | 複数ファイルの読取・選択・書込   | 名前付き作業領域、完全バイト列、原子的置換     |
 | `24-csv-tsv-files.bsb`              | CSV/TSVの読取・行追加・CSV書込   | 厳密UTF-8、quoted改行、二次元配列、決定的CSV   |

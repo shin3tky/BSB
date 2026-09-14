@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 import jp.bsb.runtime.ConnectionPolicy;
 import jp.bsb.runtime.ConnectionResolution;
 import jp.bsb.runtime.CredentialReference;
+import jp.bsb.runtime.HttpRetryPolicy;
 import jp.bsb.runtime.JdkHttpsTransport;
 import org.tomlj.Toml;
 import org.tomlj.TomlArray;
@@ -47,6 +48,30 @@ final class ConnectionConfigLoader {
           "maximum-request-bytes",
           "maximum-response-bytes",
           "authentication");
+  private static final Set<String> CONNECTION_KEYS_V2 =
+      Set.of(
+          "base-uri",
+          "allowed-methods",
+          "connect-timeout-ms",
+          "response-timeout-ms",
+          "maximum-request-bytes",
+          "maximum-response-bytes",
+          "authentication",
+          "reliability");
+  private static final Set<String> RELIABILITY_KEYS =
+      Set.of(
+          "maximum-attempts",
+          "retryable-failure-kinds",
+          "retryable-status-codes",
+          "initial-delay-ms",
+          "maximum-delay-ms",
+          "backoff-multiplier",
+          "respect-retry-after",
+          "maximum-retry-after-ms",
+          "method-safety",
+          "idempotency-key-header",
+          "minimum-start-interval-ms",
+          "final-failure-policy");
   private static final Set<String> AUTHENTICATION_KEYS =
       Set.of("kind", "header", "value", "value-env");
   private static final Pattern ENVIRONMENT_NAME = Pattern.compile("[A-Za-z_][A-Za-z0-9_]*");
@@ -71,8 +96,9 @@ final class ConnectionConfigLoader {
     }
     rejectUnknownKeys(document, ROOT_KEYS, "ルート");
     requireLong(document, "schema-version", "schema-version");
-    if (document.getLong("schema-version") != 1L) {
-      throw problem("schema-version は1でなければなりません。");
+    long schemaVersion = document.getLong("schema-version");
+    if (schemaVersion != 1L && schemaVersion != 2L) {
+      throw problem("schema-version は1または2でなければなりません。");
     }
     TomlTable connections = requireTable(document, "connections", "connections");
     if (connections.isEmpty()) {
@@ -90,8 +116,8 @@ final class ConnectionConfigLoader {
       if (!(raw instanceof TomlTable table)) {
         throw problem("connectionsの各項目はテーブルでなければなりません。");
       }
-      rejectUnknownKeys(table, CONNECTION_KEYS, "接続");
-      policies.put(name, parseConnection(table, transport));
+      rejectUnknownKeys(table, schemaVersion == 1 ? CONNECTION_KEYS : CONNECTION_KEYS_V2, "接続");
+      policies.put(name, parseConnection(table, transport, schemaVersion));
     }
 
     JdkHttpsTransport builtTransport;
@@ -111,7 +137,8 @@ final class ConnectionConfigLoader {
         builtTransport);
   }
 
-  private ConnectionPolicy parseConnection(TomlTable table, JdkHttpsTransport.Builder transport)
+  private ConnectionPolicy parseConnection(
+      TomlTable table, JdkHttpsTransport.Builder transport, long schemaVersion)
       throws ConnectionConfigException {
     String baseUri = requireString(table, "base-uri", "base-uri");
     String origin = origin(baseUri);
@@ -166,6 +193,10 @@ final class ConnectionConfigLoader {
       throw problem("authentication.kindはnoneまたはapi-keyでなければなりません。");
     }
 
+    HttpRetryPolicy retry =
+        schemaVersion == 2 && table.contains("reliability")
+            ? parseReliability(requireTable(table, "reliability", "reliability"))
+            : HttpRetryPolicy.none();
     var policy =
         new ConnectionPolicy(
             baseUri,
@@ -178,10 +209,61 @@ final class ConnectionConfigLoader {
             maximumRequest,
             maximumResponse,
             "deny",
-            "none");
+            retry.mode(),
+            retry);
     Optional<String> problem = policy.validationProblem();
     if (problem.isPresent()) {
       throw problem("接続方針が正しくありません（" + problem.orElseThrow() + "）。");
+    }
+    return policy;
+  }
+
+  private static HttpRetryPolicy parseReliability(TomlTable table)
+      throws ConnectionConfigException {
+    rejectUnknownKeys(table, RELIABILITY_KEYS, "reliability");
+    int attempts = optionalInt(table, "maximum-attempts", 3);
+    List<String> failures =
+        optionalStringArray(
+            table,
+            "retryable-failure-kinds",
+            List.of("connectTimeout", "connectionFailure", "responseTimeout", "transportFailure"));
+    List<Integer> statuses =
+        optionalIntegerArray(table, "retryable-status-codes", List.of(429, 502, 503, 504));
+    long initial = optionalLong(table, "initial-delay-ms", 200);
+    long maximum = optionalLong(table, "maximum-delay-ms", 5_000);
+    int multiplier = optionalInt(table, "backoff-multiplier", 2);
+    boolean respect = optionalBoolean(table, "respect-retry-after", true);
+    long retryAfter = optionalLong(table, "maximum-retry-after-ms", 60_000);
+    String safety = optionalString(table, "method-safety", "safeOnly");
+    Optional<String> idempotencyHeader =
+        table.contains("idempotency-key-header")
+            ? Optional.of(requireString(table, "idempotency-key-header", "idempotency-key-header"))
+            : Optional.empty();
+    long interval = optionalLong(table, "minimum-start-interval-ms", 0);
+    String finalFailure = optionalString(table, "final-failure-policy", "disabled");
+    if (!finalFailure.equals("disabled")) {
+      throw problem("CLI版2のfinal-failure-policyはdisabledでなければなりません。");
+    }
+    var policy =
+        new HttpRetryPolicy(
+            "bounded",
+            attempts,
+            failures,
+            statuses,
+            initial,
+            maximum,
+            multiplier,
+            respect,
+            retryAfter,
+            safety,
+            idempotencyHeader,
+            interval,
+            finalFailure);
+    if (jp.bsb.runtime.HttpRetryPolicies.validationProblem(policy).isPresent()) {
+      throw problem(
+          "reliabilityが正しくありません（"
+              + jp.bsb.runtime.HttpRetryPolicies.validationProblem(policy).orElseThrow()
+              + "）。");
     }
     return policy;
   }
@@ -260,6 +342,55 @@ final class ConnectionConfigLoader {
       throws ConnectionConfigException {
     if (!table.contains(List.of(key))) return defaultValue;
     return requireLong(table, key, key);
+  }
+
+  private static int optionalInt(TomlTable table, String key, int defaultValue)
+      throws ConnectionConfigException {
+    long value = optionalLong(table, key, defaultValue);
+    try {
+      return Math.toIntExact(value);
+    } catch (ArithmeticException overflow) {
+      throw problem(key + "の整数が範囲外です。");
+    }
+  }
+
+  private static boolean optionalBoolean(TomlTable table, String key, boolean defaultValue)
+      throws ConnectionConfigException {
+    if (!table.contains(List.of(key))) return defaultValue;
+    Object value = table.get(List.of(key));
+    if (!(value instanceof Boolean flag)) throw problem(key + "には真偽値を指定してください。");
+    return flag;
+  }
+
+  private static List<String> optionalStringArray(
+      TomlTable table, String key, List<String> defaultValue) throws ConnectionConfigException {
+    if (!table.contains(List.of(key))) return defaultValue;
+    Object value = table.get(List.of(key));
+    if (!(value instanceof TomlArray array)) throw problem(key + "には文字列配列を指定してください。");
+    var result = new ArrayList<String>();
+    for (int index = 0; index < array.size(); index++) {
+      if (!(array.get(index) instanceof String text) || text.isEmpty())
+        throw problem(key + "には空でない文字列だけを指定してください。");
+      result.add(text);
+    }
+    return List.copyOf(result);
+  }
+
+  private static List<Integer> optionalIntegerArray(
+      TomlTable table, String key, List<Integer> defaultValue) throws ConnectionConfigException {
+    if (!table.contains(List.of(key))) return defaultValue;
+    Object value = table.get(List.of(key));
+    if (!(value instanceof TomlArray array)) throw problem(key + "には整数配列を指定してください。");
+    var result = new ArrayList<Integer>();
+    for (int index = 0; index < array.size(); index++) {
+      if (!(array.get(index) instanceof Long number)) throw problem(key + "には整数だけを指定してください。");
+      try {
+        result.add(Math.toIntExact(number));
+      } catch (ArithmeticException overflow) {
+        throw problem(key + "の整数が範囲外です。");
+      }
+    }
+    return List.copyOf(result);
   }
 
   private static TomlTable requireTable(TomlTable table, String key, String display)

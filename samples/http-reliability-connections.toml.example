@@ -1,0 +1,21 @@
+schema-version = 2
+
+[connections.HTTPBin]
+base-uri = "https://httpbin.org/"
+allowed-methods = ["GET"]
+
+[connections.HTTPBin.authentication]
+kind = "none"
+
+[connections.HTTPBin.reliability]
+maximum-attempts = 3
+retryable-failure-kinds = ["connectTimeout", "connectionFailure", "responseTimeout", "transportFailure"]
+retryable-status-codes = [429, 502, 503, 504]
+initial-delay-ms = 200
+maximum-delay-ms = 2000
+backoff-multiplier = 2
+respect-retry-after = true
+maximum-retry-after-ms = 10000
+method-safety = "safeOnly"
+minimum-start-interval-ms = 100
+final-failure-policy = "disabled"

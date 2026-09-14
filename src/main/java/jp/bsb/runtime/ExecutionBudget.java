@@ -26,6 +26,9 @@ final class ExecutionBudget {
   private long httpSendCalls;
   private long httpRequestAttemptBytes;
   private long httpResponseReceivedBytes;
+  private long httpReliabilityWaitMilliseconds;
+  private long httpFinalFailureRecords;
+  private long httpRetryAttempts;
   private long fileOperations;
   private long fileReadBytes;
   private long fileWriteAttemptBytes;
@@ -639,6 +642,62 @@ final class ExecutionBudget {
 
   long httpResponseRemainingBytes() {
     return HttpLimits.MAX_RESPONSE_RECEIVED_BYTES - httpResponseReceivedBytes;
+  }
+
+  /** HTTP信頼性待機を検査し、受理時だけ加算します。 */
+  void beforeHttpReliabilityWait(long requested, SourceSpan span, String word)
+      throws RuntimeFailure {
+    if (requested < 0) {
+      throw new IllegalArgumentException("HTTP retry wait must not be negative");
+    }
+    long observed = addForLimit(httpReliabilityWaitMilliseconds, requested);
+    if (observed > HttpLimits.MAX_RELIABILITY_WAIT_MILLISECONDS) {
+      throw httpLimit(
+          DiagnosticCode.E_HTTP_RETRY_WAIT_LIMIT,
+          "httpReliabilityWaitMilliseconds",
+          HttpLimits.MAX_RELIABILITY_WAIT_MILLISECONDS,
+          httpReliabilityWaitMilliseconds,
+          requested,
+          observed,
+          span,
+          word,
+          "HTTP再試行の回数または待機時間を減らしてください");
+    }
+    httpReliabilityWaitMilliseconds = observed;
+  }
+
+  long httpReliabilityWaitMilliseconds() {
+    return httpReliabilityWaitMilliseconds;
+  }
+
+  /** HTTP最終失敗記録数を検査し、受理時だけ加算します。 */
+  void beforeHttpFinalFailureRecord(SourceSpan span, String word) throws RuntimeFailure {
+    long observed = addForLimit(httpFinalFailureRecords, 1);
+    if (observed > HttpLimits.MAX_FINAL_FAILURE_RECORDS) {
+      throw httpLimit(
+          DiagnosticCode.E_HTTP_FINAL_FAILURE_LIMIT,
+          "httpFinalFailureRecords",
+          HttpLimits.MAX_FINAL_FAILURE_RECORDS,
+          httpFinalFailureRecords,
+          1,
+          observed,
+          span,
+          word,
+          "1回の実行で記録するHTTP最終失敗を減らしてください");
+    }
+    httpFinalFailureRecords = observed;
+  }
+
+  long httpFinalFailureRecords() {
+    return httpFinalFailureRecords;
+  }
+
+  void recordHttpRetryAttempt() {
+    httpRetryAttempts++;
+  }
+
+  long httpRetryAttempts() {
+    return httpRetryAttempts;
   }
 
   /** 読取操作数を検査し、受理できる場合だけ1回分を加算します。 */

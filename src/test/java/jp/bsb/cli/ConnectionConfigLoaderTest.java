@@ -23,6 +23,45 @@ class ConnectionConfigLoaderTest {
   private int fileNumber;
 
   @Test
+  void loadsVersionTwoReliabilityWithoutChangingVersionOneDefaults() throws Exception {
+    Path config =
+        write(
+            "schema-version = 2\n"
+                + "[connections.API]\n"
+                + "base-uri = \"https://api.example.test/\"\n"
+                + "allowed-methods = [\"GET\"]\n"
+                + "[connections.API.authentication]\n"
+                + "kind = \"none\"\n"
+                + "[connections.API.reliability]\n"
+                + "maximum-attempts = 4\n"
+                + "retryable-failure-kinds = [\"connectTimeout\"]\n"
+                + "retryable-status-codes = [429, 503]\n"
+                + "initial-delay-ms = 25\n"
+                + "maximum-delay-ms = 200\n"
+                + "method-safety = \"safeOnly\"\n");
+    var policy =
+        new ConnectionConfigLoader(name -> null)
+            .load(config)
+            .resolver()
+            .resolve("API", "resolve")
+            .policy()
+            .orElseThrow();
+    assertEquals("bounded", policy.retryPolicy());
+    assertEquals(4, policy.httpRetryPolicy().maximumAttempts());
+    assertEquals(List.of(429, 503), policy.httpRetryPolicy().retryableStatusCodes());
+
+    var versionOne =
+        new ConnectionConfigLoader(name -> null)
+            .load(write(baseNoneConfig()))
+            .resolver()
+            .resolve("API", "resolve")
+            .policy()
+            .orElseThrow();
+    assertEquals("none", versionOne.retryPolicy());
+    assertEquals(1, versionOne.httpRetryPolicy().maximumAttempts());
+  }
+
+  @Test
   void loadsMultipleConnectionsDefaultsAndBothCredentialSources() throws Exception {
     String directSecret = "DIRECT_CONFIG_SECRET";
     String environmentSecret = "ENVIRONMENT_CONFIG_SECRET";
@@ -160,7 +199,7 @@ class ConnectionConfigLoaderTest {
   private static Stream<Arguments> invalidDocuments() {
     String valid = baseNoneConfig();
     return Stream.of(
-        Arguments.of(valid.replace("schema-version = 1", "schema-version = 2")),
+        Arguments.of(valid.replace("schema-version = 1", "schema-version = 3")),
         Arguments.of(valid.replace("schema-version = 1", "schema-version = \"1\"")),
         Arguments.of("schema-version = 1\n"),
         Arguments.of("schema-version = 1\n[connections]\n"),
@@ -178,7 +217,13 @@ class ConnectionConfigLoaderTest {
             valid.replace("kind = \"none\"", "kind = \"api-key\"\nvalue-env = \"NOT-AN-ENV\"")),
         Arguments.of(valid.replace("base-uri =", "connect-timeout-ms = \"5\"\nbase-uri =")),
         Arguments.of(valid.replace("[connections.API.authentication]\n", "")),
-        Arguments.of(valid.replace("connections.API", "connections.\"é\"")));
+        Arguments.of(valid.replace("connections.API", "connections.\"é\"")),
+        Arguments.of(
+            valid.replace("schema-version = 1", "schema-version = 2")
+                + "[connections.API.reliability]\nmaximum-attempts = 9223372036854775807\n"),
+        Arguments.of(
+            valid.replace("schema-version = 1", "schema-version = 2")
+                + "[connections.API.reliability]\nbackoff-multiplier = -9223372036854775808\n"));
   }
 
   private static String baseApiKeyConfig() {

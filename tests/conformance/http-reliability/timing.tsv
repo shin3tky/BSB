@@ -1,0 +1,11 @@
+case	initial_ms	maximum_ms	multiplier	attempt	retry_after_ms	interval_remaining_ms	expected_wait_ms
+fixed-second	100	100	1	2	0	0	100
+fixed-third	100	100	1	3	0	0	100
+double-second	100	800	2	2	0	0	100
+double-third	100	800	2	3	0	0	200
+double-fifth-capped	100	500	2	5	0	0	500
+retry-after-wins	100	800	2	3	700	0	700
+backoff-wins	100	800	2	3	50	0	200
+interval-wins	100	800	2	2	0	250	250
+all-maximum	100	800	2	4	700	900	900
+zero	0	0	1	2	0	0	0

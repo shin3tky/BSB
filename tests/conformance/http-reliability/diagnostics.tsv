@@ -1,0 +1,12 @@
+case_id	variant	code	stage	fields
+HTTPREL-F001	policy-invalid	E_HTTP_RETRY_POLICY_INVALID	runtime	word=HTTP要求を送信する;connection=API;reason=MODE_INVALID
+HTTPREL-F003	wait-limit	E_HTTP_RETRY_WAIT_LIMIT	runtime	word=HTTP要求を送信する;limitName=httpReliabilityWaitMilliseconds;limit=3600000;used=3600000;requested=1;observed=3600001
+HTTPREL-F004	wait-unavailable	E_HTTP_RETRY_WAIT_UNAVAILABLE	runtime	word=HTTP要求を送信する;connection=API;method=GET
+HTTPREL-F004	wait-failure	E_HTTP_RETRY_WAIT_FAILURE	runtime	word=HTTP要求を送信する;connection=API;method=GET
+HTTPREL-F004	wait-cancelled	E_HTTP_RETRY_WAIT_CANCELLED	runtime	word=HTTP要求を送信する;connection=API;method=GET
+HTTPREL-F005	clock-unavailable	E_HTTP_RETRY_CLOCK_UNAVAILABLE	runtime	word=HTTP要求を送信する;connection=API;method=GET
+HTTPREL-F005	clock-failure	E_HTTP_RETRY_CLOCK_FAILURE	runtime	word=HTTP要求を送信する;connection=API;method=GET
+HTTPREL-F009	final-unavailable	E_HTTP_FINAL_FAILURE_UNAVAILABLE	runtime	word=HTTP要求を送信する;connection=API;method=GET
+HTTPREL-F009	final-failure	E_HTTP_FINAL_FAILURE_FAILURE	runtime	word=HTTP要求を送信する;connection=API;method=GET
+HTTPREL-F009	final-cancelled	E_HTTP_FINAL_FAILURE_CANCELLED	runtime	word=HTTP要求を送信する;connection=API;method=GET
+HTTPREL-R006	final-limit	E_HTTP_FINAL_FAILURE_LIMIT	runtime	word=HTTP要求を送信する;limitName=httpFinalFailureRecords;limit=1024;observed=1025

@@ -148,7 +148,7 @@ CONN機能グループの語は妥当性を検査するだけで、どの項目�
 | 要求サイズ上限 | 1〜67,108,864バイト |
 | 応答サイズ上限 | 1〜67,108,864バイト |
 | リダイレクト方針 | CONN機能グループでは`deny`だけ |
-| 再試行方針 | CONN機能グループでは`none`だけ |
+| 再試行方針 | `none`または[HTTP-REL](http-reliability.md)の不変な`bounded`方針 |
 
 URIのoriginはscheme、ASCII化・小文字化したhost、明示または既定portからなり、既定443は同一とします。
 IPv4・IPv6リテラル、国際化ドメイン名のUnicode入力、相対URI、`http`、TLS設定の上書きは

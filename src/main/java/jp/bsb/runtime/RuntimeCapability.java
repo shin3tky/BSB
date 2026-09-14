@@ -24,6 +24,8 @@ public enum RuntimeCapability {
   CONNECTION_RESOLVE("connection.resolve"),
   /** 検証済みHTTPS要求の同期送信です。 */
   HTTP_SEND("http.send"),
+  /** 使い切ったHTTP送信の閉じた記録です。 */
+  HTTP_FINAL_FAILURE("http.final-failure"),
   /** 作業領域定義の解決です。 */
   WORKSPACE_RESOLVE("workspace.resolve"),
   /** 論理ファイルの全内容読取です。 */

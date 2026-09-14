@@ -2,6 +2,12 @@ package jp.bsb.runtime;
 
 /** HTTPSのHTTP要求・応答と、1実行内の累積処理で共有する規範上限です。 */
 public final class HttpLimits {
+  /** 1実行で要求できるHTTP信頼性待機の合計ミリ秒です。 */
+  public static final long MAX_RELIABILITY_WAIT_MILLISECONDS = 3_600_000;
+
+  /** 1実行で記録できるHTTP最終失敗数です。 */
+  public static final long MAX_FINAL_FAILURE_RECORDS = 1_024;
+
   /** 1応答に許すヘッダー値数です。 */
   public static final int MAX_RESPONSE_HEADER_VALUES = 128;
 

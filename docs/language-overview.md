@@ -120,8 +120,10 @@ CSV/TSV は固定区切り、厳密な引用符、CR/LF/CRLF 入力、先頭 BOM
 使用します。
 
 HTTPS は GET、POST、PUT、PATCH、DELETE、HEAD の同期要求、規定ヘッダー、完全本文、status、応答ヘッダーを
-扱います。redirect、retry、圧縮、streaming、非同期処理は含みません。通常の適合性テストは偽能力を使用し、
-実ネットワークへ接続しません。
+扱います。接続設定版2では、最大8回の有限再試行、決定的backoff、`Retry-After`、接続単位の開始間隔を
+ホスト方針として指定できます。変更系methodの複数送信には冪等性キーまたはAPI保証が必要です。
+redirect、圧縮、streaming、非同期処理は含みません。通常の適合性テストは偽能力を使用し、実ネットワークへ
+接続しません。
 
 ## CLI と診断
 
@@ -149,5 +151,5 @@ CSV/TSV、出力、実行時間には有限の上限があります。上限超�
 - 後方参照、先読み、後読み、再帰を含む正規表現
 - JSON リテラル、JSON Pointer、JSONPath、JSON Schema
 - 環境変数、外部コマンド、ディレクトリ列挙、任意 OS パス操作
-- Basic/OAuth 認証、redirect、retry、圧縮、streaming、非同期 HTTP
+- Basic/OAuth 認証、redirect、jitter、回路遮断、圧縮、streaming、非同期 HTTP
 - 動的な接続・作業領域名、接続設定の自動探索やマージ、SQL クライアント

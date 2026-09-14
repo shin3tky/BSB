@@ -31,6 +31,9 @@ import jp.bsb.diagnostics.Diagnostic;
  * @param delimitedTextWorkUnits 実行へ到達した場合の区切りテキスト作業単位
  * @param errorOutputBytes プログラム標準エラーへ正常に書かれたUTF-8バイト数
  * @param termination 埋込みホスト向けの実行終了原因
+ * @param httpReliabilityWaitMilliseconds HTTP信頼性機構が要求した待機ミリ秒数
+ * @param httpRetryAttempts 初回送信を除くHTTP物理再試行回数
+ * @param httpFinalFailureRecords 予約済みHTTP最終失敗記録数
  */
 public record ProgramRunResult(
     int exitCode,
@@ -55,7 +58,64 @@ public record ProgramRunResult(
     long fileWriteAttemptBytes,
     long delimitedTextWorkUnits,
     long errorOutputBytes,
-    ExecutionTermination termination) {
+    ExecutionTermination termination,
+    long httpReliabilityWaitMilliseconds,
+    long httpRetryAttempts,
+    long httpFinalFailureRecords) {
+  /** HTTP信頼性資源を追加する前の全資源量を指定する互換コンストラクタです。 */
+  public ProgramRunResult(
+      int exitCode,
+      List<Diagnostic> diagnostics,
+      List<RuntimeValue> finalDataStack,
+      long executedInstructions,
+      long outputBytes,
+      List<Optional<RuntimeValue>> finalGlobalValues,
+      long arrayConstructionUnits,
+      long arrayElementOperationUnits,
+      long regexWorkUnits,
+      long jsonConstructionUnits,
+      long jsonWorkUnits,
+      long byteSequenceConstructionBytes,
+      long byteSequenceWorkBytes,
+      long httpMetadataConstructionBytes,
+      long httpSendCalls,
+      long httpRequestAttemptBytes,
+      long httpResponseReceivedBytes,
+      long fileOperations,
+      long fileReadBytes,
+      long fileWriteAttemptBytes,
+      long delimitedTextWorkUnits,
+      long errorOutputBytes,
+      ExecutionTermination termination) {
+    this(
+        exitCode,
+        diagnostics,
+        finalDataStack,
+        executedInstructions,
+        outputBytes,
+        finalGlobalValues,
+        arrayConstructionUnits,
+        arrayElementOperationUnits,
+        regexWorkUnits,
+        jsonConstructionUnits,
+        jsonWorkUnits,
+        byteSequenceConstructionBytes,
+        byteSequenceWorkBytes,
+        httpMetadataConstructionBytes,
+        httpSendCalls,
+        httpRequestAttemptBytes,
+        httpResponseReceivedBytes,
+        fileOperations,
+        fileReadBytes,
+        fileWriteAttemptBytes,
+        delimitedTextWorkUnits,
+        errorOutputBytes,
+        termination,
+        0,
+        0,
+        0);
+  }
+
   /** 作業領域・区切り表までの全資源量を指定する正規コンストラクタとの互換形です。 */
   public ProgramRunResult(
       int exitCode,
@@ -396,7 +456,10 @@ public record ProgramRunResult(
         || fileReadBytes < 0
         || fileWriteAttemptBytes < 0
         || delimitedTextWorkUnits < 0
-        || errorOutputBytes < 0) {
+        || errorOutputBytes < 0
+        || httpReliabilityWaitMilliseconds < 0
+        || httpRetryAttempts < 0
+        || httpFinalFailureRecords < 0) {
       throw new IllegalArgumentException("resource counts must not be negative");
     }
   }

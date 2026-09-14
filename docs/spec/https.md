@@ -4,6 +4,8 @@
 >
 > ここで明示する追加以外は、先行する実装済み機能グループの契約を維持します。
 > [診断と失敗境界](https-diagnostics.md)および[適合性](https-conformance.md)と一体です。
+> 後続の有限再試行は[HTTP信頼性](http-reliability.md)が本仕様の`retryPolicy=none`境界を
+> 拡張します。値、語、最終返値の契約は本仕様を維持します。
 
 ## 1. 目的と機能境界
 
@@ -15,7 +17,7 @@ HTTPの意味論は[RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html)、URI
 [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986.html)を基準にします。HTTPクライアント固有の型、
 絶対URI、資格情報、TLS設定をBSB値へ公開しません。
 
-この機能グループでは次を追加しません。
+最小HTTPS機能グループ単独では次を追加しません。
 
 - 自動リダイレクト、自動再試行、`Retry-After`、レート制限、冪等性キー
 - OAuth 2.0、Basic認証、Cookie jar、プロキシ、相互TLS、利用者指定trust store
@@ -199,7 +201,8 @@ content octet列として不変`バイト列`へ入れます。自動展開、�
 
 送信はCONN機能グループの`connection.resolve`を呼出し時に1回だけ使います。`RESOLVED`方針をCONN機能グループの順で
 再検証し、静的メソッドが許可メソッド集合にあること、対象URIが基底originかつ許可originであることを
-検査します。`redirectPolicy=deny`、`retryPolicy=none`だけを受理し、要求単位の上書きはありません。
+検査します。`redirectPolicy=deny`を受理します。再試行方針はHTTP-REL機能グループの`none|bounded`を受理し、
+要求単位の上書きはありません。
 
 HTTPS機能グループの実送信が対応する認証方式は`none`と`apiKey`です。`basic`と`oauth2`はCONN機能グループでは妥当な
 分類のままですが、HTTPS機能グループの送信では捕捉不能な未対応診断にします。

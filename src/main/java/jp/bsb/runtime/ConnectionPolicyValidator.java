@@ -66,7 +66,11 @@ final class ConnectionPolicyValidator {
     if (!policy.redirectPolicy().equals("deny")) {
       return REDIRECT_POLICY_INVALID;
     }
-    if (!policy.retryPolicy().equals("none")) {
+    if (!policy.retryPolicy().equals("none") && !policy.retryPolicy().equals("bounded")) {
+      return RETRY_POLICY_INVALID;
+    }
+    if (!policy.retryPolicy().equals(policy.httpRetryPolicy().mode())
+        || HttpRetryPolicyValidator.validate(policy.httpRetryPolicy()) != null) {
       return RETRY_POLICY_INVALID;
     }
     return null;
