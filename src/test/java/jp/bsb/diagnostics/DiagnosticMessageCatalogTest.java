@@ -191,6 +191,7 @@ class DiagnosticMessageCatalogTest {
     String NestedArrayMessages = resourceText("/conformance/nested-arrays/messages.properties");
     String WorkspaceTableMessages =
         resourceText("/conformance/workspace-tables/messages.properties");
+    String jsonShapesMessages = resourceText("/conformance/json-shapes/messages.properties");
     var catalog =
         DiagnosticMessageCatalog.load(
             new StringReader(messages),
@@ -207,7 +208,8 @@ class DiagnosticMessageCatalogTest {
             new StringReader(ByteSequenceMessages),
             new StringReader(httpsMessages),
             new StringReader(NestedArrayMessages),
-            new StringReader(WorkspaceTableMessages));
+            new StringReader(WorkspaceTableMessages),
+            new StringReader(jsonShapesMessages));
     var diagnostic =
         Diagnostic.builder(
                 DiagnosticCode.E_MISSING_MAIN,

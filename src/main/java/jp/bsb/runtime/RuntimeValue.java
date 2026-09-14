@@ -30,6 +30,8 @@ public sealed interface RuntimeValue
         FileReadFailureValue,
         FileWriteFailureValue,
         DelimitedTextParseFailureValue,
+        JsonShapeValue,
+        JsonShapeFailureValue,
         OptionalValue,
         ResultValue {
   /**

@@ -68,6 +68,8 @@ final class BuiltinExecutor {
       ValueType.resultOf(
           ValueType.arrayOf(ValueType.arrayOf(ValueType.STRING)),
           ValueType.DELIMITED_TEXT_PARSE_FAILURE);
+  private static final ResultType JSON_SHAPE_RESULT =
+      ValueType.resultOf(ValueType.JSON, ValueType.arrayOf(ValueType.JSON_SHAPE_FAILURE));
   private static final java.util.Set<String> WORKSPACE_INVALID_REASONS =
       java.util.Set.of(
           "invalidReference", "invalidPolicy", "inconsistentWorkspace", "inconsistentMapping");
@@ -321,7 +323,185 @@ final class BuiltinExecutor {
       case DELIMITED_TEXT_PARSE_FAILURE_OFFSET -> delimitedTextParseFailureOffset(stack);
       case DELIMITED_TEXT_PARSE_FAILURE_LINE -> delimitedTextParseFailureLine(stack);
       case DELIMITED_TEXT_PARSE_FAILURE_COLUMN -> delimitedTextParseFailureColumn(stack);
+      case JSON_SHAPE_NULL -> jsonShapeLeaf(word, stack, span, JsonShapeValue.Kind.NULL);
+      case JSON_SHAPE_BOOLEAN -> jsonShapeLeaf(word, stack, span, JsonShapeValue.Kind.BOOLEAN);
+      case JSON_SHAPE_INTEGER -> jsonShapeLeaf(word, stack, span, JsonShapeValue.Kind.INTEGER);
+      case JSON_SHAPE_DECIMAL -> jsonShapeLeaf(word, stack, span, JsonShapeValue.Kind.DECIMAL);
+      case JSON_SHAPE_STRING -> jsonShapeLeaf(word, stack, span, JsonShapeValue.Kind.STRING);
+      case JSON_SHAPE_ARRAY -> jsonShapeWrap(word, stack, span, false);
+      case JSON_SHAPE_EMPTY_OBJECT -> jsonShapeEmptyObject(word, stack, span);
+      case JSON_SHAPE_SET_REQUIRED -> jsonShapeSetMember(word, stack, span, true);
+      case JSON_SHAPE_SET_OPTIONAL -> jsonShapeSetMember(word, stack, span, false);
+      case JSON_SHAPE_NULLABLE -> jsonShapeWrap(word, stack, span, true);
+      case JSON_SHAPE_VALIDATE -> jsonShapeValidate(word, stack, span);
+      case JSON_SHAPE_FAILURE_KIND -> jsonShapeFailureField(stack, 0);
+      case JSON_SHAPE_FAILURE_PATH -> jsonShapeFailureField(stack, 1);
+      case JSON_SHAPE_FAILURE_EXPECTED_KIND -> jsonShapeFailureField(stack, 2);
+      case JSON_SHAPE_FAILURE_ACTUAL_KIND -> jsonShapeFailureField(stack, 3);
     };
+  }
+
+  private byte[] jsonShapeLeaf(
+      BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span, JsonShapeValue.Kind kind)
+      throws RuntimeFailure {
+    requireAdditionalStackCapacity(word, stack, span, 1);
+    stack.add(JsonShapeValue.leaf(kind));
+    return new byte[0];
+  }
+
+  private byte[] jsonShapeEmptyObject(
+      BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span) throws RuntimeFailure {
+    requireAdditionalStackCapacity(word, stack, span, 1);
+    stack.add(JsonShapeValue.emptyObject());
+    return new byte[0];
+  }
+
+  private byte[] jsonShapeWrap(
+      BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span, boolean nullable)
+      throws RuntimeFailure {
+    int index = stack.size() - 1;
+    JsonShapeValue child = (JsonShapeValue) stack.get(index);
+    if (nullable
+        && (child.kind() == JsonShapeValue.Kind.NULLABLE
+            || child.kind() == JsonShapeValue.Kind.NULL)) {
+      return new byte[0];
+    }
+    long nodes = child.nodeCount() + 1;
+    int depth = child.depth() + 1;
+    requireJsonShapeSize(word, span, depth, nodes);
+    stack.set(index, nullable ? JsonShapeValue.nullable(child) : JsonShapeValue.array(child));
+    return new byte[0];
+  }
+
+  private byte[] jsonShapeSetMember(
+      BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span, boolean required)
+      throws RuntimeFailure {
+    int objectIndex = stack.size() - 3;
+    JsonShapeValue object = (JsonShapeValue) stack.get(objectIndex);
+    if (object.kind() != JsonShapeValue.Kind.OBJECT) {
+      throw new RuntimeFailure(
+          Diagnostic.builder(
+                  DiagnosticCode.E_JSON_SHAPE_OBJECT_REQUIRED,
+                  Severity.ERROR,
+                  DiagnosticStage.RUNTIME,
+                  sourcePath,
+                  span)
+              .field("word", word.canonicalName())
+              .field("actualShapeKind", object.kind().stableName())
+              .expected("object")
+              .actual(object.kind().stableName())
+              .fix("空のJSONオブジェクト形状から形状を組み立ててください")
+              .build());
+    }
+    String name = ((StringValue) stack.get(objectIndex + 1)).value();
+    JsonShapeValue child = (JsonShapeValue) stack.get(objectIndex + 2);
+    JsonShapeValue result = object.withMember(name, required, child);
+    requireJsonShapeSize(word, span, result.depth(), result.nodeCount());
+    stack.subList(objectIndex + 1, stack.size()).clear();
+    stack.set(objectIndex, result);
+    return new byte[0];
+  }
+
+  private byte[] jsonShapeValidate(BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span)
+      throws RuntimeFailure {
+    int jsonIndex = stack.size() - 2;
+    JsonRuntimeValue json = (JsonRuntimeValue) stack.get(jsonIndex);
+    JsonShapeValue shape = (JsonShapeValue) stack.get(jsonIndex + 1);
+    JsonShapeValidator.Outcome outcome = JsonShapeValidator.validate(json.value(), shape);
+    if (outcome.workLimitExceeded()) {
+      budget.beforeJsonShapeWork(outcome.workUnits(), span, word.canonicalName());
+      throw new IllegalStateException("JSON shape work limit was not rejected");
+    }
+    if (outcome.pathLimitObserved() != 0) {
+      throw new RuntimeFailure(
+          Diagnostic.builder(
+                  DiagnosticCode.E_JSON_SHAPE_PATH_LIMIT,
+                  Severity.ERROR,
+                  DiagnosticStage.RUNTIME,
+                  sourcePath,
+                  span)
+              .field("word", word.canonicalName())
+              .limit(
+                  "jsonShapePathUtf8Bytes",
+                  JsonShapeLimits.MAX_PATH_UTF8_BYTES,
+                  outcome.pathLimitObserved())
+              .expected(JsonShapeLimits.MAX_PATH_UTF8_BYTES + " UTF-8バイト以下")
+              .actual(outcome.pathLimitObserved() + " UTF-8バイト")
+              .fix("形状のキー名または入れ子を短くしてください")
+              .build());
+    }
+    budget.beforeJsonShapeWork(outcome.workUnits(), span, word.canonicalName());
+    ResultValue result;
+    if (outcome.failures().isEmpty()) {
+      result = ResultValue.success(JSON_SHAPE_RESULT, json);
+    } else {
+      budget.beforeArrayWork(outcome.failures().size(), 0, span, "jsonShapeFailures");
+      List<RuntimeValue> failures =
+          outcome.failures().stream().map(RuntimeValue.class::cast).toList();
+      result =
+          ResultValue.failure(
+              JSON_SHAPE_RESULT, new ArrayValue(ValueType.JSON_SHAPE_FAILURE, failures));
+    }
+    stack.removeLast();
+    stack.set(jsonIndex, result);
+    return new byte[0];
+  }
+
+  private static byte[] jsonShapeFailureField(ArrayList<RuntimeValue> stack, int field) {
+    int index = stack.size() - 1;
+    JsonShapeFailureValue failure = (JsonShapeFailureValue) stack.get(index);
+    String value =
+        switch (field) {
+          case 0 -> failure.kind();
+          case 1 -> failure.path();
+          case 2 -> failure.expectedKind();
+          case 3 -> failure.actualKind();
+          default -> throw new IllegalArgumentException("unknown JSON shape failure field");
+        };
+    stack.set(index, new StringValue(value));
+    return new byte[0];
+  }
+
+  private void requireJsonShapeSize(BuiltinWord word, SourceSpan span, int depth, long nodes)
+      throws RuntimeFailure {
+    if (depth > JsonShapeLimits.MAX_DEPTH) {
+      throw jsonShapeSizeFailure(
+          DiagnosticCode.E_JSON_SHAPE_DEPTH_LIMIT,
+          word,
+          span,
+          "jsonShapeDepth",
+          JsonShapeLimits.MAX_DEPTH,
+          depth,
+          "形状の入れ子を減らしてください");
+    }
+    if (nodes > JsonShapeLimits.MAX_NODES) {
+      throw jsonShapeSizeFailure(
+          DiagnosticCode.E_JSON_SHAPE_NODE_LIMIT,
+          word,
+          span,
+          "jsonShapeNodes",
+          JsonShapeLimits.MAX_NODES,
+          nodes,
+          "形状のメンバーまたは入れ子を減らしてください");
+    }
+  }
+
+  private RuntimeFailure jsonShapeSizeFailure(
+      DiagnosticCode code,
+      BuiltinWord word,
+      SourceSpan span,
+      String resource,
+      long limit,
+      long observed,
+      String fix) {
+    return new RuntimeFailure(
+        Diagnostic.builder(code, Severity.ERROR, DiagnosticStage.RUNTIME, sourcePath, span)
+            .field("word", word.canonicalName())
+            .limit(resource, limit, observed)
+            .expected(limit + "以下")
+            .actual(Long.toString(observed))
+            .fix(fix)
+            .build());
   }
 
   private byte[] fileRead(

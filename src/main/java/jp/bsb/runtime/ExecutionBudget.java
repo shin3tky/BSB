@@ -33,6 +33,7 @@ final class ExecutionBudget {
   private long fileReadBytes;
   private long fileWriteAttemptBytes;
   private long delimitedTextWorkUnits;
+  private long jsonShapeWorkUnits;
   private long excludedNanos;
 
   ExecutionBudget(String sourcePath, MonotonicClock clock) {
@@ -824,6 +825,36 @@ final class ExecutionBudget {
 
   long delimitedTextWorkUnits() {
     return delimitedTextWorkUnits;
+  }
+
+  /** JSON形状検証の累積作業量を検査し、受理時だけ加算します。 */
+  void beforeJsonShapeWork(long requested, SourceSpan span, String word) throws RuntimeFailure {
+    if (requested < 0) {
+      throw new IllegalArgumentException("JSON shape work request must not be negative");
+    }
+    long observed = addForLimit(jsonShapeWorkUnits, requested);
+    if (observed > JsonShapeLimits.MAX_WORK_UNITS) {
+      throw new RuntimeFailure(
+          Diagnostic.builder(
+                  DiagnosticCode.E_JSON_SHAPE_WORK_LIMIT,
+                  Severity.ERROR,
+                  DiagnosticStage.RUNTIME,
+                  sourcePath,
+                  span)
+              .field("word", word)
+              .field("used", Long.toString(jsonShapeWorkUnits))
+              .field("requested", Long.toString(requested))
+              .limit("jsonShapeWorkUnits", JsonShapeLimits.MAX_WORK_UNITS, observed)
+              .expected("累積" + JsonShapeLimits.MAX_WORK_UNITS + "単位以下")
+              .actual("累積" + observed + "単位")
+              .fix("1回の実行で検証するJSON値または形状を減らしてください")
+              .build());
+    }
+    jsonShapeWorkUnits = observed;
+  }
+
+  long jsonShapeWorkUnits() {
+    return jsonShapeWorkUnits;
   }
 
   /** 区切りテキスト資源境界試験用に、配列構築と区切り作業の累積値を指定します。 */

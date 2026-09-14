@@ -30,7 +30,7 @@ class ControlFlowCliConformanceTest {
 
   @TestFactory
   List<DynamicTest> allNormalAndFailureCasesMatchTheNormativeData() throws IOException {
-    // 第2・制御フローのメッセージ断片は実行時に統合されるため、重複と欠落も一緒に検査する。
+    // 制御フローのメッセージ断片は実行時に統合されるため、重複と欠落も一緒に検査する。
     ConformanceData.validateMessages();
     CaseCatalog catalog = ControlFlowConformanceData.loadCases();
     Map<String, DiagnosticSpec> diagnostics = ControlFlowConformanceData.loadDiagnostics();

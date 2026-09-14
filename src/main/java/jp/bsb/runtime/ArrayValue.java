@@ -124,6 +124,10 @@ public record ArrayValue(ValueType elementType, List<RuntimeValue> elements, lon
       case DelimitedTextParseFailureValue ignored ->
           throw new IllegalArgumentException(
               "delimited text parse failures cannot be array elements");
+      case JsonShapeValue ignored ->
+          throw new IllegalArgumentException("JSON shapes cannot be array elements");
+      case JsonShapeFailureValue ignored ->
+          throw new IllegalArgumentException("JSON shape failures cannot be displayed");
       case ArrayValue array -> array.displayText();
       case InputResultValue ignored ->
           throw new IllegalArgumentException("input results cannot be array elements");

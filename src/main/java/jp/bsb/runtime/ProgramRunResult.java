@@ -34,6 +34,7 @@ import jp.bsb.diagnostics.Diagnostic;
  * @param httpReliabilityWaitMilliseconds HTTP信頼性機構が要求した待機ミリ秒数
  * @param httpRetryAttempts 初回送信を除くHTTP物理再試行回数
  * @param httpFinalFailureRecords 予約済みHTTP最終失敗記録数
+ * @param jsonShapeWorkUnits 実行へ到達した場合のJSON形状検証作業単位
  */
 public record ProgramRunResult(
     int exitCode,
@@ -61,7 +62,66 @@ public record ProgramRunResult(
     ExecutionTermination termination,
     long httpReliabilityWaitMilliseconds,
     long httpRetryAttempts,
-    long httpFinalFailureRecords) {
+    long httpFinalFailureRecords,
+    long jsonShapeWorkUnits) {
+  /** JSON形状検証資源を追加する前の全資源量を指定する互換コンストラクタです。 */
+  public ProgramRunResult(
+      int exitCode,
+      List<Diagnostic> diagnostics,
+      List<RuntimeValue> finalDataStack,
+      long executedInstructions,
+      long outputBytes,
+      List<Optional<RuntimeValue>> finalGlobalValues,
+      long arrayConstructionUnits,
+      long arrayElementOperationUnits,
+      long regexWorkUnits,
+      long jsonConstructionUnits,
+      long jsonWorkUnits,
+      long byteSequenceConstructionBytes,
+      long byteSequenceWorkBytes,
+      long httpMetadataConstructionBytes,
+      long httpSendCalls,
+      long httpRequestAttemptBytes,
+      long httpResponseReceivedBytes,
+      long fileOperations,
+      long fileReadBytes,
+      long fileWriteAttemptBytes,
+      long delimitedTextWorkUnits,
+      long errorOutputBytes,
+      ExecutionTermination termination,
+      long httpReliabilityWaitMilliseconds,
+      long httpRetryAttempts,
+      long httpFinalFailureRecords) {
+    this(
+        exitCode,
+        diagnostics,
+        finalDataStack,
+        executedInstructions,
+        outputBytes,
+        finalGlobalValues,
+        arrayConstructionUnits,
+        arrayElementOperationUnits,
+        regexWorkUnits,
+        jsonConstructionUnits,
+        jsonWorkUnits,
+        byteSequenceConstructionBytes,
+        byteSequenceWorkBytes,
+        httpMetadataConstructionBytes,
+        httpSendCalls,
+        httpRequestAttemptBytes,
+        httpResponseReceivedBytes,
+        fileOperations,
+        fileReadBytes,
+        fileWriteAttemptBytes,
+        delimitedTextWorkUnits,
+        errorOutputBytes,
+        termination,
+        httpReliabilityWaitMilliseconds,
+        httpRetryAttempts,
+        httpFinalFailureRecords,
+        0);
+  }
+
   /** HTTP信頼性資源を追加する前の全資源量を指定する互換コンストラクタです。 */
   public ProgramRunResult(
       int exitCode,
@@ -372,7 +432,7 @@ public record ProgramRunResult(
   }
 
   /**
-   * 第5・数値演算の配列予算までを指定する互換コンストラクタです。
+   * 数値演算の配列予算までを指定する互換コンストラクタです。
    *
    * @param exitCode 0、8、9、10の終了分類
    * @param diagnostics 警告または停止原因
@@ -459,13 +519,14 @@ public record ProgramRunResult(
         || errorOutputBytes < 0
         || httpReliabilityWaitMilliseconds < 0
         || httpRetryAttempts < 0
-        || httpFinalFailureRecords < 0) {
+        || httpFinalFailureRecords < 0
+        || jsonShapeWorkUnits < 0) {
       throw new IllegalArgumentException("resource counts must not be negative");
     }
   }
 
   /**
-   * 全段階をエラーなしで完了したかを返します。
+   * パイプラインをエラーなしで完了したかを返します。
    *
    * @return 終了コードが0ならtrue
    */

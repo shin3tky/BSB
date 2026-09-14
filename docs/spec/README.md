@@ -19,6 +19,7 @@
 | `OPT` | 任意値 | [任意値](optional-values.md) | [診断](optional-values-diagnostics.md) | [適合性](optional-values-conformance.md) |
 | `RESULT` | 結果値 | [結果値](result-values.md) | [診断](result-values-diagnostics.md) | [適合性](result-values-conformance.md) |
 | `RJSON` | 回復可能な JSON 解析 | [JSON 解析](recoverable-json-parsing.md) | [診断](recoverable-json-diagnostics.md) | [適合性](recoverable-json-conformance.md) |
+| `JSHAPE` | 最小 JSON 形状検証 | [JSON 形状](json-shapes.md) | [診断](json-shapes-diagnostics.md) | [適合性](json-shapes-conformance.md) |
 | `CONN` | 論理接続 | [論理接続](logical-connections.md) | [診断](logical-connections-diagnostics.md) | [適合性](logical-connections-conformance.md) |
 | `BYTES` | バイト列・UTF-8・Base64 | [バイト列](byte-sequences.md) | [診断](byte-sequences-diagnostics.md) | [適合性](byte-sequences-conformance.md) |
 | `HTTPS` | HTTPS クライアント | [HTTPS](https.md) | [診断](https-diagnostics.md) | [適合性](https-conformance.md) |

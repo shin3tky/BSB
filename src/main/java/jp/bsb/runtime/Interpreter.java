@@ -323,7 +323,8 @@ public final class Interpreter {
               builtins.errorOutputBytes(),
               budget.httpReliabilityWaitMilliseconds(),
               budget.httpRetryAttempts(),
-              budget.httpFinalFailureRecords());
+              budget.httpFinalFailureRecords(),
+              budget.jsonShapeWorkUnits());
         }
         if (startNextStartupWord) {
           callStack.add(new Frame(startupWords.get(++startupWordIndex)));
@@ -354,7 +355,8 @@ public final class Interpreter {
           builtins.errorOutputBytes(),
           budget.httpReliabilityWaitMilliseconds(),
           budget.httpRetryAttempts(),
-          budget.httpFinalFailureRecords());
+          budget.httpFinalFailureRecords(),
+          budget.jsonShapeWorkUnits());
     } catch (RuntimeFailure failure) {
       return new ExecutionResult(
           java.util.Optional.of(withRuntimeContext(failure.diagnostic(), dataStack, callStack)),
@@ -381,7 +383,8 @@ public final class Interpreter {
           builtins.errorOutputBytes(),
           budget.httpReliabilityWaitMilliseconds(),
           budget.httpRetryAttempts(),
-          budget.httpFinalFailureRecords());
+          budget.httpFinalFailureRecords(),
+          budget.jsonShapeWorkUnits());
     }
   }
 

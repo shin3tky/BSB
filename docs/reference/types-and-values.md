@@ -31,9 +31,14 @@ BSB は静的型付き言語です。実行前に各処理の入力と出力を�
 | `バイト列` | 0〜255 の不変な列 |
 | `HTTP要求` | 経路、問い合わせ、ヘッダー、本文を持つ不変要求 |
 | `HTTP応答` | status、ヘッダー、完全本文を持つ不変応答 |
+| `JSON形状` | JSONの種類、必須・任意member、配列要素、null許容を表す不変形状 |
 
 回復可能な失敗には `JSON解析失敗`、`UTF8復号失敗`、`Base64復号失敗`、`HTTP送信失敗`、
-`ファイル読取失敗`、`ファイル書込失敗`、`区切りテキスト解析失敗` があります。
+`ファイル読取失敗`、`ファイル書込失敗`、`区切りテキスト解析失敗`、`JSON形状失敗`があります。
+
+`JSON形状`と`JSON形状失敗`は直接表示・比較できません。形状検証は
+`結果<JSON,配列<JSON形状失敗>>`を返し、失敗の種類、JSON Pointer path、期待種類、実際種類だけを
+専用の取出し語で参照できます。
 
 ## 不変値
 
@@ -76,5 +81,6 @@ JSON、任意値、結果値などに決定的な表示形式があります。�
 - [文字列](../spec/string-operations.md)
 - [配列](../spec/arrays.md) / [二次元配列](../spec/nested-arrays.md)
 - [JSON](../spec/json-values.md)
+- [JSON 形状検証](../spec/json-shapes.md)
 - [任意値](../spec/optional-values.md) / [結果値](../spec/result-values.md)
 - [バイト列](../spec/byte-sequences.md)

@@ -232,6 +232,7 @@ public final class ConformanceData {
         absoluteResourceBytes("/conformance/nested-arrays/messages.properties");
     byte[] WorkspaceTableBytes =
         absoluteResourceBytes("/conformance/workspace-tables/messages.properties");
+    byte[] jsonShapesBytes = absoluteResourceBytes("/conformance/json-shapes/messages.properties");
     String CoreText = strictUtf8(CoreBytes, "Core/messages.properties");
     String ControlFlowText = strictUtf8(ControlFlowBytes, "ControlFlow/messages.properties");
     String bindingsText = strictUtf8(bindingsBytes, "bindings/messages.properties");
@@ -248,6 +249,7 @@ public final class ConformanceData {
     String NestedArrayText = strictUtf8(NestedArrayBytes, "NestedArray/messages.properties");
     String WorkspaceTableText =
         strictUtf8(WorkspaceTableBytes, "WorkspaceTable/messages.properties");
+    String jsonShapesText = strictUtf8(jsonShapesBytes, "json-shapes/messages.properties");
     assertFalse(CoreText.startsWith("\uFEFF"), "Core messages must not have a BOM");
     assertFalse(ControlFlowText.startsWith("\uFEFF"), "ControlFlow messages must not have a BOM");
     assertFalse(bindingsText.startsWith("\uFEFF"), "bindings messages must not have a BOM");
@@ -264,6 +266,7 @@ public final class ConformanceData {
     assertFalse(NestedArrayText.startsWith("\uFEFF"), "NestedArray messages must not have a BOM");
     assertFalse(
         WorkspaceTableText.startsWith("\uFEFF"), "WorkspaceTable messages must not have a BOM");
+    assertFalse(jsonShapesText.startsWith("\uFEFF"), "json-shapes messages must not have a BOM");
     try (Reader CoreReader = new java.io.StringReader(CoreText);
         Reader ControlFlowReader = new java.io.StringReader(ControlFlowText);
         Reader bindingsReader = new java.io.StringReader(bindingsText);
@@ -278,7 +281,8 @@ public final class ConformanceData {
         Reader ByteSequenceReader = new java.io.StringReader(ByteSequenceText);
         Reader httpsReader = new java.io.StringReader(httpsText);
         Reader NestedArrayReader = new java.io.StringReader(NestedArrayText);
-        Reader WorkspaceTableReader = new java.io.StringReader(WorkspaceTableText)) {
+        Reader WorkspaceTableReader = new java.io.StringReader(WorkspaceTableText);
+        Reader jsonShapesReader = new java.io.StringReader(jsonShapesText)) {
       // 機能グループごとの断片を統合し、重複と全コードの欠落をまとめて検査する。
       DiagnosticMessageCatalog.load(
           CoreReader,
@@ -295,7 +299,8 @@ public final class ConformanceData {
           ByteSequenceReader,
           httpsReader,
           NestedArrayReader,
-          WorkspaceTableReader);
+          WorkspaceTableReader,
+          jsonShapesReader);
     }
   }
 

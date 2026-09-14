@@ -35,7 +35,9 @@ class ValueTypeTest {
             "HTTP送信失敗",
             "ファイル読取失敗",
             "ファイル書込失敗",
-            "区切りテキスト解析失敗"),
+            "区切りテキスト解析失敗",
+            "JSON形状",
+            "JSON形状失敗"),
         ValueType.scalarTypes().stream().map(ValueType::sourceName).toList());
     assertEquals(List.of(ValueType.values()), ValueType.scalarTypes());
     assertEquals("整数", ValueType.INTEGER.toString());
@@ -58,7 +60,7 @@ class ValueTypeTest {
     assertEquals("ファイル読取失敗", ValueType.FILE_READ_FAILURE.toString());
     assertEquals("ファイル書込失敗", ValueType.FILE_WRITE_FAILURE.toString());
     assertEquals(
-        List.of("整数", "真偽", "文字", "文字列", "小数", "JSON"),
+        List.of("整数", "真偽", "文字", "文字列", "小数", "JSON", "JSON形状失敗"),
         ValueType.arrayElementTypes().stream().map(ValueType::sourceName).toList());
   }
 
@@ -104,6 +106,8 @@ class ValueTypeTest {
     assertFalse(ValueType.UTF8_DECODE_FAILURE.isArrayElementType());
     assertFalse(ValueType.BASE64_DECODE_FAILURE.isArrayElementType());
     assertTrue(ValueType.JSON.isArrayElementType());
+    assertFalse(ValueType.JSON_SHAPE.isArrayElementType());
+    assertTrue(ValueType.JSON_SHAPE_FAILURE.isArrayElementType());
   }
 
   @Test
@@ -115,6 +119,11 @@ class ValueTypeTest {
     assertEquals(Optional.of(ValueType.DATE_TIME), ValueType.fromSourceName("日時"));
     assertEquals(Optional.of(ValueType.JSON), ValueType.fromSourceName("JSON"));
     assertEquals(Optional.of(ValueType.JSON_PARSE_FAILURE), ValueType.fromSourceName("JSON解析失敗"));
+    assertEquals(Optional.of(ValueType.JSON_SHAPE), ValueType.fromSourceName("JSON形状"));
+    assertEquals(Optional.of(ValueType.JSON_SHAPE_FAILURE), ValueType.fromSourceName("JSON形状失敗"));
+    assertEquals(
+        Optional.of(ValueType.arrayOf(ValueType.JSON_SHAPE_FAILURE)),
+        ValueType.fromSourceName("配列<JSON形状失敗>"));
     assertEquals(Optional.of(ValueType.BYTE_SEQUENCE), ValueType.fromSourceName("バイト列"));
     assertEquals(Optional.of(ValueType.UTF8_DECODE_FAILURE), ValueType.fromSourceName("UTF8復号失敗"));
     assertEquals(

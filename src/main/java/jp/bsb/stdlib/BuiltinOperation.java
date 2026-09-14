@@ -312,5 +312,35 @@ public enum BuiltinOperation {
   /** 区切りテキスト解析失敗行の取出し。 */
   DELIMITED_TEXT_PARSE_FAILURE_LINE,
   /** 区切りテキスト解析失敗列の取出し。 */
-  DELIMITED_TEXT_PARSE_FAILURE_COLUMN
+  DELIMITED_TEXT_PARSE_FAILURE_COLUMN,
+  /** JSON null葉形状の構築。 */
+  JSON_SHAPE_NULL,
+  /** JSON真偽葉形状の構築。 */
+  JSON_SHAPE_BOOLEAN,
+  /** JSON整数葉形状の構築。 */
+  JSON_SHAPE_INTEGER,
+  /** JSON小数葉形状の構築。 */
+  JSON_SHAPE_DECIMAL,
+  /** JSON文字列葉形状の構築。 */
+  JSON_SHAPE_STRING,
+  /** JSON配列形状の構築。 */
+  JSON_SHAPE_ARRAY,
+  /** 空JSONオブジェクト形状の構築。 */
+  JSON_SHAPE_EMPTY_OBJECT,
+  /** JSONオブジェクト形状への必須キー設定。 */
+  JSON_SHAPE_SET_REQUIRED,
+  /** JSONオブジェクト形状への任意キー設定。 */
+  JSON_SHAPE_SET_OPTIONAL,
+  /** JSON形状のnull許容化。 */
+  JSON_SHAPE_NULLABLE,
+  /** JSON値の形状検証。 */
+  JSON_SHAPE_VALIDATE,
+  /** JSON形状失敗種類の取出し。 */
+  JSON_SHAPE_FAILURE_KIND,
+  /** JSON形状失敗pathの取出し。 */
+  JSON_SHAPE_FAILURE_PATH,
+  /** JSON形状失敗の期待種類の取出し。 */
+  JSON_SHAPE_FAILURE_EXPECTED_KIND,
+  /** JSON形状失敗の実際種類の取出し。 */
+  JSON_SHAPE_FAILURE_ACTUAL_KIND
 }

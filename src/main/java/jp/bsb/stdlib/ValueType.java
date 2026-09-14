@@ -7,8 +7,8 @@ import java.util.Optional;
 /**
  * 静的検査、IR、実行系が共有する具体的な値型です。
  *
- * <p>【コンピュータ科学の観点：代数的データ型】 値型は「20種類の非配列型」または「許可された要素型を持つ配列型」のどちらかです。配列を単なる名前にせず、
- * 要素型をデータとして保持することで、例えば{@code 配列<整数>}と{@code 配列<文字列>}を構造的に区別できます。
+ * <p>【コンピュータ科学の観点：代数的データ型】 値型は有限個の非配列型または許可された要素型を持つ配列型です。配列を単なる名前にせず、 要素型をデータとして保持することで、例えば{@code
+ * 配列<整数>}と{@code 配列<文字列>}を構造的に区別できます。
  *
  * <p>この型が表す値はすべて具体型です。組み込み辞書で使う{@code T}や{@code 表示可能}は型制約であり、このモデルには含めません。
  */
@@ -75,6 +75,12 @@ public sealed interface ValueType permits ArrayType, OptionalType, ResultType, S
 
   /** 回復可能なCSV/TSV解析失敗の公開情報を保持する型です。 */
   ScalarType DELIMITED_TEXT_PARSE_FAILURE = ScalarType.DELIMITED_TEXT_PARSE_FAILURE;
+
+  /** JSON値へ適用する不変な形状定義型です。 */
+  ScalarType JSON_SHAPE = ScalarType.JSON_SHAPE;
+
+  /** JSON形状との不一致を表す閉じた失敗型です。 */
+  ScalarType JSON_SHAPE_FAILURE = ScalarType.JSON_SHAPE_FAILURE;
 
   /**
    * スタック効果や診断へ出力する正式な型名を返します。
@@ -187,7 +193,7 @@ public sealed interface ValueType permits ArrayType, OptionalType, ResultType, S
   /**
    * 正規型名を具体型へ変換します。
    *
-   * <p>作業領域・区切り表では20種類の非配列型と、許可された6葉型の1次元・2次元配列型を受理します。bare {@code 配列}、型引数不足、3次元以上、
+   * <p>正規型名として、定義済みの非配列型と許可された葉型の1次元・2次元配列型を受理します。bare {@code 配列}、型引数不足、3次元以上、
    * 配列要素として許可されない型は具体型ではないため空を返し、構文解析・意味解析が文脈に応じた規定診断を選べるようにします。
    *
    * @param name 正規型名
@@ -225,7 +231,7 @@ public sealed interface ValueType permits ArrayType, OptionalType, ResultType, S
    *
    * <p>配列型は要素型ごとに構成する値であり、この有限一覧には含めません。
    *
-   * @return 20種類の非配列型の新しい配列
+   * @return 仕様順の非配列型の新しい配列
    */
   static ScalarType[] values() {
     return ScalarType.values();

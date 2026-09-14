@@ -15,7 +15,7 @@ class HttpsBuiltinDictionaryTest {
             .filter(word -> word.featureGroup().equals("HTTPS"))
             .toList();
 
-    assertEquals(167, BuiltinDictionary.words().size());
+    assertEquals(182, BuiltinDictionary.words().size());
     assertEquals(
         List.of(
             "空のHTTP要求",

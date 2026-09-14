@@ -41,6 +41,8 @@ public final class ValueTypeTraits {
       } else if (current instanceof ResultType result) {
         work.push(result.failureType());
         work.push(result.successType());
+      } else if (current instanceof ArrayType array) {
+        work.push(array.elementType());
       } else if (predicate.test(current)) {
         return Optional.of(current);
       }
@@ -64,6 +66,8 @@ public final class ValueTypeTraits {
         || type.equals(ValueType.HTTP_SEND_FAILURE)
         || type.equals(ValueType.FILE_READ_FAILURE)
         || type.equals(ValueType.FILE_WRITE_FAILURE)
-        || type.equals(ValueType.DELIMITED_TEXT_PARSE_FAILURE);
+        || type.equals(ValueType.DELIMITED_TEXT_PARSE_FAILURE)
+        || type.equals(ValueType.JSON_SHAPE)
+        || type.equals(ValueType.JSON_SHAPE_FAILURE);
   }
 }

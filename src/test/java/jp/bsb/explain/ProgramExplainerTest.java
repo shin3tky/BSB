@@ -14,9 +14,9 @@ class ProgramExplainerTest {
   void publishesEveryBuiltinWithStablePublicMetadata() {
     ProgramExplanation explanation = explain("メインとは （--）\nこと。\n");
 
-    assertEquals(167, explanation.builtinWords().size());
+    assertEquals(182, explanation.builtinWords().size());
     assertEquals("足す", explanation.builtinWords().getFirst().name());
-    assertEquals("区切りテキスト解析失敗の列を取り出す", explanation.builtinWords().getLast().name());
+    assertEquals("JSON形状失敗の実際種類を取り出す", explanation.builtinWords().getLast().name());
     assertEquals("WST", findBuiltin(explanation, "ファイルを読む").featureGroup());
     assertEquals("NARRAY", findBuiltin(explanation, "空の整数二次元配列").featureGroup());
     assertEquals("CONN", findBuiltin(explanation, "論理接続を確認する").featureGroup());

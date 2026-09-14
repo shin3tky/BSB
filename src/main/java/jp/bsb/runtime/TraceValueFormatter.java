@@ -1,6 +1,10 @@
 package jp.bsb.runtime;
 
 import java.util.Objects;
+import jp.bsb.stdlib.ArrayType;
+import jp.bsb.stdlib.OptionalType;
+import jp.bsb.stdlib.ResultType;
+import jp.bsb.stdlib.ValueType;
 
 /** トレース値を1行へ安全に収め、将来の非開示値を伏せる共通変換です。 */
 final class TraceValueFormatter {
@@ -14,7 +18,7 @@ final class TraceValueFormatter {
     Objects.requireNonNull(value, "value");
     Objects.requireNonNull(policy, "policy");
     String type = value.type().sourceName();
-    if (!policy.mayReveal(value)) {
+    if (containsJsonShapeType(value.type()) || !policy.mayReveal(value)) {
       return type + ":<redacted>";
     }
     if (value instanceof OptionalValue || value instanceof ResultValue) {
@@ -33,6 +37,26 @@ final class TraceValueFormatter {
       display = display.substring(0, end) + "…";
     }
     return type + ":" + escapeControls(display);
+  }
+
+  private static boolean containsJsonShapeType(ValueType root) {
+    var work = new java.util.ArrayDeque<ValueType>();
+    work.push(root);
+    while (!work.isEmpty()) {
+      ValueType type = work.pop();
+      if (type.equals(ValueType.JSON_SHAPE) || type.equals(ValueType.JSON_SHAPE_FAILURE)) {
+        return true;
+      }
+      if (type instanceof OptionalType optional) {
+        work.push(optional.elementType());
+      } else if (type instanceof ResultType result) {
+        work.push(result.successType());
+        work.push(result.failureType());
+      } else if (type instanceof ArrayType array) {
+        work.push(array.elementType());
+      }
+    }
+    return false;
   }
 
   private static boolean mayRevealWrapped(RuntimeValue value, TraceValuePolicy policy) {
@@ -134,6 +158,10 @@ final class TraceValueFormatter {
       case DelimitedTextParseFailureValue ignored ->
           throw new IllegalArgumentException(
               "delimited text parse failures cannot be array elements");
+      case JsonShapeValue ignored ->
+          throw new IllegalArgumentException("JSON shapes cannot be array elements");
+      case JsonShapeFailureValue ignored ->
+          throw new IllegalArgumentException("JSON shape failures cannot be traced");
       case ArrayValue array -> formatArray(array);
       case InputResultValue ignored ->
           throw new IllegalArgumentException("input results cannot be array elements");

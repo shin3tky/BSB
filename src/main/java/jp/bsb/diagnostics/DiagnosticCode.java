@@ -473,6 +473,16 @@ public enum DiagnosticCode {
   E_DELIMITED_TEXT_OUTPUT_LIMIT,
   /** 1実行の区切りテキスト作業累積が上限を超える */
   E_DELIMITED_TEXT_WORK_LIMIT,
+  /** JSON形状setterの入力がオブジェクト形状でなかった */
+  E_JSON_SHAPE_OBJECT_REQUIRED,
+  /** 1個のJSON形状が65,536ノードを超えた */
+  E_JSON_SHAPE_NODE_LIMIT,
+  /** JSON形状の入れ子が256段を超えた */
+  E_JSON_SHAPE_DEPTH_LIMIT,
+  /** 1実行のJSON形状検証作業累積が上限を超えた */
+  E_JSON_SHAPE_WORK_LIMIT,
+  /** JSON形状失敗の公開パスが65,536 UTF-8バイトを超えた */
+  E_JSON_SHAPE_PATH_LIMIT,
   /** バイト列の半開区間が有効条件を満たさない */
   E_BYTE_SEQUENCE_RANGE_OUT_OF_BOUNDS,
   /** 1個のバイト列が64 MiBを超える */

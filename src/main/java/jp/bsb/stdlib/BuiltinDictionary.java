@@ -1024,7 +1024,112 @@ public final class BuiltinDictionary {
               "区切りテキスト解析失敗から1始まりの列を取り出します。",
               List.of("区切りテキスト解析失敗"),
               List.of("整数"),
-              "区切りテキスト解析失敗の列を取り出す"));
+              "区切りテキスト解析失敗の列を取り出す"),
+          jsonShapeFeature(
+              "JSONヌルの形状",
+              BuiltinOperation.JSON_SHAPE_NULL,
+              "JSON nullだけを受理する形状を作ります。",
+              List.of(),
+              List.of("JSON形状"),
+              "JSONヌルの形状"),
+          jsonShapeFeature(
+              "JSON真偽の形状",
+              BuiltinOperation.JSON_SHAPE_BOOLEAN,
+              "JSON真偽だけを受理する形状を作ります。",
+              List.of(),
+              List.of("JSON形状"),
+              "JSON真偽の形状"),
+          jsonShapeFeature(
+              "JSON整数の形状",
+              BuiltinOperation.JSON_SHAPE_INTEGER,
+              "JSON整数だけを受理する形状を作ります。",
+              List.of(),
+              List.of("JSON形状"),
+              "JSON整数の形状"),
+          jsonShapeFeature(
+              "JSON小数の形状",
+              BuiltinOperation.JSON_SHAPE_DECIMAL,
+              "JSON小数だけを受理する形状を作ります。",
+              List.of(),
+              List.of("JSON形状"),
+              "JSON小数の形状"),
+          jsonShapeFeature(
+              "JSON文字列の形状",
+              BuiltinOperation.JSON_SHAPE_STRING,
+              "JSON文字列だけを受理する形状を作ります。",
+              List.of(),
+              List.of("JSON形状"),
+              "JSON文字列の形状"),
+          jsonShapeFeature(
+              "JSON配列の形状にする",
+              BuiltinOperation.JSON_SHAPE_ARRAY,
+              "形状を全要素へ適用するJSON配列形状を作ります。",
+              List.of("JSON形状"),
+              List.of("JSON形状"),
+              "JSON整数の形状 JSON配列の形状にする"),
+          jsonShapeFeature(
+              "空のJSONオブジェクト形状",
+              BuiltinOperation.JSON_SHAPE_EMPTY_OBJECT,
+              "メンバー制約のないJSONオブジェクト形状を作ります。",
+              List.of(),
+              List.of("JSON形状"),
+              "空のJSONオブジェクト形状"),
+          jsonShapeFeature(
+              "JSON形状に必須キーを設定する",
+              BuiltinOperation.JSON_SHAPE_SET_REQUIRED,
+              "JSONオブジェクト形状へ必須キーを設定します。",
+              List.of("JSON形状", "文字列", "JSON形状"),
+              List.of("JSON形状"),
+              "空のJSONオブジェクト形状と「id」と JSON整数の形状を JSON形状に必須キーを設定する"),
+          jsonShapeFeature(
+              "JSON形状に任意キーを設定する",
+              BuiltinOperation.JSON_SHAPE_SET_OPTIONAL,
+              "JSONオブジェクト形状へ任意キーを設定します。",
+              List.of("JSON形状", "文字列", "JSON形状"),
+              List.of("JSON形状"),
+              "空のJSONオブジェクト形状と「name」と JSON文字列の形状を JSON形状に任意キーを設定する"),
+          jsonShapeFeature(
+              "JSON形状をヌル許容にする",
+              BuiltinOperation.JSON_SHAPE_NULLABLE,
+              "JSON nullまたは元の形状を受理する形状を作ります。",
+              List.of("JSON形状"),
+              List.of("JSON形状"),
+              "JSON文字列の形状 JSON形状をヌル許容にする"),
+          jsonShapeFeature(
+              "JSONの形状を検証する",
+              BuiltinOperation.JSON_SHAPE_VALIDATE,
+              "JSON値を形状で検証し、原値または閉じた失敗配列を返します。",
+              List.of("JSON", "JSON形状"),
+              List.of("結果<JSON,配列<JSON形状失敗>>"),
+              "JSONヌルと JSONヌルの形状を JSONの形状を検証する"),
+          jsonShapeFeature(
+              "JSON形状失敗の種類を取り出す",
+              BuiltinOperation.JSON_SHAPE_FAILURE_KIND,
+              "JSON形状失敗から閉じた種類を取り出します。",
+              List.of("JSON形状失敗"),
+              List.of("文字列"),
+              "JSON形状失敗の種類を取り出す"),
+          jsonShapeFeature(
+              "JSON形状失敗のパスを取り出す",
+              BuiltinOperation.JSON_SHAPE_FAILURE_PATH,
+              "JSON形状失敗からJSON Pointer形式のパスを取り出します。",
+              List.of("JSON形状失敗"),
+              List.of("文字列"),
+              "JSON形状失敗のパスを取り出す"),
+          jsonShapeFeature(
+              "JSON形状失敗の期待種類を取り出す",
+              BuiltinOperation.JSON_SHAPE_FAILURE_EXPECTED_KIND,
+              "JSON形状失敗から期待したJSON種類を取り出します。",
+              List.of("JSON形状失敗"),
+              List.of("文字列"),
+              "JSON形状失敗の期待種類を取り出す"),
+          jsonShapeFeature(
+              "JSON形状失敗の実際種類を取り出す",
+              BuiltinOperation.JSON_SHAPE_FAILURE_ACTUAL_KIND,
+              "JSON形状失敗から実際のJSON種類を取り出します。",
+              List.of("JSON形状失敗"),
+              List.of("文字列"),
+              "JSON形状失敗の実際種類を取り出す"));
 
   private static final Map<String, BuiltinWord> BY_NAME = indexByName();
   private static final Set<String> CANONICAL_NAMES = canonicalNameSet();
@@ -1351,6 +1456,26 @@ public final class BuiltinDictionary {
         operation,
         Set.of(),
         "WST",
+        example);
+  }
+
+  private static BuiltinWord jsonShapeFeature(
+      String name,
+      BuiltinOperation operation,
+      String description,
+      List<String> inputs,
+      List<String> outputs,
+      String example) {
+    return new BuiltinWord(
+        name,
+        Set.of(),
+        description,
+        inputs,
+        outputs,
+        BuiltinTypeRule.FIXED,
+        operation,
+        Set.of(),
+        "JSHAPE",
         example);
   }
 

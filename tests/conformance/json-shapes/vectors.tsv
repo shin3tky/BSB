@@ -1,0 +1,9 @@
+case	input_json	shape_json	expected_failures	work
+object-success	{"id":1,"name":"A","extra":true}	{"object":[{"name":"id","required":true,"shape":"integer"},{"name":"name","required":false,"shape":"string"}]}	[]	3
+missing-required	{}	{"object":[{"name":"name","required":true,"shape":"string"}]}	[{"kind":"missingRequiredKey","path":"/name","expectedKind":"string","actualKind":"missing"}]	2
+null-not-allowed	{"name":null}	{"object":[{"name":"name","required":false,"shape":"string"}]}	[{"kind":"nullNotAllowed","path":"/name","expectedKind":"string","actualKind":"null"}]	2
+nullable-success	{"name":null}	{"object":[{"name":"name","required":false,"shape":{"nullable":"string"}}]}	[]	2
+integer-decimal	1.0	{"kind":"integer"}	[{"kind":"kindMismatch","path":"","expectedKind":"integer","actualKind":"decimal"}]	1
+nested-array	{"items":[{"id":"x"},{"id":2.0}]}	{"object":[{"name":"items","required":true,"shape":{"array":{"object":[{"name":"id","required":true,"shape":"integer"}]}}}]}	[{"kind":"kindMismatch","path":"/items/0/id","expectedKind":"integer","actualKind":"string"},{"kind":"kindMismatch","path":"/items/1/id","expectedKind":"integer","actualKind":"decimal"}]	6
+pointer-escape	{"~/":0}	{"object":[{"name":"~/","required":true,"shape":"boolean"}]}	[{"kind":"kindMismatch","path":"/~0~1","expectedKind":"boolean","actualKind":"integer"}]	2
+root-kind	[]	{"object":[]}	[{"kind":"kindMismatch","path":"","expectedKind":"object","actualKind":"array"}]	1

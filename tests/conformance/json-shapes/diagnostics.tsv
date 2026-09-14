@@ -1,0 +1,6 @@
+code	limit_name	limit	observed	fields	forbidden_fields
+E_JSON_SHAPE_OBJECT_REQUIRED	-	-	-	word=JSON形状に必須キーを設定する	input,key,path,value,body,secret
+E_JSON_SHAPE_DEPTH_LIMIT	jsonShapeDepth	256	257	word=JSON配列の形状にする	input,key,path,value,body,secret
+E_JSON_SHAPE_NODE_LIMIT	jsonShapeNodes	65536	65537	word=JSON形状に必須キーを設定する	input,key,path,value,body,secret
+E_JSON_SHAPE_WORK_LIMIT	jsonShapeWorkUnits	67108864	67108865	word=JSONの形状を検証する	input,key,path,value,body,secret
+E_JSON_SHAPE_PATH_LIMIT	jsonShapePathUtf8Bytes	65536	65537	word=JSONの形状を検証する	input,key,path,value,body,secret

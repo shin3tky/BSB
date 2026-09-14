@@ -76,6 +76,10 @@ public final class DiagnosticMessageCatalog {
   private static final String WST_RESOURCE =
       "/jp/bsb/diagnostics/workspace-tables-messages.properties";
 
+  /** JSON形状検証で追加したメッセージファイルへのパス */
+  private static final String JSON_SHAPES_RESOURCE =
+      "/jp/bsb/diagnostics/json-shapes-messages.properties";
+
   /** テンプレート内のプレースホルダー（例: "{candidate}", "{limit}"）にマッチする正規表現 */
   private static final Pattern PLACEHOLDER = Pattern.compile("\\{([A-Za-z][A-Za-z0-9]*)}");
 
@@ -113,6 +117,8 @@ public final class DiagnosticMessageCatalog {
         DiagnosticMessageCatalog.class.getResourceAsStream(NARRAY_RESOURCE);
     InputStream WorkspaceTableInput =
         DiagnosticMessageCatalog.class.getResourceAsStream(WST_RESOURCE);
+    InputStream jsonShapesInput =
+        DiagnosticMessageCatalog.class.getResourceAsStream(JSON_SHAPES_RESOURCE);
     if (baseInput == null
         || ControlFlowInput == null
         || bindingsInput == null
@@ -127,7 +133,8 @@ public final class DiagnosticMessageCatalog {
         || ByteSequenceInput == null
         || httpsInput == null
         || NestedArrayInput == null
-        || WorkspaceTableInput == null) {
+        || WorkspaceTableInput == null
+        || jsonShapesInput == null) {
       if (baseInput != null) {
         baseInput.close();
       }
@@ -173,6 +180,9 @@ public final class DiagnosticMessageCatalog {
       if (WorkspaceTableInput != null) {
         WorkspaceTableInput.close();
       }
+      if (jsonShapesInput != null) {
+        jsonShapesInput.close();
+      }
       String missing =
           baseInput == null
               ? DEFAULT_RESOURCE
@@ -202,7 +212,9 @@ public final class DiagnosticMessageCatalog {
                                                               ? HTTPS_RESOURCE
                                                               : NestedArrayInput == null
                                                                   ? NARRAY_RESOURCE
-                                                                  : WST_RESOURCE;
+                                                                  : WorkspaceTableInput == null
+                                                                      ? WST_RESOURCE
+                                                                      : JSON_SHAPES_RESOURCE;
       throw new IllegalStateException("diagnostic message resource is missing: " + missing);
     }
     try (Reader baseReader = new InputStreamReader(baseInput, StandardCharsets.UTF_8);
@@ -221,7 +233,8 @@ public final class DiagnosticMessageCatalog {
         Reader httpsReader = new InputStreamReader(httpsInput, StandardCharsets.UTF_8);
         Reader NestedArrayReader = new InputStreamReader(NestedArrayInput, StandardCharsets.UTF_8);
         Reader WorkspaceTableReader =
-            new InputStreamReader(WorkspaceTableInput, StandardCharsets.UTF_8)) {
+            new InputStreamReader(WorkspaceTableInput, StandardCharsets.UTF_8);
+        Reader jsonShapesReader = new InputStreamReader(jsonShapesInput, StandardCharsets.UTF_8)) {
       return load(
           baseReader,
           ControlFlowReader,
@@ -237,7 +250,8 @@ public final class DiagnosticMessageCatalog {
           ByteSequenceReader,
           httpsReader,
           NestedArrayReader,
-          WorkspaceTableReader);
+          WorkspaceTableReader,
+          jsonShapesReader);
     }
   }
 

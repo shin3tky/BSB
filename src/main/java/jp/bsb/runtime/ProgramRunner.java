@@ -26,7 +26,7 @@ public final class ProgramRunner {
    *
    * @param path 入力ファイル
    * @param context 実行環境
-   * @return 全段階の終了結果
+   * @return パイプラインの終了結果
    * @throws IOException ファイルの物理的なI/Oエラーが発生した場合
    */
   public ProgramRunResult run(Path path, ExecutionContext context) throws IOException {
@@ -41,7 +41,7 @@ public final class ProgramRunner {
    * @param sourcePath 診断表示用のソース識別パス
    * @param bytes BOMを含み得る元バイト列
    * @param context 実行環境
-   * @return 全段階の終了結果
+   * @return パイプラインの終了結果
    */
   public ProgramRunResult run(String sourcePath, byte[] bytes, ExecutionContext context) {
     Objects.requireNonNull(sourcePath, "sourcePath");
@@ -93,6 +93,7 @@ public final class ProgramRunner {
         execution.termination(),
         execution.httpReliabilityWaitMilliseconds(),
         execution.httpRetryAttempts(),
-        execution.httpFinalFailureRecords());
+        execution.httpFinalFailureRecords(),
+        execution.jsonShapeWorkUnits());
   }
 }

@@ -153,6 +153,10 @@ tasks.processResources {
         into("jp/bsb/diagnostics")
         rename { "workspace-tables-messages.properties" }
     }
+    from("tests/conformance/json-shapes/messages.properties") {
+        into("jp/bsb/diagnostics")
+        rename { "json-shapes-messages.properties" }
+    }
 }
 
 tasks.wrapper {

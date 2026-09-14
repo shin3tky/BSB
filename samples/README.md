@@ -1,6 +1,6 @@
 # BSB サンプル集
 
-作業領域・区切り表までの仕様を使ったサンプルです。
+現在実装されている仕様を使ったサンプルです。
 コマンドはリポジトリのルートで実行してください。
 
 ## 検査と実行
@@ -54,6 +54,16 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/17-recoverable-json.
 有効なJSONの標準形と、不正入力の安定種類を2行で表示します。入力内位置は同じ失敗値へ
 `JSON解析失敗のバイト位置を取り出す`、`JSON解析失敗の行を取り出す`、
 `JSON解析失敗の列を取り出す`を適用して取得できます。
+
+必須・任意キー、配列要素、null許容を第一級の`JSON形状`でまとめて検証する例です。
+
+```shell
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar check samples/json-shape-validation.bsb
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/json-shape-validation.bsb
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar format samples/json-shape-validation.bsb
+```
+
+成功時は元のJSONを表示し、失敗時は形状の設定順・配列添字順にJSON Pointer pathを表示します。
 
 2つの論理接続を宣言し、直接および利用者定義語経由で確認する例です。
 
@@ -245,6 +255,7 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/131-tic-tac-toe.bsb
 | `15-optional-json.bsb`             | 任意設定の3状態                  | 任意値、JSON非必須検索、JSONヌル       |
 | `16-result-values.bsb`             | 設定検証の成功・失敗             | 結果値、任意値、JSON検証               |
 | `17-recoverable-json.bsb`          | 受信JSONの回復可能な解析         | 結果値、JSON解析失敗、入力内位置        |
+| `json-shape-validation.bsb`        | 外部JSONの構造検証               | 必須・任意キー、配列形状、null許容      |
 | `18-logical-connections.bsb`       | 2つの論理接続の確認              | 接続宣言、静的引数、直接・推移要求       |
 | `19-byte-sequences.bsb`            | 不変バイト列の変換と検査         | UTF-8、Base64、slice、等値、復号失敗     |
 | `20-minimal-https.bsb`              | stdin JSONからHTTPS API連携       | 不変要求、論理接続、status、header、JSON応答 |

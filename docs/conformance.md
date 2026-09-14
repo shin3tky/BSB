@@ -18,6 +18,7 @@ BSB の実装、仕様、適合データは次の機能グループ ID で対応
 | `OPT` | `任意<T>` | `tests/conformance/optional-values` |
 | `RESULT` | `結果<T,E>` | `tests/conformance/result-values` |
 | `RJSON` | 回復可能なJSON解析 | `tests/conformance/recoverable-json` |
+| `JSHAPE` | 第一級JSON形状による構造検証 | `tests/conformance/json-shapes` |
 | `CONN` | 論理接続と接続設定 | `tests/conformance/logical-connections` |
 | `BYTES` | 不変バイト列、UTF-8、Base64 | `tests/conformance/byte-sequences` |
 | `HTTPS` | HTTPS要求・応答・通信失敗 | `tests/conformance/https` |

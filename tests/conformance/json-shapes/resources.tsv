@@ -1,0 +1,6 @@
+resource	exact	over	behavior
+shapeDepth	256	257	diagnostic
+shapeNodes	65536	65537	diagnostic
+validationWork	67108864	67108865	diagnostic
+pathUtf8Bytes	65536	65537	diagnostic
+failureCount	256	257	cap

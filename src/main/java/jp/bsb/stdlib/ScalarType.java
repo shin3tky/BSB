@@ -64,7 +64,13 @@ public enum ScalarType implements ValueType {
   FILE_WRITE_FAILURE("ファイル書込失敗", false),
 
   /** 回復可能なCSV/TSV解析失敗の公開情報だけを保持する値です。 */
-  DELIMITED_TEXT_PARSE_FAILURE("区切りテキスト解析失敗", false);
+  DELIMITED_TEXT_PARSE_FAILURE("区切りテキスト解析失敗", false),
+
+  /** JSON値へ適用する不変な形状定義です。 */
+  JSON_SHAPE("JSON形状", false),
+
+  /** JSON形状との不一致を入力値なしで保持する値です。 */
+  JSON_SHAPE_FAILURE("JSON形状失敗", true);
 
   private static final List<ScalarType> ALL = List.of(values());
   private static final List<ScalarType> ARRAY_ELEMENTS =

@@ -44,6 +44,8 @@ public interface TraceValuePolicy {
           case FileReadFailureValue ignored -> false;
           case FileWriteFailureValue ignored -> false;
           case DelimitedTextParseFailureValue ignored -> false;
+          case JsonShapeValue ignored -> false;
+          case JsonShapeFailureValue ignored -> false;
           case OptionalValue ignored -> false;
           case ResultValue ignored -> false;
         };
@@ -79,6 +81,8 @@ public interface TraceValuePolicy {
           case FileReadFailureValue ignored -> false;
           case FileWriteFailureValue ignored -> false;
           case DelimitedTextParseFailureValue ignored -> false;
+          case JsonShapeValue ignored -> false;
+          case JsonShapeFailureValue ignored -> false;
           case OptionalValue ignored -> false;
           case ResultValue ignored -> false;
         };
@@ -113,6 +117,8 @@ public interface TraceValuePolicy {
           case FileReadFailureValue ignored -> false;
           case FileWriteFailureValue ignored -> false;
           case DelimitedTextParseFailureValue ignored -> false;
+          case JsonShapeValue ignored -> false;
+          case JsonShapeFailureValue ignored -> false;
           case OptionalValue ignored -> false;
           case ResultValue ignored -> false;
         };
@@ -147,6 +153,8 @@ public interface TraceValuePolicy {
           case FileReadFailureValue ignored -> false;
           case FileWriteFailureValue ignored -> false;
           case DelimitedTextParseFailureValue ignored -> false;
+          case JsonShapeValue ignored -> false;
+          case JsonShapeFailureValue ignored -> false;
           case OptionalValue ignored -> false;
           case ResultValue ignored -> false;
         };
@@ -246,7 +254,9 @@ public interface TraceValuePolicy {
       if (type.equals(jp.bsb.stdlib.ValueType.STRING)
           || type.equals(jp.bsb.stdlib.ValueType.JSON)
           || type.equals(jp.bsb.stdlib.ValueType.INPUT_RESULT)
-          || type.equals(jp.bsb.stdlib.ValueType.JSON_PARSE_FAILURE)) {
+          || type.equals(jp.bsb.stdlib.ValueType.JSON_PARSE_FAILURE)
+          || type.equals(jp.bsb.stdlib.ValueType.JSON_SHAPE)
+          || type.equals(jp.bsb.stdlib.ValueType.JSON_SHAPE_FAILURE)) {
         return false;
       }
       if (type instanceof jp.bsb.stdlib.OptionalType optional) {

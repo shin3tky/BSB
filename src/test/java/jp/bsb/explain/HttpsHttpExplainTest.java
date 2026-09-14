@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 class HttpsHttpExplainTest {
   @Test
-  void reports167WordsFlatCapabilitiesAndConnectionSpecificMethodsWithoutRequestData() {
+  void reportsAllWordsFlatCapabilitiesAndConnectionSpecificMethodsWithoutRequestData() {
     String source =
         "APIは 論理接続。\n"
             + "送るとは （HTTP要求 -- 結果<HTTP応答,HTTP送信失敗>）\n"
@@ -24,7 +24,7 @@ class HttpsHttpExplainTest {
     ProgramExplanation explanation =
         new ProgramExplainer().explain(analysis.programForIrGeneration());
 
-    assertEquals(167, explanation.builtinWords().size());
+    assertEquals(182, explanation.builtinWords().size());
     assertEquals(List.of("connection.resolve", "http.send"), explanation.summary().capabilities());
     var parameterized = explanation.parameterizedCapabilities();
     assertEquals(

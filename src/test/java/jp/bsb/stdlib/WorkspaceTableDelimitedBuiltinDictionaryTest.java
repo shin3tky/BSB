@@ -12,9 +12,9 @@ class WorkspaceTableDelimitedBuiltinDictionaryTest {
   @Test
   void appendsEightFixedWordsInSpecificationOrder() {
     List<BuiltinWord> words = BuiltinDictionary.words();
-    List<BuiltinWord> delimited = words.subList(words.size() - 8, words.size());
+    List<BuiltinWord> delimited = words.subList(words.size() - 23, words.size() - 15);
 
-    assertEquals(167, words.size());
+    assertEquals(182, words.size());
     assertEquals(
         List.of(
             "CSVを表として解析する",
