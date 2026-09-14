@@ -14,9 +14,9 @@ class ProgramExplainerTest {
   void publishesEveryBuiltinWithStablePublicMetadata() {
     ProgramExplanation explanation = explain("メインとは （--）\nこと。\n");
 
-    assertEquals(182, explanation.builtinWords().size());
+    assertEquals(184, explanation.builtinWords().size());
     assertEquals("足す", explanation.builtinWords().getFirst().name());
-    assertEquals("JSON形状失敗の実際種類を取り出す", explanation.builtinWords().getLast().name());
+    assertEquals("JSONオブジェクトを構築する", explanation.builtinWords().getLast().name());
     assertEquals("WST", findBuiltin(explanation, "ファイルを読む").featureGroup());
     assertEquals("NARRAY", findBuiltin(explanation, "空の整数二次元配列").featureGroup());
     assertEquals("CONN", findBuiltin(explanation, "論理接続を確認する").featureGroup());
@@ -24,6 +24,7 @@ class ProgramExplainerTest {
     assertEquals("IO", findBuiltin(explanation, "一行を入力する").featureGroup());
     assertEquals("IO", findBuiltin(explanation, "現在日時を得る").featureGroup());
     assertEquals("JSON", findBuiltin(explanation, "JSONを解析する").featureGroup());
+    assertEquals("JERG", findBuiltin(explanation, "JSONをポインターで任意参照する").featureGroup());
     assertFalse(findBuiltin(explanation, "終了する").stackEffect().returnsNormally());
     assertTrue(
         explanation.builtinWords().stream()

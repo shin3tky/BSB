@@ -51,7 +51,7 @@ class JsonBuiltinDictionaryTest {
             .filter(word -> word.featureGroup().equals("JSON"))
             .toList();
 
-    assertEquals(182, BuiltinDictionary.words().size());
+    assertEquals(184, BuiltinDictionary.words().size());
     assertEquals(NAMES, words.stream().map(BuiltinWord::canonicalName).toList());
     assertEquals(33, words.stream().map(BuiltinWord::operation).distinct().count());
     assertTrue(words.stream().allMatch(word -> word.typeRule() == BuiltinTypeRule.FIXED));
@@ -61,6 +61,21 @@ class JsonBuiltinDictionaryTest {
     assertTrue(words.stream().allMatch(BuiltinWord::returnsNormally));
     assertTrue(words.stream().allMatch(word -> !word.description().isBlank()));
     assertTrue(words.stream().allMatch(word -> !word.example().isBlank()));
+  }
+
+  @Test
+  void appendsJsonErgonomicsWordsAsAnIndependentFeatureGroup() {
+    List<BuiltinWord> words =
+        BuiltinDictionary.words().stream()
+            .filter(word -> word.featureGroup().equals("JERG"))
+            .toList();
+
+    assertEquals(
+        List.of("JSONをポインターで任意参照する", "JSONオブジェクトを構築する"),
+        words.stream().map(BuiltinWord::canonicalName).toList());
+    assertTrue(words.stream().allMatch(word -> word.typeRule() == BuiltinTypeRule.FIXED));
+    assertTrue(words.stream().allMatch(word -> word.capabilities().isEmpty()));
+    assertTrue(words.stream().allMatch(word -> word.sideEffects().isEmpty()));
   }
 
   @Test

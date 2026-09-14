@@ -246,6 +246,8 @@ final class BuiltinExecutor {
       case JSON_OBJECT_GET_REQUIRED -> jsonObjectGetRequired(word, stack, span);
       case JSON_OBJECT_SET -> jsonObjectSet(word, stack, span);
       case JSON_OBJECT_DELETE -> jsonObjectDelete(word, stack, span);
+      case JSON_POINTER_GET_OPTIONAL -> jsonPointerGetOptional(word, stack, span);
+      case JSON_OBJECT_BUILD -> jsonObjectBuild(word, stack, span);
       case OPTIONAL_WRAP -> optionalWrap(stack);
       case OPTIONAL_PREDICATE -> optionalPredicate(word, stack, span);
       case OPTIONAL_UNWRAP -> optionalUnwrap(word, stack, span);
@@ -4809,6 +4811,100 @@ final class BuiltinExecutor {
             .orElseGet(() -> OptionalValue.absent(ValueType.JSON));
     stack.removeLast();
     stack.set(objectIndex, result);
+    return new byte[0];
+  }
+
+  private byte[] jsonPointerGetOptional(
+      BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span) throws RuntimeFailure {
+    int jsonIndex = stack.size() - 2;
+    JsonValue root = ((JsonRuntimeValue) stack.get(jsonIndex)).value();
+    String pointer = ((StringValue) stack.get(jsonIndex + 1)).value();
+    List<String> tokens;
+    try {
+      tokens = JsonPointer.parse(pointer);
+    } catch (JsonPointer.SyntaxException failure) {
+      throw new RuntimeFailure(
+          Diagnostic.builder(
+                  DiagnosticCode.E_JSON_POINTER_SYNTAX,
+                  Severity.ERROR,
+                  DiagnosticStage.RUNTIME,
+                  sourcePath,
+                  span)
+              .field("word", word.canonicalName())
+              .field("reason", failure.getMessage())
+              .field("offset", Integer.toString(pointer.codePointCount(0, failure.offset())))
+              .expected("空文字列または/で始まるRFC 6901 JSON Pointer")
+              .actual("不正なJSON Pointer")
+              .fix("~は~0、/は~1で表してください")
+              .build());
+    }
+    long work =
+        saturatedAdd(Utf8Length.measureUpTo(pointer, Long.MAX_VALUE).bytes(), tokens.size());
+    budget.beforeJsonWork(0, work, span, "pointerGetOptional", word.canonicalName());
+    OptionalValue result =
+        JsonPointer.resolve(root, tokens)
+            .<OptionalValue>map(value -> OptionalValue.present(new JsonRuntimeValue(value)))
+            .orElseGet(() -> OptionalValue.absent(ValueType.JSON));
+    stack.removeLast();
+    stack.set(jsonIndex, result);
+    return new byte[0];
+  }
+
+  private byte[] jsonObjectBuild(BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span)
+      throws RuntimeFailure {
+    int keysIndex = stack.size() - 2;
+    ArrayValue keys = (ArrayValue) stack.get(keysIndex);
+    ArrayValue values = (ArrayValue) stack.get(keysIndex + 1);
+    if (keys.size() != values.size()) {
+      throw new RuntimeFailure(
+          Diagnostic.builder(
+                  DiagnosticCode.E_JSON_OBJECT_BUILD_LENGTH_MISMATCH,
+                  Severity.ERROR,
+                  DiagnosticStage.RUNTIME,
+                  sourcePath,
+                  span)
+              .field("word", word.canonicalName())
+              .field("keyCount", Integer.toString(keys.size()))
+              .field("valueCount", Integer.toString(values.size()))
+              .expected("同じ要素数")
+              .actual(keys.size() + "キー、" + values.size() + "値")
+              .fix("キー配列と値配列の要素数を一致させてください")
+              .build());
+    }
+    if (keys.size() > JsonLimits.OBJECT_MEMBERS) {
+      throw jsonObjectMemberLimit(span, keys.size(), "objectBuild");
+    }
+    var seen = new java.util.HashSet<String>();
+    var members = new ArrayList<JsonMember>(keys.size());
+    long work = saturatedAdd(keys.size(), 1);
+    for (int index = 0; index < keys.size(); index++) {
+      String key = ((StringValue) keys.elements().get(index)).value();
+      if (!seen.add(key)) {
+        throw new RuntimeFailure(
+            Diagnostic.builder(
+                    DiagnosticCode.E_JSON_DUPLICATE_KEY,
+                    Severity.ERROR,
+                    DiagnosticStage.RUNTIME,
+                    sourcePath,
+                    span)
+                .field("word", word.canonicalName())
+                .field("keyPreview", diagnosticTextPreview(key))
+                .field("operation", "objectBuild")
+                .expected("重複しないキー")
+                .actual("重複キー")
+                .fix("キー配列の重複を除いてください")
+                .build());
+      }
+      work = saturatedAdd(work, Utf8Length.measureUpTo(key, Long.MAX_VALUE).bytes());
+      members.add(new JsonMember(key, ((JsonRuntimeValue) values.elements().get(index)).value()));
+    }
+    var structure = new JsonStructure();
+    members.forEach(member -> structure.add(member.value()));
+    validateJsonStructure(structure, span, "objectBuild");
+    budget.beforeJsonWork(
+        saturatedAdd(keys.size(), 1), work, span, "objectBuild", word.canonicalName());
+    stack.removeLast();
+    stack.set(keysIndex, new JsonRuntimeValue(new JsonObject(members)));
     return new byte[0];
   }
 

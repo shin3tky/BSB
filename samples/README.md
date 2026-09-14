@@ -65,6 +65,14 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar format samples/json-shape-valida
 
 成功時は元のJSONを表示し、失敗時は形状の設定順・配列添字順にJSON Pointer pathを表示します。
 
+RFC 6901 JSON Pointerで入れ子値を1語で任意参照し、キー配列と値配列からJSONオブジェクトを
+一括構築する例です。
+
+```shell
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar check samples/json-pointer-construction.bsb
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/json-pointer-construction.bsb
+```
+
 2つの論理接続を宣言し、直接および利用者定義語経由で確認する例です。
 
 ```shell

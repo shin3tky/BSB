@@ -170,6 +170,129 @@ class JsonJsonRuntimeTest {
   }
 
   @Test
+  void resolvesRfc6901PointersAndBuildsObjectsInOneOperation() throws Exception {
+    JsonObject nested =
+        new JsonObject(
+            List.of(
+                new JsonMember(
+                    "a/b",
+                    new JsonArray(
+                        List.of(
+                            new JsonObject(
+                                List.of(new JsonMember("~key", new JsonString("found")))))))));
+    var budget = new ExecutionBudget(SOURCE_PATH, () -> 0L);
+
+    var found = stack(new JsonRuntimeValue(nested), new StringValue("/a~1b/0/~0key"));
+    execute("JSONをポインターで任意参照する", found, budget);
+    OptionalValue present = (OptionalValue) found.getFirst();
+    assertTrue(present.isPresent());
+    assertEquals(new JsonRuntimeValue(new JsonString("found")), present.value().orElseThrow());
+
+    var root = stack(new JsonRuntimeValue(nested), new StringValue(""));
+    execute("JSONをポインターで任意参照する", root, budget);
+    assertEquals(
+        new JsonRuntimeValue(nested), ((OptionalValue) root.getFirst()).value().orElseThrow());
+
+    var missing = stack(new JsonRuntimeValue(nested), new StringValue("/a~1b/1"));
+    execute("JSONをポインターで任意参照する", missing, budget);
+    assertFalse(((OptionalValue) missing.getFirst()).isPresent());
+
+    var invalid = stack(new JsonRuntimeValue(nested), new StringValue("/~2"));
+    List<RuntimeValue> invalidBefore = List.copyOf(invalid);
+    RuntimeFailure pointerFailure =
+        assertThrows(RuntimeFailure.class, () -> execute("JSONをポインターで任意参照する", invalid, budget));
+    assertEquals(DiagnosticCode.E_JSON_POINTER_SYNTAX, pointerFailure.diagnostic().code());
+    assertEquals("invalidEscape", pointerFailure.diagnostic().fields().get("reason"));
+    assertEquals("1", pointerFailure.diagnostic().fields().get("offset"));
+    assertEquals(invalidBefore, invalid);
+
+    var keys =
+        new ArrayValue(ScalarType.STRING, List.of(new StringValue("id"), new StringValue("name")));
+    var values =
+        new ArrayValue(
+            ScalarType.JSON,
+            List.of(
+                new JsonRuntimeValue(new JsonInteger(BigInteger.ONE)),
+                new JsonRuntimeValue(new JsonString("A"))));
+    var built = stack(keys, values);
+    execute("JSONオブジェクトを構築する", built, budget);
+    JsonObject object = (JsonObject) ((JsonRuntimeValue) built.getFirst()).value();
+    assertEquals(List.of("id", "name"), object.keys());
+    assertEquals(new JsonInteger(BigInteger.ONE), object.find("id").orElseThrow());
+
+    var mismatch =
+        stack(
+            keys,
+            new ArrayValue(ScalarType.JSON, List.of(new JsonRuntimeValue(JsonNull.INSTANCE))));
+    List<RuntimeValue> mismatchBefore = List.copyOf(mismatch);
+    RuntimeFailure mismatchFailure =
+        assertThrows(RuntimeFailure.class, () -> execute("JSONオブジェクトを構築する", mismatch, budget));
+    assertEquals(
+        DiagnosticCode.E_JSON_OBJECT_BUILD_LENGTH_MISMATCH, mismatchFailure.diagnostic().code());
+    assertEquals(mismatchBefore, mismatch);
+  }
+
+  @Test
+  void keepsPointerAbsenceNullAndSyntaxFailureDistinct() throws Exception {
+    JsonValue root =
+        new JsonObject(
+            List.of(
+                new JsonMember("", JsonNull.INSTANCE),
+                new JsonMember("array", new JsonArray(List.of(JsonNull.INSTANCE)))));
+    var budget = new ExecutionBudget(SOURCE_PATH, () -> 0L);
+
+    var nullMember = stack(new JsonRuntimeValue(root), new StringValue("/"));
+    execute("JSONをポインターで任意参照する", nullMember, budget);
+    OptionalValue present = (OptionalValue) nullMember.getFirst();
+    assertTrue(present.isPresent());
+    assertEquals(new JsonRuntimeValue(JsonNull.INSTANCE), present.value().orElseThrow());
+
+    for (String pointer :
+        List.of(
+            "/array/-", "/array/00", "/array/1", "/array/x", "/array/999999999999999999999999")) {
+      var absent = stack(new JsonRuntimeValue(root), new StringValue(pointer));
+      execute("JSONをポインターで任意参照する", absent, budget);
+      assertFalse(((OptionalValue) absent.getFirst()).isPresent(), pointer);
+    }
+
+    var invalidAfterMissing = stack(new JsonRuntimeValue(root), new StringValue("/missing/😀/~2"));
+    RuntimeFailure failure =
+        assertThrows(
+            RuntimeFailure.class, () -> execute("JSONをポインターで任意参照する", invalidAfterMissing, budget));
+    assertEquals(DiagnosticCode.E_JSON_POINTER_SYNTAX, failure.diagnostic().code());
+    assertEquals("invalidEscape", failure.diagnostic().fields().get("reason"));
+    assertEquals("11", failure.diagnostic().fields().get("offset"));
+  }
+
+  @Test
+  void buildsEmptyObjectsAndRejectsDuplicateKeysAtomically() throws Exception {
+    var budget = new ExecutionBudget(SOURCE_PATH, () -> 0L);
+    var empty =
+        stack(
+            new ArrayValue(ScalarType.STRING, List.of()),
+            new ArrayValue(ScalarType.JSON, List.of()));
+    execute("JSONオブジェクトを構築する", empty, budget);
+    assertEquals(new JsonObject(List.of()), ((JsonRuntimeValue) empty.getFirst()).value());
+
+    var duplicate =
+        stack(
+            new ArrayValue(
+                ScalarType.STRING, List.of(new StringValue("same"), new StringValue("same"))),
+            new ArrayValue(
+                ScalarType.JSON,
+                List.of(
+                    new JsonRuntimeValue(JsonNull.INSTANCE),
+                    new JsonRuntimeValue(new JsonBoolean(true)))));
+    List<RuntimeValue> before = List.copyOf(duplicate);
+    long workBefore = budget.jsonWorkUnits();
+    RuntimeFailure failure =
+        assertThrows(RuntimeFailure.class, () -> execute("JSONオブジェクトを構築する", duplicate, budget));
+    assertEquals(DiagnosticCode.E_JSON_DUPLICATE_KEY, failure.diagnostic().code());
+    assertEquals(before, duplicate);
+    assertEquals(workBefore, budget.jsonWorkUnits());
+  }
+
+  @Test
   void reportsKindKeyIndexAndSyntaxFailuresWithoutChangingInputs() throws Exception {
     var budget = new ExecutionBudget(SOURCE_PATH, () -> 0L);
     var wrongKind = stack(new JsonRuntimeValue(new JsonString("x")));

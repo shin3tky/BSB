@@ -427,6 +427,10 @@ public enum DiagnosticCode {
   E_JSON_KIND_MISMATCH,
   /** JSONオブジェクトの必須キーが存在しなかった */
   E_JSON_KEY_NOT_FOUND,
+  /** JSON Pointerの文字列表現がRFC 6901に一致しなかった */
+  E_JSON_POINTER_SYNTAX,
+  /** JSONオブジェクト一括構築のキー数と値数が一致しなかった */
+  E_JSON_OBJECT_BUILD_LENGTH_MISMATCH,
   /** JSON配列の添字が有効範囲外だった */
   E_JSON_INDEX_OUT_OF_BOUNDS,
   /** JSON配列の半開区間が不正だった */

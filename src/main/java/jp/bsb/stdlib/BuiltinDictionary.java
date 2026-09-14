@@ -1129,7 +1129,21 @@ public final class BuiltinDictionary {
               "JSON形状失敗から実際のJSON種類を取り出します。",
               List.of("JSON形状失敗"),
               List.of("文字列"),
-              "JSON形状失敗の実際種類を取り出す"));
+              "JSON形状失敗の実際種類を取り出す"),
+          jsonErgonomicsFeature(
+              "JSONをポインターで任意参照する",
+              BuiltinOperation.JSON_POINTER_GET_OPTIONAL,
+              "RFC 6901 JSON Pointerで参照し、対象がなければ値なしを返します。",
+              List.of("JSON", "文字列"),
+              List.of("任意<JSON>"),
+              "「{\"items\":[1]}」を JSONを解析する 「/items/0」を JSONをポインターで任意参照する"),
+          jsonErgonomicsFeature(
+              "JSONオブジェクトを構築する",
+              BuiltinOperation.JSON_OBJECT_BUILD,
+              "同じ長さのキー配列とJSON値配列から不変オブジェクトを構築します。",
+              List.of("配列<文字列>", "配列<JSON>"),
+              List.of("JSON"),
+              "【「id」】と 【1を 整数をJSONに変換する】を JSONオブジェクトを構築する"));
 
   private static final Map<String, BuiltinWord> BY_NAME = indexByName();
   private static final Set<String> CANONICAL_NAMES = canonicalNameSet();
@@ -1476,6 +1490,26 @@ public final class BuiltinDictionary {
         operation,
         Set.of(),
         "JSHAPE",
+        example);
+  }
+
+  private static BuiltinWord jsonErgonomicsFeature(
+      String name,
+      BuiltinOperation operation,
+      String description,
+      List<String> inputs,
+      List<String> outputs,
+      String example) {
+    return new BuiltinWord(
+        name,
+        Set.of(),
+        description,
+        inputs,
+        outputs,
+        BuiltinTypeRule.FIXED,
+        operation,
+        Set.of(),
+        "JERG",
         example);
   }
 

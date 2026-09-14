@@ -205,6 +205,10 @@ public enum BuiltinOperation {
   JSON_OBJECT_SET,
   /** JSONオブジェクトからのキー削除。 */
   JSON_OBJECT_DELETE,
+  /** RFC 6901 JSON Pointerによる任意参照。 */
+  JSON_POINTER_GET_OPTIONAL,
+  /** キー配列と値配列からのJSONオブジェクト一括構築。 */
+  JSON_OBJECT_BUILD,
   /** 値を値あり任意値へ包む。 */
   OPTIONAL_WRAP,
   /** 任意値の値あり状態を判定する。 */

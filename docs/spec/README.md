@@ -26,6 +26,7 @@
 | `HTTP-REL` | HTTP 信頼性 | [再試行と最終送信記録](http-reliability.md) | [診断](http-reliability-diagnostics.md) | [適合性](http-reliability-conformance.md) |
 | `NARRAY` | 二次元配列 | [二次元配列](nested-arrays.md) | [診断](nested-arrays-diagnostics.md) | [適合性](nested-arrays-conformance.md) |
 | `WST` | 作業領域・ファイル・CSV/TSV | [統合仕様](workspace-tables.md) | [診断](workspace-tables-diagnostics.md) | [適合性](workspace-tables-conformance.md) |
+| `JERG` | JSON参照・構築 | [JSON参照・構築](json-access-construction.md) | [診断](json-access-construction-diagnostics.md) | [適合性](json-access-construction-conformance.md) |
 
 CLI の公開 JSON 契約は [診断 JSON](cli-json.md) と [説明 JSON](explain-json.md)、接続設定は
 [CLI 接続設定](cli-connection-config.md)を参照してください。整形規則は各機能グループの

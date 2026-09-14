@@ -94,7 +94,7 @@ class ExponentExponentCliTest {
     assertEquals("", explained.stderr());
     Map<String, Object> explainDocument = object(StrictJsonParser.parse(explained.stdout()));
     assertEquals(new BigDecimal("1"), explainDocument.get("schemaVersion"));
-    assertEquals(182, list(explainDocument.get("builtinWords")).size());
+    assertEquals(184, list(explainDocument.get("builtinWords")).size());
     Map<String, Object> summary = object(explainDocument.get("summary"));
     assertEquals(List.of("console.output"), summary.get("capabilities"));
     assertFalse(list(summary.get("effects")).isEmpty());
