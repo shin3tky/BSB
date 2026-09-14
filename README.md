@@ -71,10 +71,12 @@ python3 tools/builtin_word_coverage.py --format json --strict
 ## ドキュメント
 
 - [ドキュメント案内](docs/README.md)
+- [言語チュートリアル](docs/tutorial/README.md)
+- [言語リファレンスマニュアル](docs/reference/README.md)
 - [目的と設計原則](docs/vision.md)
 - [実行基盤の構成](docs/runtime-architecture.md)
 - [実装・配布ガイド](docs/implementation-guide.md)
-- [最小言語仕様の概説](docs/language-overview.md)
+- [言語仕様の概説](docs/language-overview.md)
 - [詳細言語仕様](docs/spec/README.md)
 - [機能グループと適合性テスト](docs/conformance.md)
 - [サンプル](samples/README.md)
