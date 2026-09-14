@@ -91,7 +91,6 @@ src/test/java/       単体・統合・適合性テスト
 tests/conformance/   機能グループ別の宣言的な適合データ
 samples/             独立して実行できる BSB プログラムと埋込み例
 docs/               公開ドキュメントと詳細言語仕様
-docs_internal/      過去の設計判断、実装計画、引き継ぎ記録
 tools/               診断・組み込み語・適合データの監査ツール
 ```
 
