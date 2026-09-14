@@ -21,6 +21,21 @@
 ./gradlew clean spotlessCheck test jacocoTestReport javadoc shadowJar
 ```
 
+### コミット前フック
+
+Git hookはclone時に`.git/hooks`へ自動配置されません。開発を始める際に、リポジトリ同梱の
+`.githooks/pre-commit`を次のように配置し、実行権限を付けてください。
+
+```shell
+cp .githooks/pre-commit .git/hooks/pre-commit
+chmod +x .git/hooks/pre-commit
+```
+
+既存の`.git/hooks/pre-commit`を使っている場合は上書きせず、その処理と同梱フックの処理を統合して
+ください。同梱フックはコミット前に`./gradlew --quiet spotlessCheck`を実行し、Javaソースが正規の書式で
+なければコミットを中止します。その場合は`./gradlew spotlessApply`を実行し、変更を確認してから再度
+コミットしてください。
+
 生成した JAR は次の形で起動できます。
 
 ```shell
