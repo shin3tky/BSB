@@ -40,6 +40,12 @@ final class CliArgumentParser {
       return error(outputFormat, arguments, false, "--json は check または explain の直後にだけ指定できます。");
     }
 
+    if (arguments[0].equals("version")) {
+      return arguments.length == 1
+          ? new CliVersionInvocation()
+          : error(outputFormat, arguments, false, "version に引数は指定できません。");
+    }
+
     CliCommand command = command(arguments[0]);
     if (command == null) {
       return error(outputFormat, arguments, json, "未知のサブコマンドです: " + arguments[0]);

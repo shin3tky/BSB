@@ -52,12 +52,13 @@ Windows（PowerShell / コマンドプロンプト）では、最後のコマン
 
 ```shell
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar check samples/01-hello-world.bsb
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar version
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/01-hello-world.bsb
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar format samples/01-hello-world.bsb
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar explain --json samples/01-hello-world.bsb
 ```
 
-`check` は静的検査、`run` は検査後の実行、`format` はソースを標準形へ整形して出力、`explain --json` は
+`version` は処理系の版とビルド時のコミットハッシュを表示、`check` は静的検査、`run` は検査後の実行、`format` はソースを標準形へ整形して出力、`explain --json` は
 語・束縛・能力・副作用の静的な説明を行います。`format` は入力ファイルを上書きしません。
 
 公開前の一式を検証するコマンドは次のとおりです。

@@ -254,6 +254,18 @@ class BsbCliTest {
   }
 
   @Test
+  void versionPrintsTheBuildVersionToStandardOutput() {
+    Invocation result = invoke("version");
+
+    assertEquals(0, result.exitCode());
+    assertTrue(
+        result
+            .stdout()
+            .matches("bsb 0\\.1\\.0-SNAPSHOT \\(commit ([0-9a-f]{40}|[0-9a-f]{64}|unknown)\\)\\n"));
+    assertEquals("", result.stderr());
+  }
+
+  @Test
   void formatAllowsStaticFailuresAndNeverOverwritesTheInputFile() throws IOException {
     Path source = copyResource("sources/CORE-F020.bsb", "CORE-F020.bsb");
     byte[] original = Files.readAllBytes(source);
@@ -274,7 +286,7 @@ class BsbCliTest {
     assertEquals(BsbCli.EXIT_USAGE, result.exitCode());
     assertEquals("", result.stdout());
     assertTrue(result.stderr().contains(expectedMessage));
-    assertTrue(result.stderr().contains("使い方: bsb check <ソース.bsb>"));
+    assertTrue(result.stderr().contains("使い方: bsb version"));
   }
 
   @Test

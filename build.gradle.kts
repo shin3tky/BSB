@@ -1,6 +1,7 @@
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.external.javadoc.StandardJavadocDocletOptions
 import org.gradle.api.tasks.wrapper.Wrapper
+import org.gradle.api.tasks.WriteProperties
 
 plugins {
     application
@@ -97,7 +98,25 @@ tasks.jacocoTestReport {
     }
 }
 
+val bsbVersion = version.toString()
+val bsbCommit = providers.exec {
+    commandLine("git", "rev-parse", "--verify", "HEAD")
+    isIgnoreExitValue = true
+}.standardOutput.asText.map { output ->
+    output.trim().lowercase().takeIf { it.matches(Regex("[0-9a-f]{40}|[0-9a-f]{64}")) } ?: "unknown"
+}
+val generateVersionProperties = tasks.register<WriteProperties>("generateVersionProperties") {
+    destinationFile.set(layout.buildDirectory.file("generated/version/jp/bsb/cli/version.properties"))
+    property("version", bsbVersion)
+    property("commit", bsbCommit)
+}
+
+sourceSets.main {
+    resources.srcDir(layout.buildDirectory.dir("generated/version"))
+}
+
 tasks.processResources {
+    dependsOn(generateVersionProperties)
     from("tests/conformance/language-core/messages.properties") {
         into("jp/bsb/diagnostics")
     }

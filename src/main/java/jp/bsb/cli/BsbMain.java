@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
  * <p>実際の引数検査とサブコマンド処理は、テスト可能な {@link BsbCli} へ委譲します。このクラスはJVMの入口と終了コードの反映だけを担当します。
  *
  * <ul>
+ *   <li>{@code version}: 処理系の版を表示する
  *   <li>{@code check}: ソースコードの字句解析・構文解析・静的型検査のみを行い、誤りがないか確認する
  *   <li>{@code run}: 静的検査に合格した後、実際にプログラムを実行する
  *   <li>{@code format}: ソースコードを言語仕様で定められた一意な「標準形」に自動整形する

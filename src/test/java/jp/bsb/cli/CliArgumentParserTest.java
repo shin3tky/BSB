@@ -9,6 +9,26 @@ import org.junit.jupiter.api.Test;
 
 class CliArgumentParserTest {
   @Test
+  void acceptsVersionWithoutAFormatOrSource() {
+    CliVersionInvocation result =
+        assertInstanceOf(
+            CliVersionInvocation.class, CliArgumentParser.parse(new String[] {"version"}));
+
+    assertEquals(CliOutputFormat.HUMAN, result.outputFormat());
+    assertEquals(Optional.empty(), result.source());
+  }
+
+  @Test
+  void rejectsVersionArgumentsAndJson() {
+    for (String[] arguments :
+        List.of(new String[] {"version", "extra"}, new String[] {"version", "--json"})) {
+      CliUsageError result =
+          assertInstanceOf(CliUsageError.class, CliArgumentParser.parse(arguments));
+      assertEquals(CliOutputFormat.HUMAN, result.outputFormat());
+    }
+  }
+
+  @Test
   void acceptsHumanAndJsonCheckFormsAndJsonExplain() {
     CliInvocation human =
         assertInstanceOf(

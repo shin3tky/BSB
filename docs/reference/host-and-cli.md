@@ -8,6 +8,7 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar COMMAND [OPTIONS] SOURCE [-- PRO
 
 | コマンド | 動作 |
 |---|---|
+| `version` | 処理系の版とビルド時のコミットハッシュを標準出力へ表示する |
 | `check` | ソースを実行せず、字句・構文・名前・型・スタック効果を検査する |
 | `run` | 検査に成功したプログラムを実行する |
 | `format` | 標準形へ整形したソースを標準出力へ表示する。元ファイルは変更しない |

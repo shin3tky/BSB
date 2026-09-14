@@ -50,7 +50,8 @@ public final class BsbCli {
   public static final int EXIT_CONFIG = 78;
 
   private static final String USAGE =
-      "使い方: bsb check <ソース.bsb>\n"
+      "使い方: bsb version\n"
+          + "        bsb check <ソース.bsb>\n"
           + "        bsb check --json <ソース.bsb>\n"
           + "        bsb explain --json <ソース.bsb>\n"
           + "        bsb run <ソース.bsb>\n"
@@ -298,6 +299,12 @@ public final class BsbCli {
     }
     if (parsed instanceof WorkspaceCliConfigError error) {
       return reportWorkspaceConfigError(standardError, Optional.empty(), error.message());
+    }
+    if (parsed instanceof CliVersionInvocation) {
+      writeUtf8(
+          standardOutput,
+          "bsb " + BsbVersion.current() + " (commit " + BsbVersion.commit() + ")\n");
+      return 0;
     }
     CliInvocation invocation = (CliInvocation) parsed;
 
