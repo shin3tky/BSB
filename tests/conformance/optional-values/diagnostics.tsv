@@ -5,7 +5,7 @@ OPT-F003	1	check	E_EXPECTED_OPTIONAL_TYPE_END	error	syntax	1	14	startColumn=8;st
 OPT-F004	1	check	E_TYPE_CONSTRAINT_NOT_ALLOWED	error	typeAndStack	1	10	-	整数・真偽・文字・文字列	T	具体的な言語コアの型へ変更してください	-	-	-	-
 OPT-F004	2	check	E_TYPE_CONSTRAINT_NOT_ALLOWED	error	typeAndStack	1	16	context=利用者定義スタック効果;type=数値	具体型	数値	整数または小数の具体型を書いてください	-	-	-	-
 OPT-F005	1	check	E_UNKNOWN_TYPE	error	typeAndStack	1	10	typeName=未知型	整数・真偽・文字・文字列	未知型	言語コアの型へ変更してください	-	-	-	-
-OPT-F006	1	check	E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED	error	typeAndStack	1	10	actualType=任意<整数>;allowedTypes=整数,真偽,文字,文字列,小数,JSON	配列要素にできる型	任意<整数>	任意値を配列の外で個別に処理してください	-	-	-	-
+OPT-F006	1	check	E_NESTED_ARRAY_NOT_AVAILABLE	error	typeAndStack	1	10	actualDimensions=3;context=配列型;maximumDimensions=2	最大2次元の配列型	任意<配列<配列<整数>>>	配列型の入れ子を2段までにしてください	-	-	-	-
 OPT-F007	1	check	E_TYPE_MISMATCH	error	typeAndStack	6	7	actualType=整数;expectedType=任意<整数>;inputIndex=1;word=受ける	[任意<整数>]	[整数]	第1入力を任意<整数>にしてください	-	-	-	-
 OPT-F008	1	check	E_BRANCH_STACK_MISMATCH	error	typeAndStack	6	5	base=[];falseStack=[任意<文字列>];trueStack=[任意<整数>]	両側で同じ型列	真側[任意<整数>]、偽側[任意<文字列>]	-	3:11:真側|5:13:偽側	-	-	-
 OPT-F009	1	check	E_STACK_UNDERFLOW	error	typeAndStack	2	5	actualCount=0;requiredCount=1;word=任意にする	[T]	[]	Tをもう1つ置いてください	-	-	-	-

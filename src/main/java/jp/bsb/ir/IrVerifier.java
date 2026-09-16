@@ -325,6 +325,39 @@ final class IrVerifier {
           new Successor(
               jump.targetIndex(), state.discardArrayLoops(jump.arrayLoopStatesToDiscard())));
     }
+    if (instruction instanceof PropagateOrReturn propagation) {
+      if (state.dataStack().isEmpty()) {
+        throw new IllegalArgumentException(
+            propagation.opcode() + " has insufficient IR stack input");
+      }
+      ValueType input = state.dataStack().top();
+      ValueType normalType;
+      if (propagation.kind() == jp.bsb.frontend.ast.Propagation.Kind.OPTIONAL) {
+        if (!input.isOptional()) {
+          throw new IllegalArgumentException("optional propagation requires an optional IR input");
+        }
+        normalType = input.optionalElementType().orElseThrow();
+      } else {
+        if (!input.isResult()) {
+          throw new IllegalArgumentException("result propagation requires a result IR input");
+        }
+        if (!input
+            .resultFailureType()
+            .orElseThrow()
+            .equals(propagation.returnType().resultFailureType().orElseThrow())) {
+          throw new IllegalArgumentException("result propagation failure types differ");
+        }
+        normalType = input.resultSuccessType().orElseThrow();
+      }
+      TypeStack prefix = state.dataStack().pop();
+      TypeStack returned = prefix.push(propagation.returnType());
+      if (!returned.matches(word.stackEffect().orElseThrow().outputTypes())) {
+        throw new IllegalArgumentException(
+            "propagation return stack differs from its IR word effect");
+      }
+      VerificationState normal = new VerificationState(prefix.push(normalType), state.arrayLoops());
+      return fallthrough(next, instructionCount, normal);
+    }
     if (instruction instanceof Return) {
       List<ValueType> expected = word.stackEffect().orElseThrow().outputTypes();
       if (!state.dataStack().matches(expected)) {

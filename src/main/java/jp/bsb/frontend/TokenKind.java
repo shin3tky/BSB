@@ -72,6 +72,12 @@ public enum TokenKind {
   /** 現在の利用者定義単語から復帰する {@code 戻る} */
   RETURN,
 
+  /** 値なしなら現在の利用者定義単語から復帰する局所伝播構文 */
+  OPTIONAL_PROPAGATE,
+
+  /** 失敗なら現在の利用者定義単語から復帰する局所伝播構文 */
+  RESULT_PROPAGATE,
+
   /** 宣言名に隣接する宣言標識 {@code は} */
   DECLARATION_MARKER,
 

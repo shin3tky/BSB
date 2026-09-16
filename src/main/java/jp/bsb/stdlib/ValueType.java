@@ -190,6 +190,32 @@ public sealed interface ValueType permits ArrayType, OptionalType, ResultType, S
     return maximum;
   }
 
+  /** 根から葉までの各経路に現れる配列構築子数の最大値を反復的に数えます。 */
+  static int arrayConstructorDepth(ValueType root) {
+    if (root == null) {
+      throw new NullPointerException("root");
+    }
+    int maximum = 0;
+    var work = new ArrayDeque<TypeDepth>();
+    work.push(new TypeDepth(root, 0));
+    while (!work.isEmpty()) {
+      TypeDepth item = work.pop();
+      ValueType type = item.type();
+      int depth = item.depth();
+      if (type instanceof ArrayType array) {
+        int arrayDepth = depth + 1;
+        maximum = Math.max(maximum, arrayDepth);
+        work.push(new TypeDepth(array.elementType(), arrayDepth));
+      } else if (type instanceof OptionalType optional) {
+        work.push(new TypeDepth(optional.elementType(), depth));
+      } else if (type instanceof ResultType result) {
+        work.push(new TypeDepth(result.successType(), depth));
+        work.push(new TypeDepth(result.failureType(), depth));
+      }
+    }
+    return maximum;
+  }
+
   /**
    * 正規型名を具体型へ変換します。
    *

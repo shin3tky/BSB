@@ -272,6 +272,7 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/131-tic-tac-toe.bsb
 | `22-two-dimensional-arrays.bsb`     | raggedな二次元配列                | 二重反復、構造表示、配列内配列                 |
 | `23-named-workspaces-files.bsb`     | 複数ファイルの読取・選択・書込   | 名前付き作業領域、完全バイト列、原子的置換     |
 | `24-csv-tsv-files.bsb`              | CSV/TSVの読取・行追加・CSV書込   | 厳密UTF-8、quoted改行、二次元配列、決定的CSV   |
+| `25-optional-result-composition.bsb` | 任意・結果の局所伝播と配列       | prefix保持、失敗伝播、wrapper配列              |
 | `named-workspaces.toml.example`     | CLI作業領域設定の雛形             | 複数登録、read/write許可、相対path             |
 | `delimited-tables-workspaces.toml.example` | CSV/TSV用CLI設定の雛形       | 2入力領域、出力領域、有限ファイル登録           |
 | `HttpbinIpJdkEmbedding.java`        | httpbin接続の実TLS埋込み          | 固定origin、JDK HTTPS、timeout、PKIX           |

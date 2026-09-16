@@ -85,7 +85,9 @@ public final class Lexer {
           Map.entry("繰り返す", TokenKind.LOOP_END),
           Map.entry("打ち切る", TokenKind.BREAK),
           Map.entry("続ける", TokenKind.CONTINUE),
-          Map.entry("戻る", TokenKind.RETURN));
+          Map.entry("戻る", TokenKind.RETURN),
+          Map.entry("任意から値を取り出すか戻る", TokenKind.OPTIONAL_PROPAGATE),
+          Map.entry("結果から成功値を取り出すか戻る", TokenKind.RESULT_PROPAGATE));
 
   /** 識別子の通常規則では数字から始まる、数値演算用の予約済み組み込み値です。 */
   private static final String NUMERIC_LEADING_RESERVED_NAME = "0方向へ丸め";

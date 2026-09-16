@@ -64,7 +64,7 @@ OPT-N012の値なしは欠落JSONキーから作り、同じ`任意<JSON>`同士
 | OPT-F003 | `任意<整数` | `E_EXPECTED_OPTIONAL_TYPE_END` |
 | OPT-F004 | `任意<T>`と`任意<数値>` | `E_TYPE_CONSTRAINT_NOT_ALLOWED` |
 | OPT-F005 | `任意<未知型>` | `E_UNKNOWN_TYPE` |
-| OPT-F006 | `配列<任意<整数>>` | `E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED` |
+| OPT-F006 | `配列<任意<配列<配列<整数>>>>` | `E_NESTED_ARRAY_NOT_AVAILABLE` |
 | OPT-F007 | `任意<整数>`と`整数`の呼出し型不一致 | `E_TYPE_MISMATCH` |
 | OPT-F008 | `任意<整数>`と`任意<文字列>`の分岐合流 | `E_BRANCH_STACK_MISMATCH` |
 | OPT-F009 | `任意にする`のスタック不足 | `E_STACK_UNDERFLOW` |

@@ -53,7 +53,7 @@ public record OptionalType(ValueType elementType) implements ValueType {
 
   @Override
   public boolean isArrayElementType() {
-    return false;
+    return ValueType.arrayConstructorDepth(this) < 2;
   }
 
   @Override

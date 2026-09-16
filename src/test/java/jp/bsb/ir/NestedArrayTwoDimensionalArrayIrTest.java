@@ -50,14 +50,18 @@ class NestedArrayTwoDimensionalArrayIrTest {
   }
 
   @Test
-  void acceptsRowBuildsButRejectsWrapperAndTwoDimensionalElementTypes() {
+  void acceptsRowAndWrapperBuildsButRejectsTwoDimensionalElementTypes() {
     ValueType rowType = ValueType.arrayOf(ValueType.INTEGER);
     ValueType matrixType = ValueType.arrayOf(rowType);
 
     assertEquals(rowType, new BuildArray(rowType, 0, SPAN).elementType());
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> new BuildArray(ValueType.optionalOf(ValueType.INTEGER), 0, SPAN));
+    assertEquals(
+        ValueType.optionalOf(ValueType.INTEGER),
+        new BuildArray(ValueType.optionalOf(ValueType.INTEGER), 0, SPAN).elementType());
+    assertEquals(
+        ValueType.resultOf(ValueType.INTEGER, ValueType.STRING),
+        new BuildArray(ValueType.resultOf(ValueType.INTEGER, ValueType.STRING), 0, SPAN)
+            .elementType());
     assertThrows(IllegalArgumentException.class, () -> new BuildArray(matrixType, 0, SPAN));
   }
 

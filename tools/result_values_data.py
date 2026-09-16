@@ -36,6 +36,8 @@ NEW_MESSAGES = {
     "E_RESULT_TYPE_ARGUMENTS_REQUIRED": "結果型とその構築には成功型と失敗型の指定が必要です。",
     "E_TYPE_DEPTH_LIMIT": "推論された型の入れ子が上限を超えています。",
     "E_RESULT_STATE_MISMATCH": "結果値の状態が取り出す側と一致しません。",
+    "E_RESULT_PROPAGATION_CONTEXT": "結果の局所伝播は結果値を返す利用者定義単語内でだけ使用できます。",
+    "E_RESULT_PROPAGATION_EFFECT_MISMATCH": "結果の局所伝播地点で保持する値または失敗型が単語の宣言出力と一致しません。",
 }
 
 
@@ -416,16 +418,17 @@ def build_failures(data):
                 canonical = marked(source)[0]
                 data.case(f"RESULT-F{id_:03}", f"{tag}-{n:02}", source, specs, canonical=canonical,
                           targets=() if tag == "type" else (owner,))
-    typ = "結果<整数,文字列>"
-    source = "調べるとは （配列<" + mark("bad", typ) + "> --）\nこと。\n\n" + EMPTY_MAIN
-    data.case("RESULT-F011", "array-annotation", source, [diag("E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED", "bad", stage="typeAndStack",
-              fields={"actualType": typ, "allowedTypes": "整数,真偽,文字,文字列,小数,JSON"}, expected="配列要素にできる型", actual=typ,
-              fixes=["結果値を配列の外で個別に処理してください"])], canonical=marked(source)[0])
+    for variant, typ in (
+        ("array-annotation", "結果<配列<配列<整数>>,文字列>"),
+        ("array-element-success", "結果<配列<配列<文字列>>,文字列>"),
+        ("array-element-failure", "結果<整数,配列<配列<文字列>>>")
+    ):
+        source = "調べるとは （配列<" + mark("bad", typ) + "> --）\nこと。\n\n" + EMPTY_MAIN
+        data.case("RESULT-F011", variant, source, [diag("E_NESTED_ARRAY_NOT_AVAILABLE", "bad", stage="typeAndStack",
+                  fields={"context": "配列型", "maximumDimensions": "2", "actualDimensions": "3"},
+                  expected="最大2次元の配列型", actual=typ,
+                  fixes=["配列型の入れ子を2段までにしてください"])], canonical=marked(source)[0])
     for owner, value, tag in (("成功にする", "42", "success"), ("失敗にする", "「失敗」", "failure")):
-        source = "調べるとは （-- 配列<整数>）\n    " + mark("bad", "【") + f"{value} を {owner}<整数,文字列>】\nこと。\n\n" + EMPTY_MAIN
-        data.case("RESULT-F011", f"array-element-{tag}", source, [diag("E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED", "bad", stage="typeAndStack",
-                  fields={"actualType": typ, "allowedTypes": "整数,真偽,文字,文字列,小数,JSON"}, expected="配列要素にできる型", actual=typ,
-                  fixes=[typ + "を個別に処理してください"])], canonical=marked(source)[0], targets=(owner,))
         for present in (False, True):
             prefix = value + " を " if present else ""
             source = "メインとは （--）\n    " + prefix + mark("bad", owner) + "\nこと。\n"

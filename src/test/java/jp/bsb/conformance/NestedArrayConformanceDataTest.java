@@ -37,7 +37,6 @@ class NestedArrayConformanceDataTest {
             "E_NESTED_ARRAY_NOT_AVAILABLE",
             "E_ARRAY_ELEMENT_TYPE_MISMATCH",
             "E_TYPE_MISMATCH",
-            "E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED",
             "E_EMPTY_ARRAY_TYPE_REQUIRED",
             "E_EXPECTED_ARRAY_TYPE_END",
             "INTERNAL"),

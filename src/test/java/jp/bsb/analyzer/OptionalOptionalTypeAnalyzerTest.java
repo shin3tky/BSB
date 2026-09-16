@@ -42,15 +42,16 @@ class OptionalOptionalTypeAnalyzerTest {
   }
 
   @Test
-  void distinguishesBareOptionalConstraintsUnknownTypesAndArrayElementRestriction() {
+  void distinguishesBareOptionalConstraintsAndUnknownTypes() {
     assertSingle(
         "裸とは （任意 --）\nこと。\n\nメインとは （--）\nこと。\n", DiagnosticCode.E_OPTIONAL_ELEMENT_TYPE_REQUIRED);
     assertSingle(
         "制約とは （任意<T> --）\nこと。\n\nメインとは （--）\nこと。\n", DiagnosticCode.E_TYPE_CONSTRAINT_NOT_ALLOWED);
     assertSingle("未知とは （任意<未知型> --）\nこと。\n\nメインとは （--）\nこと。\n", DiagnosticCode.E_UNKNOWN_TYPE);
-    assertSingle(
-        "配列検査とは （配列<任意<整数>> --）\nこと。\n\nメインとは （--）\nこと。\n",
-        DiagnosticCode.E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED);
+    AnalysisResult wrapperArray =
+        AnalyzerTestSupport.checkText(
+            "配列検査とは （配列<任意<整数>> -- 配列<任意<整数>>）\n" + "こと。\n\nメインとは （--）\nこと。\n");
+    assertTrue(wrapperArray.successful(), wrapperArray.diagnostics().toString());
   }
 
   @Test

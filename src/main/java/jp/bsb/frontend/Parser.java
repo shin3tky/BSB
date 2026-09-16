@@ -34,6 +34,7 @@ import jp.bsb.frontend.ast.LogicalConnectionArgument;
 import jp.bsb.frontend.ast.LogicalConnectionDeclaration;
 import jp.bsb.frontend.ast.Particle;
 import jp.bsb.frontend.ast.Program;
+import jp.bsb.frontend.ast.Propagation;
 import jp.bsb.frontend.ast.ShortCircuitEvaluation;
 import jp.bsb.frontend.ast.ShortCircuitOperator;
 import jp.bsb.frontend.ast.StackEffect;
@@ -655,7 +656,9 @@ public final class Parser {
             LOOP_END,
             BREAK,
             CONTINUE,
-            RETURN -> {
+            RETURN,
+            OPTIONAL_PROPAGATE,
+            RESULT_PROPAGATE -> {
           Token forbidden = advance().token();
           reportInitializerElementNotAllowed(forbidden, forbidden.lexeme());
         }
@@ -908,6 +911,7 @@ public final class Parser {
             }
           }
           case BREAK, CONTINUE, RETURN -> body.add(controlTransfer(advance().token()));
+          case OPTIONAL_PROPAGATE, RESULT_PROPAGATE -> body.add(propagation(advance().token()));
           case ARRAY_CLOSE -> reportUnexpectedArrayEnd(advance().token());
           case ASSIGNMENT -> reportAssignmentWithoutPrefix(advance().token());
           case DECLARATION_END -> reportUnexpectedDeclarationEnd(advance().token());
@@ -1384,6 +1388,8 @@ public final class Parser {
               BREAK,
               CONTINUE,
               RETURN,
+              OPTIONAL_PROPAGATE,
+              RESULT_PROPAGATE,
               CONSTANT_DECLARATION,
               VARIABLE_DECLARATION,
               LOGICAL_CONNECTION_DECLARATION,
@@ -3008,6 +3014,18 @@ public final class Parser {
                   "token is not a control transfer: " + token.kind());
         };
     return new ControlTransfer(kind, token.lexeme(), token.span());
+  }
+
+  /** 局所伝播用トークンを専用ASTノードへ変換します。 */
+  private static Propagation propagation(Token token) {
+    Propagation.Kind kind =
+        switch (token.kind()) {
+          case OPTIONAL_PROPAGATE -> Propagation.Kind.OPTIONAL;
+          case RESULT_PROPAGATE -> Propagation.Kind.RESULT;
+          default ->
+              throw new IllegalArgumentException("token is not a propagation: " + token.kind());
+        };
+    return new Propagation(kind, token.lexeme(), token.span());
   }
 
   private static SourceSpan span(SourceSpan first, SourceSpan last) {

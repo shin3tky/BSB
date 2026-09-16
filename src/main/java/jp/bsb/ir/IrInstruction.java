@@ -16,6 +16,7 @@ public sealed interface IrInstruction
         CountedLoopNext,
         CountedLoopStart,
         Jump,
+        PropagateOrReturn,
         PushConst,
         Return,
         StorageInstruction {

@@ -26,6 +26,7 @@ import jp.bsb.ir.IrWord;
 import jp.bsb.ir.Jump;
 import jp.bsb.ir.LoadGlobal;
 import jp.bsb.ir.LoadLocal;
+import jp.bsb.ir.PropagateOrReturn;
 import jp.bsb.ir.PushConst;
 import jp.bsb.ir.Return;
 import jp.bsb.ir.StoreGlobal;
@@ -266,6 +267,41 @@ public final class Interpreter {
           if (tracing) {
             controlTarget = Optional.of(formatTarget(currentWord, next.bodyTargetIndex()));
             branchTaken = Optional.of(taken);
+          }
+        } else if (instruction instanceof PropagateOrReturn propagation) {
+          RuntimeValue wrapped = dataStack.getLast();
+          boolean returned;
+          if (propagation.kind() == jp.bsb.frontend.ast.Propagation.Kind.OPTIONAL) {
+            OptionalValue optional = (OptionalValue) wrapped;
+            returned = !optional.isPresent();
+            if (returned) {
+              dataStack.set(
+                  dataStack.size() - 1,
+                  OptionalValue.absent(
+                      propagation.returnType().optionalElementType().orElseThrow()));
+            } else {
+              dataStack.set(dataStack.size() - 1, optional.value().orElseThrow());
+            }
+          } else {
+            ResultValue result = (ResultValue) wrapped;
+            returned = result.isFailure();
+            if (returned) {
+              dataStack.set(
+                  dataStack.size() - 1,
+                  ResultValue.failure(
+                      (jp.bsb.stdlib.ResultType) propagation.returnType(), result.value()));
+            } else {
+              dataStack.set(dataStack.size() - 1, result.value());
+            }
+          }
+          if (returned) {
+            callStack.removeLast();
+            startNextStartupWord =
+                callStack.isEmpty() && startupWordIndex + 1 < startupWords.size();
+          }
+          if (tracing) {
+            controlTarget = Optional.of(currentWord + ":return");
+            branchTaken = Optional.of(returned);
           }
         } else if (instruction instanceof Return) {
           callStack.removeLast();

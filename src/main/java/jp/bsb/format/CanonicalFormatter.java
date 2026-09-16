@@ -19,6 +19,7 @@ import jp.bsb.frontend.ast.Literal;
 import jp.bsb.frontend.ast.LogicalConnectionDeclaration;
 import jp.bsb.frontend.ast.Particle;
 import jp.bsb.frontend.ast.Program;
+import jp.bsb.frontend.ast.Propagation;
 import jp.bsb.frontend.ast.ShortCircuitEvaluation;
 import jp.bsb.frontend.ast.StackEffect;
 import jp.bsb.frontend.ast.TopLevelElement;
@@ -202,6 +203,10 @@ public final class CanonicalFormatter {
         case ControlTransfer transfer -> {
           pending.flushInto(lines, indent);
           appendControlLine(lines, indent, transferText(transfer), transfer.span().end().line());
+        }
+        case Propagation propagation -> {
+          pending.flushInto(lines, indent);
+          appendControlLine(lines, indent, propagation.lexeme(), propagation.span().end().line());
         }
       }
     }

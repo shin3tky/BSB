@@ -145,6 +145,15 @@ class ValueTypeTest {
     assertEquals(
         Optional.of(ValueType.optionalOf(ValueType.optionalOf(ValueType.STRING))),
         ValueType.fromSourceName("任意<任意<文字列>>"));
+    assertEquals(
+        Optional.of(ValueType.arrayOf(ValueType.optionalOf(ValueType.INTEGER))),
+        ValueType.fromSourceName("配列<任意<整数>>"));
+    assertEquals(
+        Optional.of(ValueType.arrayOf(ValueType.resultOf(ValueType.INTEGER, ValueType.STRING))),
+        ValueType.fromSourceName("配列<結果<整数,文字列>>"));
+    assertEquals(
+        Optional.of(ValueType.arrayOf(ValueType.optionalOf(ValueType.arrayOf(ValueType.INTEGER)))),
+        ValueType.fromSourceName("配列<任意<配列<整数>>>"));
 
     assertTrue(ValueType.fromSourceName(null).isEmpty());
     assertTrue(ValueType.fromSourceName("配列").isEmpty());
@@ -162,7 +171,7 @@ class ValueTypeTest {
     assertTrue(ValueType.fromSourceName("任意").isEmpty());
     assertTrue(ValueType.fromSourceName("任意<>").isEmpty());
     assertTrue(ValueType.fromSourceName("任意<整数").isEmpty());
-    assertTrue(ValueType.fromSourceName("配列<任意<整数>>").isEmpty());
+    assertTrue(ValueType.fromSourceName("配列<任意<配列<任意<配列<整数>>>>>").isEmpty());
     assertTrue(ValueType.fromSourceName("T").isEmpty());
     assertTrue(ValueType.fromSourceName("表示可能").isEmpty());
     assertTrue(ValueType.fromSourceName("数値").isEmpty());
@@ -196,18 +205,20 @@ class ValueTypeTest {
   }
 
   @Test
-  void rejectsNullForbiddenWrapperAndThreeDimensionalArrayElementTypes() {
+  void rejectsNullForbiddenLeavesAndThreeDimensionalArrayElementTypes() {
     assertThrows(NullPointerException.class, () -> new ArrayType(null));
     assertThrows(NullPointerException.class, () -> ValueType.arrayOf(null));
     assertThrows(
         IllegalArgumentException.class,
         () -> ValueType.arrayOf(ValueType.arrayOf(ValueType.arrayOf(ValueType.INTEGER))));
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> ValueType.arrayOf(ValueType.optionalOf(ValueType.INTEGER)));
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> ValueType.arrayOf(ValueType.resultOf(ValueType.INTEGER, ValueType.STRING)));
+    assertEquals(
+        "配列<任意<整数>>", ValueType.arrayOf(ValueType.optionalOf(ValueType.INTEGER)).sourceName());
+    assertEquals(
+        "配列<結果<整数,文字列>>",
+        ValueType.arrayOf(ValueType.resultOf(ValueType.INTEGER, ValueType.STRING)).sourceName());
+    ValueType wrappedMatrix =
+        ValueType.optionalOf(ValueType.arrayOf(ValueType.arrayOf(ValueType.INTEGER)));
+    assertThrows(IllegalArgumentException.class, () -> ValueType.arrayOf(wrappedMatrix));
     assertThrows(IllegalArgumentException.class, () -> new ArrayType(ValueType.ROUNDING_MODE));
     assertThrows(IllegalArgumentException.class, () -> ValueType.arrayOf(ValueType.ROUNDING_MODE));
     assertThrows(IllegalArgumentException.class, () -> new ArrayType(ValueType.REGEX));
@@ -238,6 +249,16 @@ class ValueTypeTest {
     assertEquals(
         3,
         ValueType.constructorDepth(
+            ValueType.resultOf(
+                ValueType.arrayOf(ValueType.arrayOf(ValueType.INTEGER)), ValueType.STRING)));
+    assertEquals(0, ValueType.arrayConstructorDepth(ValueType.INTEGER));
+    assertEquals(
+        1,
+        ValueType.arrayConstructorDepth(
+            ValueType.optionalOf(ValueType.arrayOf(ValueType.INTEGER))));
+    assertEquals(
+        2,
+        ValueType.arrayConstructorDepth(
             ValueType.resultOf(
                 ValueType.arrayOf(ValueType.arrayOf(ValueType.INTEGER)), ValueType.STRING)));
   }

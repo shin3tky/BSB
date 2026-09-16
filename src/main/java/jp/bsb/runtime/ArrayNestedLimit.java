@@ -7,7 +7,6 @@ import jp.bsb.diagnostics.DiagnosticStage;
 import jp.bsb.diagnostics.Severity;
 import jp.bsb.diagnostics.SourceSpan;
 import jp.bsb.stdlib.ArrayLimits;
-import jp.bsb.stdlib.ArrayType;
 import jp.bsb.stdlib.ValueType;
 
 /** 二次元配列の論理葉要素数を、値や予算を変更する前に計測・検査します。 */
@@ -15,15 +14,15 @@ final class ArrayNestedLimit {
   private ArrayNestedLimit() {}
 
   static long measure(ValueType elementType, List<? extends RuntimeValue> elements) {
-    if (!(elementType instanceof ArrayType)) {
+    if (ValueType.arrayConstructorDepth(elementType) == 0) {
       return elements.size();
     }
     long result = 0;
     for (RuntimeValue element : elements) {
-      if (!(element instanceof ArrayValue row) || !row.type().equals(elementType)) {
-        throw new IllegalArgumentException("nested array elements must have the declared row type");
+      if (!element.type().equals(elementType)) {
+        throw new IllegalArgumentException("array elements must have the declared element type");
       }
-      result = Math.addExact(result, row.logicalLeafCount());
+      result = Math.addExact(result, logicalLeafCount(element));
     }
     return result;
   }
@@ -33,25 +32,26 @@ final class ArrayNestedLimit {
   }
 
   static long replace(ArrayValue array, int index, RuntimeValue replacement) {
-    if (!(array.elementType() instanceof ArrayType)) {
+    if (ValueType.arrayConstructorDepth(array.elementType()) == 0) {
       return array.size();
     }
-    long oldRow = ((ArrayValue) array.get(index)).logicalLeafCount();
-    long newRow = ((ArrayValue) replacement).logicalLeafCount();
+    long oldRow = logicalLeafCount(array.get(index));
+    long newRow = logicalLeafCount(replacement);
     return Math.addExact(Math.subtractExact(array.logicalLeafCount(), oldRow), newRow);
   }
 
   static long append(ArrayValue array, RuntimeValue element) {
-    if (!(array.elementType() instanceof ArrayType)) {
+    if (ValueType.arrayConstructorDepth(array.elementType()) == 0) {
       return array.size() + 1L;
     }
-    return Math.addExact(array.logicalLeafCount(), ((ArrayValue) element).logicalLeafCount());
+    return Math.addExact(array.logicalLeafCount(), logicalLeafCount(element));
   }
 
   static void requireAllowed(
       String sourcePath, SourceSpan span, String operation, ValueType elementType, long observed)
       throws RuntimeFailure {
-    if (!(elementType instanceof ArrayType) || observed <= ArrayLimits.MAX_NESTED_LEAF_ELEMENTS) {
+    if (ValueType.arrayConstructorDepth(elementType) == 0
+        || observed <= ArrayLimits.MAX_NESTED_LEAF_ELEMENTS) {
       return;
     }
     throw new RuntimeFailure(
@@ -67,5 +67,23 @@ final class ArrayNestedLimit {
             .actual(observed + "個")
             .fix("行数または各行の要素数を減らしてください。")
             .build());
+  }
+
+  private static long logicalLeafCount(RuntimeValue value) {
+    RuntimeValue current = value;
+    while (true) {
+      if (current instanceof OptionalValue optional) {
+        if (!optional.isPresent()) {
+          return 0;
+        }
+        current = optional.value().orElseThrow();
+      } else if (current instanceof ResultValue result) {
+        current = result.value();
+      } else if (current instanceof ArrayValue array) {
+        return array.logicalLeafCount();
+      } else {
+        return 1;
+      }
+    }
   }
 }

@@ -36,8 +36,6 @@ class NestedArrayTwoDimensionalArrayAnalyzerTest {
         "NARRAY-F-three-dimensional-type.bsb:E_NESTED_ARRAY_NOT_AVAILABLE",
         "NARRAY-F-mixed-leaves.bsb:E_ARRAY_ELEMENT_TYPE_MISMATCH",
         "NARRAY-F-one-two-dimensional-mismatch.bsb:E_TYPE_MISMATCH",
-        "NARRAY-F-optional-element.bsb:E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED",
-        "NARRAY-F-result-element.bsb:E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED",
         "NARRAY-F-empty-outer.bsb:E_EMPTY_ARRAY_TYPE_REQUIRED",
         "NARRAY-F-empty-inner.bsb:E_EMPTY_ARRAY_TYPE_REQUIRED",
         "NARRAY-F-replace-row-type.bsb:E_TYPE_MISMATCH",

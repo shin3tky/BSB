@@ -167,10 +167,8 @@ final class TraceValueFormatter {
           throw new IllegalArgumentException("input results cannot be array elements");
       case DateTimeValue ignored ->
           throw new IllegalArgumentException("date-times cannot be array elements");
-      case OptionalValue ignored ->
-          throw new IllegalArgumentException("optional values cannot be array elements");
-      case ResultValue ignored ->
-          throw new IllegalArgumentException("result values cannot be array elements");
+      case OptionalValue optional -> formatWrapped(optional);
+      case ResultValue result -> formatWrapped(result);
     };
   }
 

@@ -9,7 +9,7 @@ import java.util.Optional;
  * @param elementType 配列の全要素が持つ具体型
  */
 public record ArrayType(ValueType elementType) implements ValueType {
-  /** null、禁止葉型、wrapper、3次元以上を拒否します。 */
+  /** null、禁止葉型、ラッパー越しを含む3次元以上を拒否します。 */
   public ArrayType {
     Objects.requireNonNull(elementType, "elementType");
     if (!elementType.isArrayElementType()) {
@@ -44,7 +44,7 @@ public record ArrayType(ValueType elementType) implements ValueType {
 
   @Override
   public boolean isArrayElementType() {
-    return elementType instanceof ScalarType;
+    return ValueType.arrayConstructorDepth(this) < 2;
   }
 
   @Override

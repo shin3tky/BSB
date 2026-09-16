@@ -12,6 +12,7 @@ public sealed interface BodyElement extends AstNode
         CountedLoop,
         Literal,
         Particle,
+        Propagation,
         ShortCircuitEvaluation,
         ValueDeclaration,
         ValueReference,

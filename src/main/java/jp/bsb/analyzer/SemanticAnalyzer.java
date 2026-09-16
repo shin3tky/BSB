@@ -38,6 +38,7 @@ import jp.bsb.frontend.ast.Literal;
 import jp.bsb.frontend.ast.LogicalConnectionDeclaration;
 import jp.bsb.frontend.ast.Particle;
 import jp.bsb.frontend.ast.Program;
+import jp.bsb.frontend.ast.Propagation;
 import jp.bsb.frontend.ast.ShortCircuitEvaluation;
 import jp.bsb.frontend.ast.TopLevelElement;
 import jp.bsb.frontend.ast.TypeReference;
@@ -468,84 +469,32 @@ public final class SemanticAnalyzer {
       return null;
     }
 
-    /** 許可葉型の1次元・2次元配列だけを解決します。 */
+    /** ラッパー越しの配列構築子も数え、最大2次元の配列だけを解決します。 */
     private ValueType resolveArrayType(TypeReference reference, Set<String> diagnosedNames) {
       TypeReference elementReference = reference.typeArgument().orElseThrow();
-      if (elementReference.isOptional()) {
-        ValueType elementType = resolveTypeReference(elementReference, diagnosedNames);
-        if (elementType != null && diagnosedNames.add(reference.name())) {
-          reportArrayElementTypeNotAllowed(elementReference, elementType);
-        }
-        return null;
-      }
-      if (elementReference.isResult()) {
-        ValueType elementType = resolveTypeReference(elementReference, new LinkedHashSet<>());
-        if (elementType != null && diagnosedNames.add(reference.name())) {
-          reportArrayElementTypeNotAllowed(elementReference, elementType);
-        }
-        return null;
-      }
-
-      if (elementReference.isArray()) {
-        ValueType elementType = resolveTypeReference(elementReference, new LinkedHashSet<>());
-        if (elementType == null) {
-          return null;
-        }
+      ValueType elementType =
+          resolveTypeReference(
+              elementReference,
+              elementReference.isResult() || elementReference.isArray()
+                  ? new LinkedHashSet<>()
+                  : diagnosedNames);
+      if (elementType != null) {
         if (elementType.isArrayElementType()) {
           return ValueType.arrayOf(elementType);
         }
         if (diagnosedNames.add(reference.name())) {
-          reportNestedArrayType(elementReference);
+          if (ValueType.arrayConstructorDepth(elementType) >= 2) {
+            reportNestedArrayType(elementReference);
+          } else if (elementType instanceof ScalarType scalarType) {
+            reportArrayElementTypeNotAllowed(elementReference, scalarType);
+          } else {
+            reportArrayElementTypeNotAllowed(elementReference, elementType);
+          }
         }
         return null;
       }
 
-      var scalarType = ScalarType.fromSourceName(elementReference.name());
-      if (scalarType.isPresent()) {
-        ScalarType scalar = scalarType.orElseThrow();
-        if (scalar.isArrayElementType()) {
-          return ValueType.arrayOf(scalar);
-        }
-        if (diagnosedNames.add(reference.name())) {
-          reportArrayElementTypeNotAllowed(elementReference, scalar);
-        }
-        return null;
-      }
-      if (diagnosedNames.add(reference.name())) {
-        String plannedFeature = LanguageNames.FUTURE_FEATURES.get(elementReference.name());
-        if (plannedFeature != null) {
-          reportFeatureNotAvailable(
-              elementReference.span(),
-              elementReference.name(),
-              elementReference.lexeme(),
-              plannedFeature);
-        } else if (LanguageNames.TYPE_CONSTRAINTS.contains(elementReference.name())) {
-          diagnostics.add(
-              Diagnostic.builder(
-                      DiagnosticCode.E_TYPE_CONSTRAINT_NOT_ALLOWED,
-                      Severity.ERROR,
-                      DiagnosticStage.TYPE_AND_STACK,
-                      program.sourcePath(),
-                      elementReference.span())
-                  .expected("整数・真偽・文字・文字列")
-                  .actual(elementReference.lexeme())
-                  .fix("具体的な配列要素型へ変更してください")
-                  .build());
-        } else {
-          diagnostics.add(
-              Diagnostic.builder(
-                      DiagnosticCode.E_UNKNOWN_TYPE,
-                      Severity.ERROR,
-                      DiagnosticStage.TYPE_AND_STACK,
-                      program.sourcePath(),
-                      elementReference.span())
-                  .field("typeName", elementReference.name())
-                  .expected("整数・真偽・文字・文字列")
-                  .actual(elementReference.lexeme())
-                  .fix("配列要素型を配列のスカラー型へ変更してください")
-                  .build());
-        }
-      }
+      // 内側の型解決が主因を診断済みなので、外側の派生診断を追加しません。
       return null;
     }
 
@@ -600,6 +549,9 @@ public final class SemanticAnalyzer {
     private ReturnSummary summarizeReturns(BodyElement element) {
       if (element instanceof ControlTransfer transfer) {
         return new ReturnSummary(false, transfer.kind() == ControlTransfer.Kind.RETURN);
+      }
+      if (element instanceof Propagation) {
+        return new ReturnSummary(true, true);
       }
       if (element instanceof WordCall call) {
         var builtin = BuiltinDictionary.find(call.name());
@@ -702,6 +654,9 @@ public final class SemanticAnalyzer {
           case BREAK -> StructuralFlow.broken(transfer);
           case CONTINUE -> StructuralFlow.continued(transfer);
         };
+      }
+      if (element instanceof Propagation) {
+        return new StructuralFlow(true, true, false, false, null);
       }
       if (element instanceof WordCall call
           && (BuiltinDictionary.find(call.name()).map(word -> !word.returnsNormally()).orElse(false)
@@ -842,6 +797,7 @@ public final class SemanticAnalyzer {
         case ValueReference reference -> reference.lexeme();
         case WordCall call -> call.lexeme();
         case ControlTransfer transfer -> transfer.lexeme();
+        case Propagation propagation -> propagation.lexeme();
         case Conditional ignored -> "ならば";
         case ShortCircuitEvaluation evaluation -> evaluation.operator().sourceName();
         case CountedLoop ignored -> "回だけ";
@@ -1810,7 +1766,133 @@ public final class SemanticAnalyzer {
       if (element instanceof ControlTransfer transfer) {
         return checkTransfer(definition, signature, transfer, state, frames);
       }
+      if (element instanceof Propagation propagation) {
+        return checkPropagation(definition, signature, propagation, state);
+      }
       return BodyCheckResult.valid(state);
+    }
+
+    /** ラッパーの正常側を通常経路へ、値なし・失敗側を単語復帰経路へ分けます。 */
+    private BodyCheckResult checkPropagation(
+        WordDefinition definition,
+        WordSignature signature,
+        Propagation propagation,
+        ControlFlowState state) {
+      AbstractStack stack = currentStack(state);
+      String word = propagation.lexeme();
+      String expectedInput = propagation.kind() == Propagation.Kind.OPTIONAL ? "任意<T>" : "結果<T,E>";
+      if (stack.isEmpty()) {
+        diagnostics.add(
+            Diagnostic.builder(
+                    DiagnosticCode.E_STACK_UNDERFLOW,
+                    Severity.ERROR,
+                    DiagnosticStage.TYPE_AND_STACK,
+                    program.sourcePath(),
+                    propagation.span())
+                .field("word", word)
+                .field("requiredCount", "1")
+                .field("actualCount", "0")
+                .expected("[" + expectedInput + "]")
+                .actual(formatStack(stack))
+                .fix(expectedInput + "を先に置いてください")
+                .build());
+        return BodyCheckResult.invalid(state);
+      }
+
+      ValueType input = stack.top().orElseThrow().type();
+      boolean inputMatches =
+          propagation.kind() == Propagation.Kind.OPTIONAL ? input.isOptional() : input.isResult();
+      if (!inputMatches) {
+        diagnostics.add(
+            Diagnostic.builder(
+                    DiagnosticCode.E_TYPE_MISMATCH,
+                    Severity.ERROR,
+                    DiagnosticStage.TYPE_AND_STACK,
+                    program.sourcePath(),
+                    propagation.span())
+                .field("word", word)
+                .field("inputIndex", "1")
+                .field("expectedType", expectedInput)
+                .field("actualType", input.sourceName())
+                .expected(expectedInput)
+                .actual(input.sourceName())
+                .fix(expectedInput + "を渡してください")
+                .build());
+        return BodyCheckResult.invalid(state);
+      }
+
+      DiagnosticCode contextCode =
+          propagation.kind() == Propagation.Kind.OPTIONAL
+              ? DiagnosticCode.E_OPTIONAL_PROPAGATION_CONTEXT
+              : DiagnosticCode.E_RESULT_PROPAGATION_CONTEXT;
+      ValueType output =
+          signature.outputTypes().isEmpty() ? null : signature.outputTypes().getLast();
+      boolean outputMatches =
+          output != null
+              && (propagation.kind() == Propagation.Kind.OPTIONAL
+                  ? output.isOptional()
+                  : output.isResult());
+      if (definition.name().equals("メイン") || !outputMatches) {
+        diagnostics.add(
+            Diagnostic.builder(
+                    contextCode,
+                    Severity.ERROR,
+                    DiagnosticStage.TYPE_AND_STACK,
+                    program.sourcePath(),
+                    propagation.span())
+                .field("word", definition.name())
+                .field("expectedOutput", expectedInput)
+                .expected("利用者単語の末尾出力が" + expectedInput)
+                .actual(formatTypes(signature.outputTypes()))
+                .fix(expectedInput + "を単語の末尾出力にしてください")
+                .relatedLocation(
+                    new RelatedLocation(
+                        program.sourcePath(), definition.nameSpan().start(), definition.name()))
+                .build());
+        return BodyCheckResult.invalid(state);
+      }
+
+      List<ValueType> expectedPrefix =
+          signature.outputTypes().subList(0, signature.outputTypes().size() - 1);
+      AbstractStack prefix = stack.removeTop(1);
+      boolean failureMatches =
+          propagation.kind() != Propagation.Kind.RESULT
+              || input
+                  .resultFailureType()
+                  .orElseThrow()
+                  .equals(output.resultFailureType().orElseThrow());
+      if (!prefix.types().equals(expectedPrefix) || !failureMatches) {
+        DiagnosticCode code =
+            propagation.kind() == Propagation.Kind.OPTIONAL
+                ? DiagnosticCode.E_OPTIONAL_PROPAGATION_EFFECT_MISMATCH
+                : DiagnosticCode.E_RESULT_PROPAGATION_EFFECT_MISMATCH;
+        diagnostics.add(
+            Diagnostic.builder(
+                    code,
+                    Severity.ERROR,
+                    DiagnosticStage.TYPE_AND_STACK,
+                    program.sourcePath(),
+                    propagation.span())
+                .field("word", definition.name())
+                .field("expectedPrefix", formatTypes(expectedPrefix))
+                .field("actualPrefix", formatStack(prefix))
+                .expected(formatTypes(signature.outputTypes()))
+                .actual(formatStack(stack))
+                .fix("保持する値と失敗型を単語の宣言出力へ合わせてください")
+                .relatedLocation(
+                    new RelatedLocation(
+                        program.sourcePath(), definition.nameSpan().start(), definition.name()))
+                .build());
+        return BodyCheckResult.invalid(state);
+      }
+
+      ValueType normalType =
+          propagation.kind() == Propagation.Kind.OPTIONAL
+              ? input.optionalElementType().orElseThrow()
+              : input.resultSuccessType().orElseThrow();
+      AbstractStack normal = prefix.push(normalType, propagation.span());
+      AbstractStack returned = AbstractStack.ofTypes(signature.outputTypes(), propagation.span());
+      return BodyCheckResult.valid(state.propagate(normal, returned, propagation.span()));
     }
 
     private BodyCheckResult checkAssignment(Assignment assignment, ControlFlowState state) {

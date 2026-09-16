@@ -23,7 +23,7 @@ NARRAY機能グループは既存配列診断を二次元へ一般化し、1二�
 | `E_ARRAY_ELEMENT_CALL_NOT_ALLOWED` | 入れ子要素式から禁止呼出し |
 | `E_ARRAY_ELEMENT_NOT_ALLOWED` | 入れ子要素式に制御・宣言・代入 |
 | `E_NESTED_ARRAY_NOT_AVAILABLE` | 三次元以上の配列型または値 |
-| `E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED` | 許可スカラー葉でも一次元配列でもない要素型 |
+| `E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED` | ラッパー外に直接置かれた禁止要素型 |
 | `E_ARRAY_LOOP_INPUT_UNDERFLOW` | 任意階層の配列loop入力不足 |
 | `E_ARRAY_LOOP_INPUT_TYPE_MISMATCH` | loop入力が配列でない |
 | `E_ARRAY_INDEX_OUT_OF_BOUNDS` | 外側行または内側要素の添字不正 |
@@ -35,8 +35,9 @@ NARRAY機能グループは既存配列診断を二次元へ一般化し、1二�
 `E_NESTED_ARRAY_NOT_AVAILABLE`のコードは維持し、旧来の二次元拒否caseを三次元拒否caseへ置き換えます。
 message、expected、actual、fixは「二次元まで利用可能、三次元以上は未対応」を表します。
 
-配列要素にできない`任意`、`結果`、失敗型等は、次元超過ではなく既存
-`E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED`です。最初に確定する不正な内側型を主位置にします。
+`任意<T>`と`結果<T,E>`は配列要素にできます。ラッパー越しの配列構築子も数え、合計3個以上なら
+`E_NESTED_ARRAY_NOT_AVAILABLE`です。ラッパー外に直接置くことを許可していない既存型には、引き続き
+`E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED`を使います。
 
 ## 3. 新規診断
 

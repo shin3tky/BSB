@@ -105,4 +105,18 @@ public final class ControlFlowState {
     result.add(new ControlPath(kind, fallthrough.stack(), origin));
     return new ControlFlowState(null, result);
   }
+
+  /** 通常経路を残しながら、同じ地点から利用者単語への復帰経路を1本追加します。 */
+  public ControlFlowState propagate(
+      AbstractStack fallthroughStack, AbstractStack returnedStack, SourceSpan origin) {
+    Objects.requireNonNull(fallthroughStack, "fallthroughStack");
+    Objects.requireNonNull(returnedStack, "returnedStack");
+    Objects.requireNonNull(origin, "origin");
+    if (fallthrough == null) {
+      throw new IllegalStateException("unreachable state has no path to propagate");
+    }
+    var result = new ArrayList<>(transfers);
+    result.add(new ControlPath(ControlPathKind.RETURNED, returnedStack, origin));
+    return new ControlFlowState(ControlPath.fallthrough(fallthroughStack, origin), result);
+  }
 }

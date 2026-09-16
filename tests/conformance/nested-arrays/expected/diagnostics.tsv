@@ -3,8 +3,8 @@ NARRAY-F001	literal	E_NESTED_ARRAY_NOT_AVAILABLE	typeAndStack	2	6	context=配列
 NARRAY-F002	type	E_NESTED_ARRAY_NOT_AVAILABLE	typeAndStack	1	10	context=配列型;maximumDimensions=2;actualDimensions=3
 NARRAY-F003	leaf-mismatch	E_ARRAY_ELEMENT_TYPE_MISMATCH	typeAndStack	2	12	elementIndex=2;expectedType=配列<文字列>;actualType=配列<整数>
 NARRAY-F004	dimension-mismatch	E_TYPE_MISMATCH	typeAndStack	12	11	word=処理;inputIndex=1;expectedType=配列<配列<整数>>;actualType=配列<整数>
-NARRAY-F005	optional-element	E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED	typeAndStack	1	10	actualType=任意<整数>;allowedTypes=整数,真偽,文字,文字列,小数,JSON
-NARRAY-F006	result-element	E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED	typeAndStack	1	10	actualType=結果<整数,文字列>;allowedTypes=整数,真偽,文字,文字列,小数,JSON
+NARRAY-F005	optional-three-dimensional	E_NESTED_ARRAY_NOT_AVAILABLE	typeAndStack	1	10	context=配列型;maximumDimensions=2;actualDimensions=3
+NARRAY-F006	result-three-dimensional	E_NESTED_ARRAY_NOT_AVAILABLE	typeAndStack	1	10	context=配列型;maximumDimensions=2;actualDimensions=3
 NARRAY-F007	empty-outer	E_EMPTY_ARRAY_TYPE_REQUIRED	typeAndStack	2	5	candidates=空の整数配列,空の真偽配列,空の文字配列,空の文字列配列
 NARRAY-F008	empty-inner	E_EMPTY_ARRAY_TYPE_REQUIRED	typeAndStack	2	6	candidates=空の整数配列,空の真偽配列,空の文字配列,空の文字列配列
 NARRAY-F009	replace-row	E_TYPE_MISMATCH	typeAndStack	2	25	word=配列の要素を置き換える;inputIndex=3;expectedType=配列<整数>;actualType=配列<文字列>

@@ -255,6 +255,14 @@ public enum DiagnosticCode {
   E_CONTINUE_OUTSIDE_LOOP,
   /** 「戻る」地点のスタックが単語の宣言出力と一致しない */
   E_RETURN_EFFECT_MISMATCH,
+  /** 任意の局所伝播構文が利用者単語または任意出力以外で使われた */
+  E_OPTIONAL_PROPAGATION_CONTEXT,
+  /** 任意の局所伝播地点のprefixが単語の宣言出力と一致しない */
+  E_OPTIONAL_PROPAGATION_EFFECT_MISMATCH,
+  /** 結果の局所伝播構文が利用者単語または結果出力以外で使われた */
+  E_RESULT_PROPAGATION_CONTEXT,
+  /** 結果の局所伝播地点のprefixまたは失敗型が宣言出力と一致しない */
+  E_RESULT_PROPAGATION_EFFECT_MISMATCH,
   /** 宣言の初期値が値を作らない */
   E_INITIALIZER_VALUE_MISSING,
   /** 宣言の初期値が複数の値を残す */

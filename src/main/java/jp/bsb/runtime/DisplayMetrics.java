@@ -77,6 +77,58 @@ final class DisplayMetrics {
     return result;
   }
 
+  /** ラッパーと配列を反復的にたどり、選択中のJSON値だけの表示作業量を返します。 */
+  static long deepJsonWork(ArrayValue root) {
+    long result = 0;
+    var work = new java.util.ArrayDeque<RuntimeValue>();
+    work.push(root);
+    while (!work.isEmpty()) {
+      RuntimeValue value = work.pop();
+      if (value instanceof OptionalValue optional) {
+        optional.value().ifPresent(work::push);
+      } else if (value instanceof ResultValue wrapped) {
+        work.push(wrapped.value());
+      } else if (value instanceof ArrayValue array) {
+        for (int index = array.size() - 1; index >= 0; index--) {
+          work.push(array.get(index));
+        }
+      } else if (value instanceof JsonRuntimeValue json) {
+        JsonValue jsonValue = json.value();
+        result =
+            add(
+                result,
+                add(jsonValue.metrics().serializedUtf8Bytes(), jsonTraversalUnits(jsonValue)));
+      }
+    }
+    return result;
+  }
+
+  /** 2値のラッパーと配列をたどり、等値比較候補となるJSON値の作業量を返します。 */
+  static long deepJsonEqualityWork(ArrayValue first, ArrayValue second) {
+    return add(deepJsonTraversalWork(first), deepJsonTraversalWork(second));
+  }
+
+  private static long deepJsonTraversalWork(ArrayValue root) {
+    long result = 0;
+    var work = new java.util.ArrayDeque<RuntimeValue>();
+    work.push(root);
+    while (!work.isEmpty()) {
+      RuntimeValue value = work.pop();
+      if (value instanceof OptionalValue optional) {
+        optional.value().ifPresent(work::push);
+      } else if (value instanceof ResultValue wrapped) {
+        work.push(wrapped.value());
+      } else if (value instanceof ArrayValue array) {
+        for (int index = array.size() - 1; index >= 0; index--) {
+          work.push(array.get(index));
+        }
+      } else if (value instanceof JsonRuntimeValue json) {
+        result = add(result, jsonTraversalUnits(json.value()));
+      }
+    }
+    return result;
+  }
+
   static long nestedJsonEqualityWork(ArrayValue first, ArrayValue second) {
     long result = 0;
     for (int rowIndex = 0; rowIndex < first.size(); rowIndex++) {

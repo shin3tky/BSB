@@ -41,7 +41,7 @@ public record ArrayValue(ValueType elementType, List<RuntimeValue> elements, lon
       throw new IllegalArgumentException(
           "the cached logical leaf count does not match the elements");
     }
-    if (elementType instanceof ArrayType
+    if (ValueType.arrayConstructorDepth(elementType) > 0
         && logicalLeafCount > ArrayLimits.MAX_NESTED_LEAF_ELEMENTS) {
       throw new IllegalArgumentException("a nested array value exceeds the logical leaf limit");
     }
@@ -133,10 +133,8 @@ public record ArrayValue(ValueType elementType, List<RuntimeValue> elements, lon
           throw new IllegalArgumentException("input results cannot be array elements");
       case DateTimeValue ignored ->
           throw new IllegalArgumentException("date-times cannot be array elements");
-      case OptionalValue ignored ->
-          throw new IllegalArgumentException("optional values cannot be array elements");
-      case ResultValue ignored ->
-          throw new IllegalArgumentException("result values cannot be array elements");
+      case OptionalValue optional -> optional.displayText();
+      case ResultValue result -> result.displayText();
     };
   }
 
@@ -180,16 +178,10 @@ public record ArrayValue(ValueType elementType, List<RuntimeValue> elements, lon
     if (elements == null) {
       return -1;
     }
-    if (!(elementType instanceof ArrayType)) {
-      return elements.size();
+    try {
+      return ArrayNestedLimit.measure(elementType, elements);
+    } catch (IllegalArgumentException | ArithmeticException failure) {
+      return -1;
     }
-    long result = 0;
-    for (RuntimeValue element : elements) {
-      if (!(element instanceof ArrayValue row)) {
-        return -1;
-      }
-      result += row.logicalLeafCount();
-    }
-    return result;
   }
 }

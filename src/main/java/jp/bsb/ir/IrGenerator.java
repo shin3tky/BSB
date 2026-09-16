@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import jp.bsb.analyzer.AnalyzedProgram;
+import jp.bsb.analyzer.WordSignature;
 import jp.bsb.binding.Binding;
 import jp.bsb.binding.BindingId;
 import jp.bsb.binding.BindingStorage;
@@ -27,6 +28,7 @@ import jp.bsb.frontend.ast.ControlTransfer;
 import jp.bsb.frontend.ast.CountedLoop;
 import jp.bsb.frontend.ast.Literal;
 import jp.bsb.frontend.ast.Particle;
+import jp.bsb.frontend.ast.Propagation;
 import jp.bsb.frontend.ast.ShortCircuitEvaluation;
 import jp.bsb.frontend.ast.ShortCircuitOperator;
 import jp.bsb.frontend.ast.ValueDeclaration;
@@ -92,7 +94,7 @@ public final class IrGenerator {
     var counter = new InstructionCounter(analyzed.syntax().sourcePath());
     Optional<IrWord> globalInitializer = Optional.empty();
     if (!slots.globalSlots().isEmpty()) {
-      var builder = new WordBuilder("<大域初期化>", counter);
+      var builder = new WordBuilder("<大域初期化>", counter, Optional.empty());
       for (ValueDeclaration declaration : analyzed.syntax().declarations()) {
         IrStorageSlot slot = slots.slotForDeclaration(declaration);
         if (!emitBody(
@@ -123,7 +125,12 @@ public final class IrGenerator {
     }
 
     for (var definition : analyzed.syntax().definitions()) {
-      var builder = new WordBuilder(definition.name(), counter);
+      WordSignature signature = analyzed.findUserWord(definition.name()).orElseThrow();
+      Optional<ValueType> propagationReturnType =
+          signature.outputTypes().isEmpty()
+              ? Optional.empty()
+              : Optional.of(signature.outputTypes().getLast());
+      var builder = new WordBuilder(definition.name(), counter, propagationReturnType);
       if (!emitBody(
               definition.body(),
               builder,
@@ -394,6 +401,7 @@ public final class IrGenerator {
             case ArrayLoop loop ->
                 emitArrayLoop(loop, builder, symbolsByName, analyzed, slots, loops);
             case ControlTransfer transfer -> emitTransfer(transfer, builder, loops);
+            case Propagation propagation -> emitPropagation(propagation, builder);
             default -> throw new IllegalStateException("unknown analyzed body element: " + element);
           };
       if (!emitted) {
@@ -630,6 +638,15 @@ public final class IrGenerator {
         () -> new Jump(loop.continueTarget().instructionIndex(), 0, transfer.span()));
   }
 
+  private static boolean emitPropagation(Propagation propagation, WordBuilder builder) {
+    ValueType returnType =
+        builder.propagationReturnType.orElseThrow(
+            () -> new IllegalStateException("analyzed propagation has no return wrapper type"));
+    return builder.add(
+        propagation.span(),
+        () -> new PropagateOrReturn(propagation.kind(), returnType, propagation.span()));
+  }
+
   private static IrStackEffect toIrEffect(jp.bsb.analyzer.WordSignature signature) {
     return new IrStackEffect(signature.inputTypes(), signature.outputTypes());
   }
@@ -768,12 +785,15 @@ public final class IrGenerator {
   private static final class WordBuilder {
     private final String word;
     private final InstructionCounter counter;
+    private final Optional<ValueType> propagationReturnType;
     private final ArrayList<PendingInstruction> instructions = new ArrayList<>();
     private Diagnostic diagnostic;
 
-    private WordBuilder(String word, InstructionCounter counter) {
+    private WordBuilder(
+        String word, InstructionCounter counter, Optional<ValueType> propagationReturnType) {
       this.word = word;
       this.counter = counter;
+      this.propagationReturnType = propagationReturnType;
     }
 
     private Label newLabel() {

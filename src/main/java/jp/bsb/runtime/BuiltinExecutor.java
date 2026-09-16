@@ -3300,6 +3300,19 @@ final class BuiltinExecutor {
       }
       return first.equals(second);
     }
+    if (first.elementType().isOptional() || first.elementType().isResult()) {
+      long arrayWork = first.size();
+      if (ValueType.arrayConstructorDepth(first.elementType()) > 0) {
+        arrayWork = saturatedAdd(arrayWork, first.logicalLeafCount());
+      }
+      long jsonWork = DisplayMetrics.deepJsonEqualityWork(first, second);
+      if (jsonWork > 0) {
+        budget.beforeArrayAndJsonWork(0, arrayWork, 0, jsonWork, span, "equals");
+      } else {
+        budget.beforeArrayWork(0, arrayWork, span, "equals");
+      }
+      return first.equals(second);
+    }
     for (int index = 0; index < first.size(); index++) {
       if (first.get(index) instanceof JsonRuntimeValue firstJson
           && second.get(index) instanceof JsonRuntimeValue secondJson) {
@@ -3587,6 +3600,19 @@ final class BuiltinExecutor {
       inner = current.displayText();
     } else if (current instanceof ArrayValue array && array.elementType() == ScalarType.JSON) {
       inner = displayJsonArray(word, array, span);
+    } else if (current instanceof ArrayValue array
+        && (array.elementType().isOptional() || array.elementType().isResult())) {
+      long arrayWork = array.size();
+      if (ValueType.arrayConstructorDepth(array.elementType()) > 0) {
+        arrayWork = saturatedAdd(arrayWork, array.logicalLeafCount());
+      }
+      long jsonWork = DisplayMetrics.deepJsonWork(array);
+      if (jsonWork > 0) {
+        budget.beforeArrayAndJsonWork(0, arrayWork, 0, jsonWork, span, "display");
+      } else {
+        budget.beforeArrayWork(0, arrayWork, span, "display");
+      }
+      inner = current.displayText();
     } else if (current instanceof ArrayValue array) {
       budget.beforeArrayWork(0, array.size(), span, "display");
       inner = current.displayText();
