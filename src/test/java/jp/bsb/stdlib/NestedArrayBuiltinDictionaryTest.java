@@ -15,7 +15,7 @@ class NestedArrayBuiltinDictionaryTest {
             .filter(word -> word.featureGroup().equals("NARRAY"))
             .toList();
 
-    assertEquals(187, BuiltinDictionary.words().size());
+    assertEquals(189, BuiltinDictionary.words().size());
     assertEquals(
         List.of("空の整数二次元配列", "空の真偽二次元配列", "空の文字二次元配列", "空の文字列二次元配列", "空の小数二次元配列", "空のJSON二次元配列"),
         words.stream().map(BuiltinWord::canonicalName).toList());

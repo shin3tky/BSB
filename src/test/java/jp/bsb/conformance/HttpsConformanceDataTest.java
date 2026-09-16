@@ -20,7 +20,7 @@ class HttpsConformanceDataTest {
     assertEquals(14, catalog.stream().filter(item -> item.id().startsWith("HTTPS-F")).count());
     assertEquals(10, catalog.stream().filter(item -> item.id().startsWith("HTTPS-R")).count());
     assertEquals(9, HttpsConformanceData.loadUriVectors().size());
-    assertEquals(16, HttpsConformanceData.loadHeaderVectors().size());
+    assertEquals(17, HttpsConformanceData.loadHeaderVectors().size());
     assertEquals(14, HttpsConformanceData.loadRequests().size());
     assertEquals(9, HttpsConformanceData.loadResponses().size());
     assertEquals(35, HttpsConformanceData.loadTransports().size());

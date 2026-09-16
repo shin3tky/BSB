@@ -235,6 +235,18 @@ printf '{"name":"山田 太郎"}\n' | java -jar build/libs/bsb-0.1.0-SNAPSHOT-al
 `local.connections.local.toml`のような無視対象名を使ってください。完全な形式は
 [`docs/spec/cli-connection-config.md`](../docs/spec/cli-connection-config.md)にあります。
 
+form URL encoding、Basic認証、status判定を組み合わせる第24段階の例は次です。設定例にはBearer認証の
+別接続も含みます。`base-uri`を利用するAPIへ変更し、秘密はshell環境だけから渡してください。gzip・deflate応答は
+transportが自動展開します。
+
+```shell
+export BSB_API_USERNAME='set-this-in-your-shell'
+export BSB_API_PASSWORD='set-this-in-your-shell'
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run \
+  --connections samples/http-api-connections.toml.example \
+  samples/26-http-api-interoperability.bsb
+```
+
 2人用の三目並べは、1から9のマス番号を交互に入力して遊べます。
 
 ```shell
@@ -273,6 +285,8 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/131-tic-tac-toe.bsb
 | `23-named-workspaces-files.bsb`     | 複数ファイルの読取・選択・書込   | 名前付き作業領域、完全バイト列、原子的置換     |
 | `24-csv-tsv-files.bsb`              | CSV/TSVの読取・行追加・CSV書込   | 厳密UTF-8、quoted改行、二次元配列、決定的CSV   |
 | `25-optional-result-composition.bsb` | 任意・結果の局所伝播と配列       | prefix保持、失敗伝播、wrapper配列              |
+| `26-http-api-interoperability.bsb` | form POSTとstatus判定 | form URL encoding、Basic、gzip/deflate自動展開 |
+| `http-api-connections.toml.example` | HTTP API用CLI設定の雛形 | schema version 3、Basic、Bearer |
 | `named-workspaces.toml.example`     | CLI作業領域設定の雛形             | 複数登録、read/write許可、相対path             |
 | `delimited-tables-workspaces.toml.example` | CSV/TSV用CLI設定の雛形       | 2入力領域、出力領域、有限ファイル登録           |
 | `HttpbinIpJdkEmbedding.java`        | httpbin接続の実TLS埋込み          | 固定origin、JDK HTTPS、timeout、PKIX           |

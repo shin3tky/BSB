@@ -17,6 +17,7 @@ final class HttpRequestSupport {
 
   static final Set<String> RESERVED_HEADERS =
       Set.of(
+          "accept-encoding",
           "authorization",
           "connection",
           "content-length",

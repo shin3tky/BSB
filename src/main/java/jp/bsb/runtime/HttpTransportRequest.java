@@ -14,6 +14,7 @@ public final class HttpTransportRequest {
   private final Optional<ByteSequenceValue> body;
   private final ConnectionPolicy policy;
   private final long responseBodyLimit;
+  private final long decodedBodyLimit;
   private final boolean responseLimitIsExecutionTotal;
 
   HttpTransportRequest(
@@ -24,6 +25,7 @@ public final class HttpTransportRequest {
       Optional<ByteSequenceValue> body,
       ConnectionPolicy policy,
       long responseBodyLimit,
+      long decodedBodyLimit,
       boolean responseLimitIsExecutionTotal) {
     this.connectionName = Objects.requireNonNull(connectionName, "connectionName");
     this.method = Objects.requireNonNull(method, "method");
@@ -35,7 +37,32 @@ public final class HttpTransportRequest {
       throw new IllegalArgumentException("response body limit must not be negative");
     }
     this.responseBodyLimit = responseBodyLimit;
+    if (decodedBodyLimit < 0) {
+      throw new IllegalArgumentException("decoded body limit must not be negative");
+    }
+    this.decodedBodyLimit = decodedBodyLimit;
     this.responseLimitIsExecutionTotal = responseLimitIsExecutionTotal;
+  }
+
+  HttpTransportRequest(
+      String connectionName,
+      String method,
+      URI targetUri,
+      List<HttpTransportHeader> headers,
+      Optional<ByteSequenceValue> body,
+      ConnectionPolicy policy,
+      long responseBodyLimit,
+      boolean responseLimitIsExecutionTotal) {
+    this(
+        connectionName,
+        method,
+        targetUri,
+        headers,
+        body,
+        policy,
+        responseBodyLimit,
+        policy.maximumResponseBytes(),
+        responseLimitIsExecutionTotal);
   }
 
   /**
@@ -89,6 +116,13 @@ public final class HttpTransportRequest {
    */
   public long responseBodyLimit() {
     return responseBodyLimit;
+  }
+
+  /**
+   * @return 自動展開後にBSBへ渡してよい本文バイト数
+   */
+  public long decodedBodyLimit() {
+    return decodedBodyLimit;
   }
 
   /**

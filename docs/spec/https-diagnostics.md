@@ -65,13 +65,14 @@ invalidValueCharacter
 | `E_HTTP_SEND_LIMIT` | 1実行の送信が1,024回を超える | `word`、`limitName=httpSendCalls`、`limit`、`observed` |
 | `E_HTTP_REQUEST_TOTAL_LIMIT` | 要求本文試行累積が134,217,728バイトを超える | `word`、`limitName=httpRequestAttemptBytes`、`limit`、`used`、`requested`、`observed` |
 | `E_HTTP_RESPONSE_TOTAL_LIMIT` | 応答本文受信累積が134,217,728バイトを超える | `word`、`limitName=httpResponseReceivedBytes`、`limit`、`used`、`requested`、`observed` |
-| `E_HTTP_AUTHENTICATION_UNSUPPORTED` | 接続方針が`basic`または`oauth2` | `word`、`connection`、`authenticationKind` |
-| `E_HTTP_CREDENTIAL_NOT_CONFIGURED` | APIキー参照に資格情報が設定されていない | `word`、`connection`、`authenticationKind=apiKey` |
-| `E_HTTP_CREDENTIAL_ACCESS_DENIED` | ホストがAPIキー利用を拒否した | `word`、`connection`、`authenticationKind=apiKey` |
-| `E_HTTP_CREDENTIAL_INVALID` | APIキーheader名・値が規範を満たさない | `word`、`connection`、`authenticationKind=apiKey`、`reason` |
+| `E_HTTP_AUTHENTICATION_UNSUPPORTED` | 接続方針が`oauth2` | `word`、`connection`、`authenticationKind` |
+| `E_HTTP_CREDENTIAL_NOT_CONFIGURED` | 認証参照に資格情報が設定されていない | `word`、`connection`、`authenticationKind` |
+| `E_HTTP_CREDENTIAL_ACCESS_DENIED` | ホストが資格情報利用を拒否した | `word`、`connection`、`authenticationKind` |
+| `E_HTTP_CREDENTIAL_INVALID` | API key・Basic・Bearer資格情報が規範を満たさない | `word`、`connection`、`authenticationKind`、`reason` |
 | `E_HTTP_CANCELLED` | 実行全体が送信中に取り消された | `word`、`connection`、`method` |
 
-資格情報不正の`reason`は`HEADER_NAME_INVALID`または`HEADER_VALUE_INVALID`だけです。header名、値、参照、
+資格情報不正の`reason`は`HEADER_NAME_INVALID`、`HEADER_VALUE_INVALID`、`BASIC_USERNAME_INVALID`、
+`BEARER_TOKEN_INVALID`だけです。header名、値、参照、
 プロバイダー名、自由文は公開しません。
 
 接続未設定・拒否・設定不正はCONN機能グループの3診断を、能力不在・能力自体の失敗は既存
@@ -93,9 +94,10 @@ invalidValueCharacter
 | 応答header上限超過 | `responseHeadersTooLarge` |
 | HTTP応答契約違反 | `protocolFailure` |
 | 安全に細分類できない通信I/O失敗 | `transportFailure` |
+| content codingが未知・複数・破損・展開上限超過 | `contentDecodingFailure` |
 
 失敗結果を返して後続が正常終了したrunは終了0、CLI診断なしです。4xx・5xx、空本文、未知の
-Content-Type、未知のContent-Encodingは失敗にしません。応答JSON解析失敗はHTTP送信失敗ではなく、本文取出し・
+Content-Typeは失敗にしません。未知のContent-Encodingは`contentDecodingFailure`です。応答JSON解析失敗はHTTP送信失敗ではなく、本文取出し・
 UTF-8復号・JSON解析の後続結果です。
 
 分類は原因チェーンの秘密文面ではなく型付き能力応答から決めます。JDK実装は既知の例外型・状態だけを
@@ -168,7 +170,7 @@ JSON走査等の段階予算は各既存仕様に従い、後段失敗時に戻�
 7. resolverを1回呼び、能力失敗・契約違反を分類
 8. `NOT_CONFIGURED`、`DENIED`、`INVALID`、`RESOLVED`方針不正
 9. method許可、GET・HEAD本文、path・query・header・対象URI、要求本文方針上限
-10. 認証方式`basic`・`oauth2`の未対応
+10. 認証方式`oauth2`の未対応
 11. HTTP待機除外開始、`http.send`を1回呼出し、finally相当で待機除外終了
 12. 能力例外・契約違反
 13. `CANCELLED`、資格情報3状態
@@ -188,7 +190,7 @@ JSON走査等の段階予算は各既存仕様に従い、後段失敗時に戻�
 ## 7. 応答受信、予算、部分状態
 
 能力は応答本文を、接続方針上限と全実行残量の小さい方に対して最大「上限+1」まで読みます。
-成功応答は完全本文と実読取バイト数が一致しなければなりません。`Content-Length`だけで方針超過を確定した場合、
+成功応答は完全な展開後本文を持ち、実読取バイト数はwire本文量を表します。`Content-Length`だけで方針超過を確定した場合、
 本文実読取0として`responseTooLarge`を返します。
 
 回復可能失敗でも実際に読んだ本文バイトを応答受信累積へ加算します。累積境界を越えた場合は、境界直前までを

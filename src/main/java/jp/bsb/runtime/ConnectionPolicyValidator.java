@@ -28,7 +28,8 @@ final class ConnectionPolicyValidator {
   private static final long BODY_BYTES = 67_108_864;
   private static final Set<String> METHODS =
       Set.of("GET", "HEAD", "POST", "PUT", "PATCH", "DELETE");
-  private static final Set<String> AUTHENTICATION = Set.of("none", "basic", "apiKey", "oauth2");
+  private static final Set<String> AUTHENTICATION =
+      Set.of("none", "basic", "bearer", "apiKey", "oauth2");
   private static final Pattern DNS_LABEL = Pattern.compile("[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?");
 
   private ConnectionPolicyValidator() {}

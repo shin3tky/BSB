@@ -6,6 +6,7 @@ HTTPS-F005	empty-name	[]		value	diagnostic	-	emptyName
 HTTPS-F005	invalid-name	[]	Bad Name	value	diagnostic	-	invalidNameCharacter
 HTTPS-F005	crlf	[]	X-Test	bad\r\nInjected: yes	diagnostic	-	invalidValueCharacter
 HTTPS-F005	reserved-authorization	[]	Authorization	value	diagnostic	-	reserved
+HTTPS-F005	reserved-accept-encoding	[]	Accept-Encoding	gzip	diagnostic	-	reserved
 HTTPS-F005	reserved-host	[]	Host	value	diagnostic	-	reserved
 HTTPS-F005	reserved-length	[]	Content-Length	1	diagnostic	-	reserved
 HTTPS-F005	reserved-connection	[]	Connection	close	diagnostic	-	reserved

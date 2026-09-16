@@ -6,6 +6,8 @@
 > [診断と失敗境界](https-diagnostics.md)および[適合性](https-conformance.md)と一体です。
 > 後続の有限再試行は[HTTP信頼性](http-reliability.md)が本仕様の`retryPolicy=none`境界を
 > 拡張します。値、語、最終返値の契約は本仕様を維持します。
+> Basic・Bearer認証、form、status判定、gzip・deflate自動展開は
+> [HTTP API相互運用](http-api-interoperability.md)が加算します。
 
 ## 1. 目的と機能境界
 
@@ -20,11 +22,11 @@ HTTPの意味論は[RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html)、URI
 最小HTTPS機能グループ単独では次を追加しません。
 
 - 自動リダイレクト、自動再試行、`Retry-After`、レート制限、冪等性キー
-- OAuth 2.0、Basic認証、Cookie jar、プロキシ、相互TLS、利用者指定trust store
-- 圧縮・自動展開、ストリーミング、並行・非同期送信、接続プールの公開契約
-- multipart、form encoding、ファイル本文、trailers、WebSocket、HTTP/3
+- OAuth 2.0 token取得、Cookie jar、プロキシ、相互TLS、利用者指定trust store
+- brotli・zstd・多段圧縮、ストリーミング、並行・非同期送信、接続プールの公開契約
+- multipart、ファイル本文、trailers、WebSocket、HTTP/3
 - 任意URL、動的論理接続名、動的HTTPメソッド、要求単位のtimeout・size上書き
-- HTTP状態コードを失敗値へ変える語、JSON応答の自動判定・自動解析
+- JSON応答の自動判定・自動解析
 - 標準CLIへ接続設定や秘密を渡す新しい引数、解決済み接続計画の公開CLI
 
 ## 2. 公開値
@@ -73,6 +75,7 @@ null非許容・不変・利用者構築不能な不透明値です。1xxの中�
 | `responseHeadersTooLarge` | 応答ヘッダーの個数または総量が第6節の上限を超えた |
 | `protocolFailure` | HTTPメッセージまたは応答メタデータが本仕様の契約を満たさない |
 | `transportFailure` | 上記へ安全に分類できない回復可能な通信失敗 |
+| `contentDecodingFailure` | 応答content codingの検証・展開または展開上限検査に失敗した |
 
 種類から「再試行可能」を導出しません。送信済みバイト数、HTTPメソッド、URI、ホスト名、例外、
 証明書、応答接頭辞、自由文は保持しません。表示、等値比較、配列要素には使えません。
@@ -162,6 +165,7 @@ ASCII小文字化します。値はSP、HTAB、VCHARだけからなる0〜8,192 
 拒否し、実HTTP能力だけが必要に応じて生成します。
 
 ```text
+accept-encoding
 authorization
 connection
 content-length
@@ -193,8 +197,8 @@ JSON本文は既存の規範JSON直列化を使い、そのUTF-8バイトを本�
 HTTPS機能グループで許し、GET・HEADに長さ0を含む本文がある場合は捕捉不能診断です。POST、PUT、PATCH、DELETEは
 本文不在と本文ありの両方を許します。
 
-応答本文はContent-Type、Content-Encoding、状態コードにかかわらず、転送符号をHTTP層で除いた
-content octet列として不変`バイト列`へ入れます。自動展開、文字コード変換、BOM除去、JSON解析をしません。
+応答本文はContent-Typeと状態コードにかかわらず、転送符号をHTTP層で除き、HTTP-APIのgzip・deflateを
+自動展開したcontent octet列として不変`バイト列`へ入れます。文字コード変換、BOM除去、JSON解析をしません。
 利用者はContent-Typeを検査し、本文を明示的にUTF-8復号してから`JSONを解析して結果を返す`へ渡します。
 
 ## 8. 接続解決と認証
@@ -204,8 +208,8 @@ content octet列として不変`バイト列`へ入れます。自動展開、�
 検査します。`redirectPolicy=deny`を受理します。再試行方針はHTTP-REL機能グループの`none|bounded`を受理し、
 要求単位の上書きはありません。
 
-HTTPS機能グループの実送信が対応する認証方式は`none`と`apiKey`です。`basic`と`oauth2`はCONN機能グループでは妥当な
-分類のままですが、HTTPS機能グループの送信では捕捉不能な未対応診断にします。
+HTTP-API追加後の実送信が対応する認証方式は`none`、`apiKey`、`basic`、`bearer`です。`oauth2`はCONN機能グループでは
+妥当な分類のままですが、HTTPS送信では捕捉不能な未対応診断にします。
 
 `apiKey`では、`http.send`能力を所有する埋込みホストが不透明`CredentialReference`を、次の秘密値へ
 対応させます。

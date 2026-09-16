@@ -72,7 +72,17 @@ final class ConnectionConfigLoader {
           "minimum-start-interval-ms",
           "final-failure-policy");
   private static final Set<String> AUTHENTICATION_KEYS =
-      Set.of("kind", "header", "value", "value-env");
+      Set.of(
+          "kind",
+          "header",
+          "value",
+          "value-env",
+          "username",
+          "username-env",
+          "password",
+          "password-env",
+          "token",
+          "token-env");
   private static final Pattern ENVIRONMENT_NAME = Pattern.compile("[A-Za-z_][A-Za-z0-9_]*");
 
   private final Function<String, String> environment;
@@ -96,8 +106,8 @@ final class ConnectionConfigLoader {
     Table document = parsed.document();
     rejectUnknownKeys(document, ROOT_KEYS, "ルート");
     long schemaVersion = requireLong(document, "schema-version", "schema-version");
-    if (schemaVersion != 1L && schemaVersion != 2L) {
-      throw problem("schema-version は1または2でなければなりません。");
+    if (schemaVersion != 1L && schemaVersion != 2L && schemaVersion != 3L) {
+      throw problem("schema-version は1、2、3のいずれかでなければなりません。");
     }
     Table connections = requireTable(document, "connections", "connections");
     if (connections.isEmpty()) {
@@ -161,6 +171,8 @@ final class ConnectionConfigLoader {
       }
       reference = Optional.empty();
     } else if (kind.equals("api-key")) {
+      rejectUnknownKeys(
+          authentication, Set.of("kind", "header", "value", "value-env"), "authentication");
       String header = optionalString(authentication, "header", "x-api-key");
       boolean direct = authentication.contains("value");
       boolean fromEnvironment = authentication.contains("value-env");
@@ -188,12 +200,42 @@ final class ConnectionConfigLoader {
       transport.apiKey(credential, header, value);
       reference = Optional.of(credential);
       kind = "apiKey";
+    } else if (schemaVersion == 3 && kind.equals("basic")) {
+      rejectUnknownKeys(
+          authentication,
+          Set.of("kind", "username", "username-env", "password", "password-env"),
+          "authentication");
+      String username =
+          credentialValue(authentication, "username", "username-env", "Basic username");
+      String password =
+          credentialValue(authentication, "password", "password-env", "Basic password");
+      Optional<String> credentialProblem =
+          JdkHttpsTransport.basicValidationProblem(username, password);
+      if (credentialProblem.isPresent()) {
+        throw problem("Basic認証設定が正しくありません（" + credentialProblem.orElseThrow() + "）。");
+      }
+      var credential = CredentialReference.opaque();
+      transport.basic(credential, username, password);
+      reference = Optional.of(credential);
+    } else if (schemaVersion == 3 && kind.equals("bearer")) {
+      rejectUnknownKeys(authentication, Set.of("kind", "token", "token-env"), "authentication");
+      String token = credentialValue(authentication, "token", "token-env", "Bearer token");
+      Optional<String> credentialProblem = JdkHttpsTransport.bearerValidationProblem(token);
+      if (credentialProblem.isPresent()) {
+        throw problem("Bearer認証設定が正しくありません（" + credentialProblem.orElseThrow() + "）。");
+      }
+      var credential = CredentialReference.opaque();
+      transport.bearer(credential, token);
+      reference = Optional.of(credential);
     } else {
-      throw problem("authentication.kindはnoneまたはapi-keyでなければなりません。");
+      throw problem(
+          schemaVersion == 3
+              ? "authentication.kindはnone、api-key、basic、bearerのいずれかでなければなりません。"
+              : "authentication.kindはnoneまたはapi-keyでなければなりません。");
     }
 
     HttpRetryPolicy retry =
-        schemaVersion == 2 && table.contains("reliability")
+        schemaVersion >= 2 && table.contains("reliability")
             ? parseReliability(requireTable(table, "reliability", "reliability"))
             : HttpRetryPolicy.none();
     var policy =
@@ -215,6 +257,27 @@ final class ConnectionConfigLoader {
       throw problem("接続方針が正しくありません（" + problem.orElseThrow() + "）。");
     }
     return policy;
+  }
+
+  private String credentialValue(
+      Table authentication, String directKey, String environmentKey, String label)
+      throws ConnectionConfigException {
+    boolean direct = authentication.contains(directKey);
+    boolean fromEnvironment = authentication.contains(environmentKey);
+    if (direct == fromEnvironment) {
+      throw problem(label + "では" + directKey + "または" + environmentKey + "のどちらか一方を指定してください。");
+    }
+    if (direct) return requireString(authentication, directKey, "authentication." + directKey);
+    String variable =
+        requireString(authentication, environmentKey, "authentication." + environmentKey);
+    if (!ENVIRONMENT_NAME.matcher(variable).matches()) {
+      throw problem("authentication." + environmentKey + "の環境変数名が正しくありません。");
+    }
+    String value = environment.apply(variable);
+    if (value == null) {
+      throw problem("authentication." + environmentKey + "で指定した環境変数が設定されていません。");
+    }
+    return value;
   }
 
   private static HttpRetryPolicy parseReliability(Table table) throws ConnectionConfigException {

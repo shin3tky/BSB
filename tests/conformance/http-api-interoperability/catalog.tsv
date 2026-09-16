@@ -1,0 +1,3 @@
+case_id	kind	source	command	exit_code	stdout
+HTTPAPI-N001	normal	sources/HTTPAPI-N001-form.bsb	run	0	name=%E5%B1%B1%E7%94%B0+%E5%A4%AA%E9%83%8E&tag=a%2Fb&tag=%E4%BA%8C\n
+HTTPAPI-N002	normal	sources/HTTPAPI-N002-status.bsb	check	0	

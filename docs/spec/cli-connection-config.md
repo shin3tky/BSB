@@ -1,4 +1,4 @@
-# CLI接続設定TOML 版1・版2
+# CLI接続設定TOML 版1・版2・版3
 
 ## 1. 目的と境界
 
@@ -6,8 +6,8 @@
 実行できるようにします。BSB言語の値、語、静的説明、論理接続の送信時再解決は変更しません。
 
 設定は`run`へ指定した1ファイルからだけ読みます。自動探索、複数ファイルのマージ、汎用環境変数読取り、
-TOML文字列展開、Basic・OAuth、redirect、retryは版1に含めません。版2は版1を保ったまま
-[HTTP信頼性方針](http-reliability.md)を加算します。
+TOML文字列展開、redirect、retryは版1に含めません。版2は版1を保ったまま
+[HTTP信頼性方針](http-reliability.md)を、版3は版2を保ったままBasic・Bearer認証を加算します。
 
 ## 2. CLI構文
 
@@ -99,7 +99,7 @@ CLIはJVM全体を所有するため、JDKの接続再試行抑止propertyが未
 - 設定ファイルの自動探索と暗黙読込み
 - 複数ファイル、include、profile、上書き、文字列展開
 - secret専用ファイル、OS keychain、外部secret manager
-- Basic、OAuth 2.0、redirect、retry、proxy、独自trust store
+- Basic、Bearer、OAuth 2.0、redirect、retry、proxy、独自trust store
 - 解決済み接続計画の公開、`run --json`
 
 ## 8. 版2のHTTP信頼性設定
@@ -125,3 +125,35 @@ final-failure-policy = "disabled"
 `method-safety = "idempotencyKey"`では`idempotency-key-header`も必須です。`apiGuaranteed`はAPI側の
 保証を確認した設定だけに使用します。標準CLIは永続記録先をまだ提供しないため、
 `final-failure-policy`は`disabled`だけを受理します。全範囲と意味論はHTTP-REL仕様に従います。
+
+## 9. 版3のBasic・Bearer認証
+
+`schema-version = 3`は版2の全項目と信頼性設定を受理し、次の認証形を追加します。
+
+```toml
+schema-version = 3
+
+[connections."Basic API"]
+base-uri = "https://api.example.com/"
+allowed-methods = ["GET", "POST"]
+
+[connections."Basic API".authentication]
+kind = "basic"
+username-env = "BSB_BASIC_USERNAME"
+password-env = "BSB_BASIC_PASSWORD"
+
+[connections."Bearer API"]
+base-uri = "https://api.example.com/"
+allowed-methods = ["GET"]
+
+[connections."Bearer API".authentication]
+kind = "bearer"
+token-env = "BSB_BEARER_TOKEN"
+```
+
+Basicでは`username`／`username-env`と`password`／`password-env`を各組から正確に一方、Bearerでは
+`token`／`token-env`を正確に一方指定します。直接値と環境変数値は同じ検証を受けます。Basicのusernameは
+`:`を含められず、Bearerは非空の規範ASCII tokenだけです。生成Authorization headerは8,192 byte以下です。
+
+版1・2は新しいkindとkeyを拒否します。版3でも`oauth2`、token取得・更新、secret manager、自動環境変数探索は
+追加しません。全秘密値と生成headerはBSB値、診断、trace、説明JSONへ公開しません。

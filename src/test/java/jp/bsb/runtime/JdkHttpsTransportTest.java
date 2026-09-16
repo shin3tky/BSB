@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ConnectException;
@@ -25,6 +26,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.GZIPOutputStream;
 import javax.net.ssl.SSLHandshakeException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -64,7 +67,7 @@ class JdkHttpsTransportTest {
   }
 
   @Test
-  void configuresRedirectProxyTlsAndBothTimeoutsWithoutImplicitHeaders() {
+  void configuresRedirectProxyTlsTimeoutsAndContentEncodingNegotiation() {
     HttpClient client = JdkHttpsTransport.newClient(1_234);
     assertEquals(HttpClient.Redirect.NEVER, client.followRedirects());
     assertEquals(1_234, client.connectTimeout().orElseThrow().toMillis());
@@ -129,9 +132,120 @@ class JdkHttpsTransportTest {
                 false));
 
     assertEquals(HttpTransportResult.State.RESPONSE, result.state());
-    assertEquals(List.of(new HttpTransportHeader("x-api-key", secret)), captured.get());
+    assertEquals(
+        List.of(
+            new HttpTransportHeader("x-api-key", secret),
+            new HttpTransportHeader("accept-encoding", "gzip, deflate")),
+        captured.get());
     assertFalse(result.toString().contains(secret));
     assertFalse(transport.toString().contains(secret));
+  }
+
+  @Test
+  void appliesBasicAndBearerOnlyAtTheTransportBoundary() {
+    CredentialReference basic = CredentialReference.opaque();
+    CredentialReference bearer = CredentialReference.opaque();
+    var captured = new AtomicReference<List<HttpTransportHeader>>();
+    JdkHttpsTransport transport =
+        JdkHttpsTransport.builder()
+            .basic(basic, "利用者", "pass:word")
+            .bearer(bearer, "abc.DEF_123~+/==")
+            .client(
+                (request, headers) -> {
+                  captured.set(headers);
+                  return response(200, List.of(), new byte[0]);
+                })
+            .buildForTesting();
+
+    transport.send(request("basic", Optional.of(basic), List.of(), 64, 64, false));
+    String expectedBasic =
+        "Basic "
+            + java.util.Base64.getEncoder()
+                .encodeToString("利用者:pass:word".getBytes(StandardCharsets.UTF_8));
+    assertEquals(
+        expectedBasic,
+        captured.get().stream()
+            .filter(header -> header.name().equals("authorization"))
+            .findFirst()
+            .orElseThrow()
+            .value());
+
+    transport.send(request("bearer", Optional.of(bearer), List.of(), 64, 64, false));
+    assertEquals(
+        "Bearer abc.DEF_123~+/==",
+        captured.get().stream()
+            .filter(header -> header.name().equals("authorization"))
+            .findFirst()
+            .orElseThrow()
+            .value());
+    assertEquals(
+        Optional.of("BASIC_USERNAME_INVALID"),
+        JdkHttpsTransport.basicValidationProblem("bad:name", "password"));
+    assertEquals(
+        Optional.of("BEARER_TOKEN_INVALID"),
+        JdkHttpsTransport.bearerValidationProblem("bad token"));
+  }
+
+  @Test
+  void automaticallyDecodesGzipAndDeflateAndNormalizesHeaders() throws Exception {
+    byte[] plain = "圧縮された本文".getBytes(StandardCharsets.UTF_8);
+    for (var coding : List.of("gzip", "deflate")) {
+      byte[] encoded = coding.equals("gzip") ? gzip(plain) : deflate(plain);
+      HttpTransportResult result =
+          transport(
+                  (request, headers) ->
+                      response(
+                          200,
+                          List.of(
+                              new HttpTransportHeader("content-encoding", coding),
+                              new HttpTransportHeader(
+                                  "content-length", Integer.toString(encoded.length)),
+                              new HttpTransportHeader("x-result", "kept")),
+                          encoded))
+              .send(request("none", Optional.empty(), List.of(), 1_024, 1_024, false));
+
+      assertEquals(HttpTransportResult.State.RESPONSE, result.state());
+      assertArrayEquals(plain, result.body().orElseThrow().copyBytes());
+      assertEquals(encoded.length, result.receivedBodyBytes());
+      assertEquals(plain.length, result.contentDecodingWorkBytes());
+      assertEquals(List.of(new HttpTransportHeader("x-result", "kept")), result.headers());
+    }
+
+    byte[] malformed = {1, 2, 3};
+    HttpTransportResult failure =
+        transport(
+                (request, headers) ->
+                    response(
+                        200,
+                        List.of(new HttpTransportHeader("content-encoding", "gzip")),
+                        malformed))
+            .send(request("none", Optional.empty(), List.of(), 64, 64, false));
+    assertFailure(failure, "contentDecodingFailure", malformed.length);
+    assertEquals(0, failure.contentDecodingWorkBytes());
+  }
+
+  @Test
+  void rejectsUnknownMultipleAndExcessiveContentDecoding() throws Exception {
+    byte[] body = gzip("body".getBytes(StandardCharsets.UTF_8));
+    for (String coding : List.of("br", "gzip, deflate")) {
+      HttpTransportResult result =
+          transport(
+                  (request, headers) ->
+                      response(
+                          200, List.of(new HttpTransportHeader("content-encoding", coding)), body))
+              .send(request("none", Optional.empty(), List.of(), 1_024, 1_024, false));
+      assertFailure(result, "contentDecodingFailure", body.length);
+    }
+
+    byte[] bomb = gzip(new byte[1_000_000]);
+    HttpTransportResult ratio =
+        transport(
+                (request, headers) ->
+                    response(
+                        200, List.of(new HttpTransportHeader("content-encoding", "gzip")), bomb))
+            .send(request("none", Optional.empty(), List.of(), 2_000_000, 2_000_000, false));
+    assertFailure(ratio, "contentDecodingFailure", bomb.length);
+    assertTrue(ratio.contentDecodingWorkBytes() > 65_536);
   }
 
   @Test
@@ -339,6 +453,22 @@ class JdkHttpsTransportTest {
       int status, List<HttpTransportHeader> headers, byte[] body) {
     return new JdkHttpsTransport.RawResponse(
         status, headers, new ByteArrayInputStream(body.clone()));
+  }
+
+  private static byte[] gzip(byte[] body) throws IOException {
+    var output = new ByteArrayOutputStream();
+    try (var gzip = new GZIPOutputStream(output)) {
+      gzip.write(body);
+    }
+    return output.toByteArray();
+  }
+
+  private static byte[] deflate(byte[] body) throws IOException {
+    var output = new ByteArrayOutputStream();
+    try (var deflate = new DeflaterOutputStream(output)) {
+      deflate.write(body);
+    }
+    return output.toByteArray();
   }
 
   private static HttpTransportRequest request(

@@ -58,6 +58,54 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run \
 対応する method は GET、POST、PUT、PATCH、DELETE、HEAD です。要求は不変値として組み立て、送信結果は
 `結果<HTTP応答,HTTP送信失敗>` で受け取ります。接続設定では有限再試行や開始間隔を指定できます。
 
+### formとHTTP status
+
+`文字列表をフォームURL符号化する`は、名前・値の2要素を持つ文字列二次元配列から
+`application/x-www-form-urlencoded`本文を作ります。順序と重複を保持し、spaceは`+`、その他の予約文字と
+Unicode文字はUTF-8 byte単位の`%HH`にします。Content-Typeと本文は要求へ明示的に設定します。
+
+`HTTP要求を送信する`は4xx・5xxも完成した`HTTP応答`として成功側へ返します。
+`HTTP応答を成功状態として検査する`を使うと、200〜299を成功側、300〜599を失敗側に分類できます。
+返値は`結果<HTTP応答,HTTP応答>`で、どちらの側にも元の応答がそのまま保持されます。
+
+### Basic・Bearer認証
+
+標準CLIではschema version 3が`none`、`api-key`、`basic`、`bearer`を受理します。Basicはusernameとpassword、
+Bearerはtokenを、直接値または環境変数名の正確に一方で指定します。秘密を版管理対象ファイルへ保存しないため、
+通常は環境変数形を使います。
+
+```toml
+schema-version = 3
+
+[connections."Basic API"]
+base-uri = "https://api.example.com/"
+allowed-methods = ["POST"]
+
+[connections."Basic API".authentication]
+kind = "basic"
+username-env = "BSB_API_USERNAME"
+password-env = "BSB_API_PASSWORD"
+
+[connections."Bearer API"]
+base-uri = "https://api.example.com/"
+allowed-methods = ["GET"]
+
+[connections."Bearer API".authentication]
+kind = "bearer"
+token-env = "BSB_API_BEARER_TOKEN"
+```
+
+Basicのusernameには`:`を含められません。Bearer tokenは非空の規範ASCII文字列です。資格情報と生成した
+Authorization headerはBSB値、診断、trace、説明JSONへ公開されません。利用者が要求へ`Authorization`を
+設定することもできません。schema version 1・2ではBasic・Bearerと版3専用keyを拒否します。
+
+### gzip・deflate応答
+
+transportは`Accept-Encoding: gzip, deflate`を送信時に追加し、gzipまたはzlib形式deflateの応答を上限付きで
+自動展開します。公開される本文は展開済みで、展開した応答からは`Content-Encoding`と`Content-Length`が
+除かれます。未知・多段coding、壊れたstream、展開上限超過は`contentDecodingFailure`です。この失敗は既定の
+再試行対象ではありません。利用者が`Accept-Encoding`を設定することはできません。
+
 ## 名前付き作業領域とファイル
 
 ファイルも静的な作業領域名と論理ファイル名を使います。OS パスと read/write 権限はホスト側で登録します。
@@ -93,5 +141,6 @@ CLI は成功、使用法、I/O、静的検査、字句・構文、実行時、�
 - [CLI 接続設定](../spec/cli-connection-config.md)
 - [論理接続](../spec/logical-connections.md)
 - [HTTPS](../spec/https.md) / [HTTP 信頼性](../spec/http-reliability.md)
+- [HTTP API相互運用](../spec/http-api-interoperability.md)
 - [作業領域とファイル](../spec/workspace-files.md)
 - [CSV/TSV](../spec/delimited-tables.md)

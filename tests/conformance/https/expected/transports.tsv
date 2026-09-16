@@ -11,6 +11,7 @@ HTTPS-N008	tls	resolved	failure	-	tlsFailure	1	1	failure
 HTTPS-N008	response-timeout	resolved	failure	-	responseTimeout	1	1	failure
 HTTPS-N008	response-large	resolved	failure	-	responseTooLarge	1	1	failure
 HTTPS-N008	header-large	resolved	failure	-	responseHeadersTooLarge	1	1	failure
+HTTPS-N008	content-decoding	resolved	failure	-	contentDecodingFailure	1	1	failure
 HTTPS-N008	protocol	resolved	failure	-	protocolFailure	1	1	failure
 HTTPS-N008	transport	resolved	failure	-	transportFailure	1	1	failure
 HTTPS-N009	none	resolved	response	200	-	1	1	success
@@ -19,7 +20,6 @@ HTTPS-N010	single-attempt	resolved	response	200	-	1	1	success
 HTTPS-F007	not-configured	notConfigured	-	-	-	1	0	diagnostic
 HTTPS-F007	denied	denied	-	-	-	1	0	diagnostic
 HTTPS-F007	invalid	invalid	-	-	-	1	0	diagnostic
-HTTPS-F008	basic	resolved	-	-	-	1	0	diagnostic
 HTTPS-F008	oauth2	resolved	-	-	-	1	0	diagnostic
 HTTPS-F009	credential-missing	resolved	credentialNotConfigured	-	-	1	1	diagnostic
 HTTPS-F009	credential-denied	resolved	credentialDenied	-	-	1	1	diagnostic

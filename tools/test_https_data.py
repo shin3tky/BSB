@@ -31,7 +31,7 @@ class HttpsDataTest(unittest.TestCase):
         self.assertEqual(["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"], https_data.METHODS)
         self.assertEqual("nameResolutionFailure", https_data.FAILURE_KINDS[0])
         self.assertEqual("transportFailure", https_data.FAILURE_KINDS[-1])
-        self.assertEqual(9, len(https_data.FAILURE_KINDS))
+        self.assertEqual(10, len(https_data.FAILURE_KINDS))
 
 
 if __name__ == "__main__":

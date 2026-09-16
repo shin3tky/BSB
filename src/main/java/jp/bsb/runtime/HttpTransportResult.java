@@ -27,6 +27,7 @@ public final class HttpTransportResult {
   private final Optional<String> failureKind;
   private final Optional<String> credentialInvalidReason;
   private final long receivedBodyBytes;
+  private final long contentDecodingWorkBytes;
   private final OptionalLong knownResponseTotalBytes;
 
   private HttpTransportResult(
@@ -39,6 +40,7 @@ public final class HttpTransportResult {
       Optional<String> failureKind,
       Optional<String> credentialInvalidReason,
       long receivedBodyBytes,
+      long contentDecodingWorkBytes,
       OptionalLong knownResponseTotalBytes) {
     this.connectionName = requireText(connectionName, "connectionName");
     this.method = requireText(method, "method");
@@ -53,6 +55,10 @@ public final class HttpTransportResult {
       throw new IllegalArgumentException("received body bytes must not be negative");
     }
     this.receivedBodyBytes = receivedBodyBytes;
+    if (contentDecodingWorkBytes < 0) {
+      throw new IllegalArgumentException("content decoding work bytes must not be negative");
+    }
+    this.contentDecodingWorkBytes = contentDecodingWorkBytes;
     this.knownResponseTotalBytes =
         Objects.requireNonNull(knownResponseTotalBytes, "knownResponseTotalBytes");
   }
@@ -75,6 +81,31 @@ public final class HttpTransportResult {
         Optional.empty(),
         Optional.empty(),
         body.length,
+        0,
+        OptionalLong.empty());
+  }
+
+  /** 自動展開済み応答を、wire受信量と復号作業量を分けて作ります。 */
+  public static HttpTransportResult response(
+      String connectionName,
+      String method,
+      int status,
+      List<HttpTransportHeader> headers,
+      byte[] body,
+      long receivedBodyBytes,
+      long contentDecodingWorkBytes) {
+    Objects.requireNonNull(body, "body");
+    return new HttpTransportResult(
+        connectionName,
+        method,
+        State.RESPONSE,
+        OptionalInt.of(status),
+        headers,
+        Optional.of(ByteSequenceValue.copyOf(body)),
+        Optional.empty(),
+        Optional.empty(),
+        receivedBodyBytes,
+        contentDecodingWorkBytes,
         OptionalLong.empty());
   }
 
@@ -87,6 +118,16 @@ public final class HttpTransportResult {
   /** 本文を一部読み取った閉じた通信失敗を作ります。 */
   public static HttpTransportResult failure(
       String connectionName, String method, String failureKind, long receivedBodyBytes) {
+    return failure(connectionName, method, failureKind, receivedBodyBytes, 0);
+  }
+
+  /** content coding失敗を含む、受信量と復号作業量を持つ閉じた通信失敗を作ります。 */
+  public static HttpTransportResult failure(
+      String connectionName,
+      String method,
+      String failureKind,
+      long receivedBodyBytes,
+      long contentDecodingWorkBytes) {
     if (!HttpSendFailureValue.KINDS.contains(failureKind)) {
       throw new IllegalArgumentException("unknown HTTP send failure kind");
     }
@@ -96,7 +137,8 @@ public final class HttpTransportResult {
         State.FAILURE,
         Optional.of(failureKind),
         Optional.empty(),
-        receivedBodyBytes);
+        receivedBodyBytes,
+        contentDecodingWorkBytes);
   }
 
   static HttpTransportResult knownResponseTotalExceeded(
@@ -114,6 +156,7 @@ public final class HttpTransportResult {
         Optional.of("responseTooLarge"),
         Optional.empty(),
         0,
+        0,
         OptionalLong.of(declaredBodyBytes));
   }
 
@@ -122,7 +165,7 @@ public final class HttpTransportResult {
     return empty(connectionName, method, State.CANCELLED, Optional.empty(), Optional.empty(), 0);
   }
 
-  /** APIキーが未設定の応答を作ります。 */
+  /** 資格情報が未設定の応答を作ります。 */
   public static HttpTransportResult credentialNotConfigured(String connectionName, String method) {
     return empty(
         connectionName,
@@ -133,16 +176,19 @@ public final class HttpTransportResult {
         0);
   }
 
-  /** APIキー利用が拒否された応答を作ります。 */
+  /** 資格情報利用が拒否された応答を作ります。 */
   public static HttpTransportResult credentialDenied(String connectionName, String method) {
     return empty(
         connectionName, method, State.CREDENTIAL_DENIED, Optional.empty(), Optional.empty(), 0);
   }
 
-  /** APIキー名または値が不正な応答を作ります。 */
+  /** 資格情報が不正な応答を作ります。 */
   public static HttpTransportResult credentialInvalid(
       String connectionName, String method, String reason) {
-    if (!reason.equals("HEADER_NAME_INVALID") && !reason.equals("HEADER_VALUE_INVALID")) {
+    if (!reason.equals("HEADER_NAME_INVALID")
+        && !reason.equals("HEADER_VALUE_INVALID")
+        && !reason.equals("BASIC_USERNAME_INVALID")
+        && !reason.equals("BEARER_TOKEN_INVALID")) {
       throw new IllegalArgumentException("unknown credential invalid reason");
     }
     return empty(
@@ -156,6 +202,18 @@ public final class HttpTransportResult {
       Optional<String> failureKind,
       Optional<String> credentialReason,
       long receivedBodyBytes) {
+    return empty(
+        connectionName, method, state, failureKind, credentialReason, receivedBodyBytes, 0);
+  }
+
+  private static HttpTransportResult empty(
+      String connectionName,
+      String method,
+      State state,
+      Optional<String> failureKind,
+      Optional<String> credentialReason,
+      long receivedBodyBytes,
+      long contentDecodingWorkBytes) {
     return new HttpTransportResult(
         connectionName,
         method,
@@ -166,6 +224,7 @@ public final class HttpTransportResult {
         failureKind,
         credentialReason,
         receivedBodyBytes,
+        contentDecodingWorkBytes,
         OptionalLong.empty());
   }
 
@@ -227,6 +286,13 @@ public final class HttpTransportResult {
    */
   public long receivedBodyBytes() {
     return receivedBodyBytes;
+  }
+
+  /**
+   * @return content codingの展開で生成・検査した本文バイト数
+   */
+  public long contentDecodingWorkBytes() {
+    return contentDecodingWorkBytes;
   }
 
   OptionalLong knownResponseTotalBytes() {

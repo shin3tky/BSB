@@ -139,6 +139,40 @@ class ConnectionConfigLoaderTest {
   }
 
   @Test
+  void loadsVersionThreeBasicAndBearerWithoutExposingSecrets() throws Exception {
+    String password = "BASIC_PASSWORD_SECRET";
+    String token = "BEARER_TOKEN_SECRET";
+    Path config =
+        write(
+            "schema-version = 3\n"
+                + "[connections.Basic]\n"
+                + "base-uri = \"https://basic.example.test/\"\n"
+                + "allowed-methods = [\"POST\"]\n"
+                + "[connections.Basic.authentication]\n"
+                + "kind = \"basic\"\n"
+                + "username = \"user\"\n"
+                + "password-env = \"BASIC_PASSWORD\"\n"
+                + "[connections.Bearer]\n"
+                + "base-uri = \"https://bearer.example.test/\"\n"
+                + "allowed-methods = [\"GET\"]\n"
+                + "[connections.Bearer.authentication]\n"
+                + "kind = \"bearer\"\n"
+                + "token-env = \"BEARER_TOKEN\"\n");
+
+    LoadedConnectionConfig loaded =
+        new ConnectionConfigLoader(Map.of("BASIC_PASSWORD", password, "BEARER_TOKEN", token)::get)
+            .load(config);
+    assertEquals(
+        "basic",
+        loaded.resolver().resolve("Basic", "resolve").policy().orElseThrow().authenticationKind());
+    assertEquals(
+        "bearer",
+        loaded.resolver().resolve("Bearer", "resolve").policy().orElseThrow().authenticationKind());
+    assertFalse(loaded.toString().contains(password));
+    assertFalse(loaded.toString().contains(token));
+  }
+
+  @Test
   void rejectsParserErrorsWithoutLeakingTheInputLine() throws IOException {
     String secret = "CONFIG_PARSE_SECRET";
     Path syntax = write("schema-version = 1\nsecret = \"" + secret + "\n");
@@ -199,7 +233,7 @@ class ConnectionConfigLoaderTest {
   private static Stream<Arguments> invalidDocuments() {
     String valid = baseNoneConfig();
     return Stream.of(
-        Arguments.of(valid.replace("schema-version = 1", "schema-version = 3")),
+        Arguments.of(valid.replace("schema-version = 1", "schema-version = 4")),
         Arguments.of(valid.replace("schema-version = 1", "schema-version = \"1\"")),
         Arguments.of("schema-version = 1\n"),
         Arguments.of("schema-version = 1\n[connections]\n"),

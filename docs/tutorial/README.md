@@ -15,6 +15,7 @@
 5. [配列、文字列、JSON](05-data.md) — まとまったデータを扱う
 6. [任意・結果を合成する](06-optional-result-composition.md) — 早期復帰とラッパー配列を使う
 7. [エラーを読み、次へ進む](07-errors-and-next-steps.md) — 診断とリファレンスを活用する
+8. [HTTP APIを呼び出す](08-http-api-interoperability.md) — form、status、Basic・Bearer、圧縮応答を扱う
 
 1章ずつコードを実行し、数値や文字列を少し変えて結果を確かめるのがおすすめです。章の最後にある
 「試してみよう」は、すぐ後に答えがなくても構いません。

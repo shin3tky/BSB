@@ -352,5 +352,9 @@ public enum BuiltinOperation {
   /** JSON形状失敗の期待種類の取出し。 */
   JSON_SHAPE_FAILURE_EXPECTED_KIND,
   /** JSON形状失敗の実際種類の取出し。 */
-  JSON_SHAPE_FAILURE_ACTUAL_KIND
+  JSON_SHAPE_FAILURE_ACTUAL_KIND,
+  /** 文字列二次元配列をapplication/x-www-form-urlencodedへ符号化する。 */
+  HTTP_FORM_URL_ENCODE,
+  /** HTTP応答を2xx成功とそれ以外へ分類する。 */
+  HTTP_RESPONSE_REQUIRE_SUCCESS
 }

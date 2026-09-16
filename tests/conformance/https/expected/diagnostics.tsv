@@ -20,7 +20,7 @@ HTTPS-F006	request-size	E_HTTP_REQUEST_SIZE_LIMIT	runtime	{"word":"HTTP要求を
 HTTPS-R001	send-limit	E_HTTP_SEND_LIMIT	runtime	{"word":"HTTP要求を送信する","limitName":"httpSendCalls","limit":"1024","observed":"1025"}
 HTTPS-R002	request-total	E_HTTP_REQUEST_TOTAL_LIMIT	runtime	{"word":"HTTP要求を送信する","limitName":"httpRequestAttemptBytes","limit":"134217728","used":"134217728","requested":"1","observed":"134217729"}
 HTTPS-R003	response-total	E_HTTP_RESPONSE_TOTAL_LIMIT	runtime	{"word":"HTTP要求を送信する","limitName":"httpResponseReceivedBytes","limit":"134217728","used":"134217728","requested":"1","observed":"134217729"}
-HTTPS-F008	auth-unsupported	E_HTTP_AUTHENTICATION_UNSUPPORTED	runtime	{"word":"HTTP要求を送信する","connection":"顧客管理API","authenticationKind":"basic"}
+HTTPS-F008	auth-unsupported	E_HTTP_AUTHENTICATION_UNSUPPORTED	runtime	{"word":"HTTP要求を送信する","connection":"顧客管理API","authenticationKind":"oauth2"}
 HTTPS-F009	credential-missing	E_HTTP_CREDENTIAL_NOT_CONFIGURED	runtime	{"word":"HTTP要求を送信する","connection":"顧客管理API","authenticationKind":"apiKey"}
 HTTPS-F009	credential-denied	E_HTTP_CREDENTIAL_ACCESS_DENIED	runtime	{"word":"HTTP要求を送信する","connection":"顧客管理API","authenticationKind":"apiKey"}
 HTTPS-F009	credential-invalid	E_HTTP_CREDENTIAL_INVALID	runtime	{"word":"HTTP要求を送信する","connection":"顧客管理API","authenticationKind":"apiKey","reason":"HEADER_NAME_INVALID"}

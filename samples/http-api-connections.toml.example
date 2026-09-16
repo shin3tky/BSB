@@ -1,0 +1,22 @@
+schema-version = 3
+
+[connections."フォームAPI"]
+base-uri = "https://api.example.com/"
+allowed-methods = ["POST"]
+connect-timeout-ms = 5000
+response-timeout-ms = 10000
+maximum-request-bytes = 1048576
+maximum-response-bytes = 1048576
+
+[connections."フォームAPI".authentication]
+kind = "basic"
+username-env = "BSB_API_USERNAME"
+password-env = "BSB_API_PASSWORD"
+
+[connections."Bearer API"]
+base-uri = "https://api.example.com/"
+allowed-methods = ["GET"]
+
+[connections."Bearer API".authentication]
+kind = "bearer"
+token-env = "BSB_API_BEARER_TOKEN"

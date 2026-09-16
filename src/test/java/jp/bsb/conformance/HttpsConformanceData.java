@@ -123,6 +123,7 @@ public final class HttpsConformanceData {
             "responseTimeout",
             "responseTooLarge",
             "responseHeadersTooLarge",
+            "contentDecodingFailure",
             "protocolFailure",
             "transportFailure"),
         kinds,

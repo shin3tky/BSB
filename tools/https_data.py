@@ -21,11 +21,12 @@ FAILURE_KINDS = [
     "responseTimeout",
     "responseTooLarge",
     "responseHeadersTooLarge",
+    "contentDecodingFailure",
     "protocolFailure",
     "transportFailure",
 ]
 RESERVED_HEADERS = {
-    "authorization", "connection", "content-length", "expect", "host",
+    "accept-encoding", "authorization", "connection", "content-length", "expect", "host",
     "proxy-authorization", "te", "trailer", "transfer-encoding", "upgrade",
 }
 NEW_CODES = {
@@ -55,6 +56,10 @@ NEW_CODES = {
     "E_HTTP_CREDENTIAL_ACCESS_DENIED",
     "E_HTTP_CREDENTIAL_INVALID",
     "E_HTTP_CANCELLED",
+}
+HTTP_API_CODES = {
+    "E_HTTP_FORM_ROW_WIDTH",
+    "E_HTTP_FORM_ITEM_LIMIT",
 }
 HTTP_RELIABILITY_CODES = {
     "E_HTTP_RETRY_POLICY_INVALID",
@@ -295,7 +300,7 @@ def check_transports(catalog_ids: set[str]) -> None:
         if row["result"] == "success" and not 200 <= int(row["status"]) <= 599:
             raise ValueError("successful transport without final response")
     required = {
-        "not-configured", "denied", "invalid", "basic", "oauth2",
+        "not-configured", "denied", "invalid", "oauth2", "content-decoding",
         "credential-missing", "credential-denied", "credential-name-invalid",
         "credential-value-invalid", "resolver-capability-absent",
         "transport-capability-absent", "resolver-failure", "transport-failure", "cancelled",
@@ -357,8 +362,8 @@ def check_expected(catalog_ids: set[str]) -> None:
         if not separator or not value or key in messages:
             raise ValueError("invalid messages.properties")
         messages[key] = value
-    if set(messages) != NEW_CODES | HTTP_RELIABILITY_CODES:
-        raise ValueError("messages do not cover the exact HTTPS and HTTP-REL codes")
+    if set(messages) != NEW_CODES | HTTP_RELIABILITY_CODES | HTTP_API_CODES:
+        raise ValueError("messages do not cover the exact HTTPS, HTTP-REL, and HTTP-API codes")
 
 
 def check_sources() -> None:

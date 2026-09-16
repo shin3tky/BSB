@@ -344,6 +344,8 @@ final class BuiltinExecutor {
       case JSON_SHAPE_FAILURE_PATH -> jsonShapeFailureField(stack, 1);
       case JSON_SHAPE_FAILURE_EXPECTED_KIND -> jsonShapeFailureField(stack, 2);
       case JSON_SHAPE_FAILURE_ACTUAL_KIND -> jsonShapeFailureField(stack, 3);
+      case HTTP_FORM_URL_ENCODE -> httpFormUrlEncode(word, stack, span);
+      case HTTP_RESPONSE_REQUIRE_SUCCESS -> httpResponseRequireSuccess(stack);
     };
   }
 
@@ -1120,14 +1122,16 @@ final class BuiltinExecutor {
           "要求本文を小さくしてください");
     }
     if (!policy.authenticationKind().equals("none")
-        && !policy.authenticationKind().equals("apiKey")) {
+        && !policy.authenticationKind().equals("apiKey")
+        && !policy.authenticationKind().equals("basic")
+        && !policy.authenticationKind().equals("bearer")) {
       throw httpSendDiagnostic(
           DiagnosticCode.E_HTTP_AUTHENTICATION_UNSUPPORTED,
           word,
           wordSpan,
           java.util.Map.of(
               "connection", reference.name(), "authenticationKind", policy.authenticationKind()),
-          "noneまたはapiKey",
+          "none、apiKey、basic、bearerのいずれか",
           policy.authenticationKind(),
           "対応する認証方式を設定してください");
     }
@@ -1171,6 +1175,7 @@ final class BuiltinExecutor {
               request.body().map(HttpRequestValue.Body::bytes),
               policy,
               Math.min(policy.maximumResponseBytes(), responseRemaining),
+              policy.maximumResponseBytes(),
               responseRemaining <= policy.maximumResponseBytes());
       lastHttpAttemptStartNanos.put(reference.name(), environment.resourceClock().nanoTime());
       HttpTransportResult result =
@@ -1306,6 +1311,9 @@ final class BuiltinExecutor {
     if (result.receivedBodyBytes() > request.responseBodyLimit() + 1) {
       throw new IllegalStateException("HTTP transport read beyond its response limit");
     }
+    if (result.contentDecodingWorkBytes() > request.decodedBodyLimit() + 1) {
+      throw new IllegalStateException("HTTP transport decoded beyond its response limit");
+    }
     return result;
   }
 
@@ -1350,13 +1358,18 @@ final class BuiltinExecutor {
       requireValidHttpResponseHeaders(result.headers());
       budget.afterHttpResponseBytes(result.receivedBodyBytes(), span, word.canonicalName());
       budget.beforeByteSequenceWork(
-          result.body().orElseThrow().length(), 0, span, word.canonicalName());
+          result.body().orElseThrow().length(),
+          result.contentDecodingWorkBytes(),
+          span,
+          word.canonicalName());
     } else if (result.state() == HttpTransportResult.State.FAILURE) {
       if (result.knownResponseTotalBytes().isPresent()) {
         budget.rejectKnownHttpResponseBytes(
             result.knownResponseTotalBytes().orElseThrow(), span, word.canonicalName());
       }
       budget.afterHttpResponseBytes(result.receivedBodyBytes(), span, word.canonicalName());
+      budget.beforeByteSequenceWork(
+          0, result.contentDecodingWorkBytes(), span, word.canonicalName());
     } else {
       throw new IllegalStateException("non-retryable HTTP result selected for retry");
     }
@@ -1542,8 +1555,7 @@ final class BuiltinExecutor {
             || result.failureKind().isPresent()
             || result.credentialInvalidReason().isPresent()
             || result.knownResponseTotalBytes().isPresent()
-            || result.receivedBodyBytes() != result.body().orElseThrow().length()
-            || result.body().orElseThrow().length() > transportRequestLimit(policy)) {
+            || result.body().orElseThrow().length() > policy.maximumResponseBytes()) {
           throw new IllegalStateException("HTTP transport returned an invalid response contract");
         }
         int status = result.status().orElseThrow();
@@ -1553,7 +1565,10 @@ final class BuiltinExecutor {
         requireValidHttpResponseHeaders(result.headers());
         budget.afterHttpResponseBytes(result.receivedBodyBytes(), span, word.canonicalName());
         budget.beforeByteSequenceWork(
-            result.body().orElseThrow().length(), 0, span, word.canonicalName());
+            result.body().orElseThrow().length(),
+            result.contentDecodingWorkBytes(),
+            span,
+            word.canonicalName());
         effect = httpSendEffect(traceName, method, "response");
         var response = new HttpResponseValue(status, result.headers(), result.body().orElseThrow());
         stack.set(stack.size() - 1, ResultValue.success(HTTP_SEND_RESULT, response));
@@ -1564,6 +1579,8 @@ final class BuiltinExecutor {
             || result.body().isPresent()
             || result.failureKind().isEmpty()
             || result.credentialInvalidReason().isPresent()
+            || result.contentDecodingWorkBytes() != 0
+                && !result.failureKind().orElseThrow().equals("contentDecodingFailure")
             || result.knownResponseTotalBytes().isPresent()
                 && (!result.failureKind().orElseThrow().equals("responseTooLarge")
                     || result.receivedBodyBytes() != 0)) {
@@ -1575,6 +1592,8 @@ final class BuiltinExecutor {
               result.knownResponseTotalBytes().orElseThrow(), span, word.canonicalName());
         }
         budget.afterHttpResponseBytes(result.receivedBodyBytes(), span, word.canonicalName());
+        budget.beforeByteSequenceWork(
+            0, result.contentDecodingWorkBytes(), span, word.canonicalName());
         effect = httpSendEffect(traceName, method, "failure:" + kind);
         stack.set(
             stack.size() - 1,
@@ -1600,6 +1619,7 @@ final class BuiltinExecutor {
             word,
             span,
             reference.name(),
+            policy.authenticationKind(),
             null,
             "設定済み資格情報",
             "未設定");
@@ -1612,6 +1632,7 @@ final class BuiltinExecutor {
             word,
             span,
             reference.name(),
+            policy.authenticationKind(),
             null,
             "利用可能な資格情報",
             "拒否");
@@ -1631,8 +1652,9 @@ final class BuiltinExecutor {
             word,
             span,
             reference.name(),
+            policy.authenticationKind(),
             reason,
-            "有効なAPIキー資格情報",
+            "有効な資格情報",
             reason);
       }
     }
@@ -1668,6 +1690,7 @@ final class BuiltinExecutor {
         || result.failureKind().isPresent()
         || result.credentialInvalidReason().isPresent()
         || result.knownResponseTotalBytes().isPresent()
+        || result.contentDecodingWorkBytes() != 0
         || result.receivedBodyBytes() != 0) {
       throw new IllegalStateException("HTTP transport returned an invalid empty contract");
     }
@@ -1736,12 +1759,13 @@ final class BuiltinExecutor {
       BuiltinWord word,
       SourceSpan span,
       String connection,
+      String authenticationKind,
       String reason,
       String expected,
       String actual) {
     var fields = new java.util.LinkedHashMap<String, String>();
     fields.put("connection", connection);
-    fields.put("authenticationKind", "apiKey");
+    fields.put("authenticationKind", authenticationKind);
     if (reason != null) fields.put("reason", reason);
     return httpSendDiagnostic(code, word, span, fields, expected, actual, "実行環境の資格情報設定を確認してください");
   }
@@ -1970,6 +1994,66 @@ final class BuiltinExecutor {
   private static byte[] httpResponseBody(ArrayList<RuntimeValue> stack) {
     int index = stack.size() - 1;
     stack.set(index, ((HttpResponseValue) stack.get(index)).body());
+    return new byte[0];
+  }
+
+  private byte[] httpFormUrlEncode(BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span)
+      throws RuntimeFailure {
+    int index = stack.size() - 1;
+    var table = (ArrayValue) stack.get(index);
+    if (table.size() > HttpFormUrlEncoder.MAX_ITEMS) {
+      throw new RuntimeFailure(
+          Diagnostic.builder(
+                  DiagnosticCode.E_HTTP_FORM_ITEM_LIMIT,
+                  Severity.ERROR,
+                  DiagnosticStage.RUNTIME,
+                  sourcePath,
+                  span)
+              .field("word", word.canonicalName())
+              .limit("httpFormItems", HttpFormUrlEncoder.MAX_ITEMS, table.size())
+              .expected(HttpFormUrlEncoder.MAX_ITEMS + "項目以下")
+              .actual(table.size() + "項目")
+              .fix("フォーム項目を減らしてください")
+              .build());
+    }
+    for (int rowIndex = 0; rowIndex < table.size(); rowIndex++) {
+      var row = (ArrayValue) table.get(rowIndex);
+      if (row.size() != 2) {
+        throw new RuntimeFailure(
+            Diagnostic.builder(
+                    DiagnosticCode.E_HTTP_FORM_ROW_WIDTH,
+                    Severity.ERROR,
+                    DiagnosticStage.RUNTIME,
+                    sourcePath,
+                    span)
+                .field("word", word.canonicalName())
+                .field("row", Integer.toString(rowIndex + 1))
+                .field("expectedColumns", "2")
+                .field("actualColumns", Integer.toString(row.size()))
+                .expected("各行が名前と値の2要素")
+                .actual(row.size() + "要素")
+                .fix("各フォーム項目を名前と値の2要素にしてください")
+                .build());
+      }
+    }
+    HttpFormUrlEncoder.Measurement measurement = HttpFormUrlEncoder.measure(table);
+    if (measurement.outputBytes() > StringLimits.MAX_UTF8_BYTES) {
+      throw stringUtf8Limit(word, span, measurement.outputBytes());
+    }
+    budget.beforeByteSequenceWork(0, measurement.workBytes(), span, word.canonicalName());
+    stack.set(index, new StringValue(HttpFormUrlEncoder.encode(table, measurement.outputBytes())));
+    return new byte[0];
+  }
+
+  private static byte[] httpResponseRequireSuccess(ArrayList<RuntimeValue> stack) {
+    int index = stack.size() - 1;
+    var response = (HttpResponseValue) stack.get(index);
+    var type = new jp.bsb.stdlib.ResultType(ValueType.HTTP_RESPONSE, ValueType.HTTP_RESPONSE);
+    stack.set(
+        index,
+        response.status() >= 200 && response.status() <= 299
+            ? ResultValue.success(type, response)
+            : ResultValue.failure(type, response));
     return new byte[0];
   }
 

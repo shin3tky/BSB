@@ -3,7 +3,7 @@ package jp.bsb.runtime;
 import java.util.Set;
 import jp.bsb.stdlib.ValueType;
 
-/** URIや例外を保持せず、9種類の安定名だけを持つ不変HTTP送信失敗です。 */
+/** URIや例外を保持せず、10種類の安定名だけを持つ不変HTTP送信失敗です。 */
 public final class HttpSendFailureValue implements RuntimeValue {
   static final Set<String> KINDS =
       Set.of(
@@ -14,6 +14,7 @@ public final class HttpSendFailureValue implements RuntimeValue {
           "responseTimeout",
           "responseTooLarge",
           "responseHeadersTooLarge",
+          "contentDecodingFailure",
           "protocolFailure",
           "transportFailure");
 

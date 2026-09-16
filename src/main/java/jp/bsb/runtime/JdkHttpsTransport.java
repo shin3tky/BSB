@@ -16,8 +16,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpTimeoutException;
 import java.nio.channels.UnresolvedAddressException;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.IdentityHashMap;
@@ -42,14 +44,20 @@ public final class JdkHttpsTransport implements HttpTransport {
 
   private final ClientAdapter client;
   private final IdentityHashMap<CredentialReference, ApiKey> apiKeys;
+  private final IdentityHashMap<CredentialReference, BasicCredential> basicCredentials;
+  private final IdentityHashMap<CredentialReference, BearerCredential> bearerCredentials;
   private final Set<CredentialReference> deniedCredentials;
 
   private JdkHttpsTransport(
       ClientAdapter client,
       IdentityHashMap<CredentialReference, ApiKey> apiKeys,
+      IdentityHashMap<CredentialReference, BasicCredential> basicCredentials,
+      IdentityHashMap<CredentialReference, BearerCredential> bearerCredentials,
       Set<CredentialReference> deniedCredentials) {
     this.client = Objects.requireNonNull(client, "client");
     this.apiKeys = new IdentityHashMap<>(apiKeys);
+    this.basicCredentials = new IdentityHashMap<>(basicCredentials);
+    this.bearerCredentials = new IdentityHashMap<>(bearerCredentials);
     var denied = Collections.newSetFromMap(new IdentityHashMap<CredentialReference, Boolean>());
     denied.addAll(deniedCredentials);
     this.deniedCredentials = Collections.unmodifiableSet(denied);
@@ -81,6 +89,7 @@ public final class JdkHttpsTransport implements HttpTransport {
       return HttpTransportResult.credentialNotConfigured(
           request.connectionName(), request.method());
     }
+    headers = withAcceptedContentEncodings(headers);
     try (RawResponse response = client.send(request, headers)) {
       return consume(request, response);
     } catch (InterruptedException failure) {
@@ -92,16 +101,33 @@ public final class JdkHttpsTransport implements HttpTransport {
     }
   }
 
+  private static List<HttpTransportHeader> withAcceptedContentEncodings(
+      List<HttpTransportHeader> headers) {
+    var result = new ArrayList<HttpTransportHeader>(headers.size() + 1);
+    headers.stream()
+        .filter(header -> !header.name().equals("accept-encoding"))
+        .forEach(result::add);
+    result.add(new HttpTransportHeader("accept-encoding", "gzip, deflate"));
+    return List.copyOf(result);
+  }
+
   private List<HttpTransportHeader> authenticatedHeaders(HttpTransportRequest request) {
     if (request.policy().authenticationKind().equals("none")) {
       return request.headers();
     }
-    if (!request.policy().authenticationKind().equals("apiKey")) {
-      throw new IllegalStateException("HTTP transport received unsupported authentication");
-    }
     CredentialReference reference = request.policy().credentialReference().orElseThrow();
     if (deniedCredentials.contains(reference)) return null;
-    ApiKey apiKey = apiKeys.get(reference);
+    return switch (request.policy().authenticationKind()) {
+      case "apiKey" -> apiKeyHeaders(request, apiKeys.get(reference));
+      case "basic" -> basicHeaders(request, basicCredentials.get(reference));
+      case "bearer" -> bearerHeaders(request, bearerCredentials.get(reference));
+      default ->
+          throw new IllegalStateException("HTTP transport received unsupported authentication");
+    };
+  }
+
+  private static List<HttpTransportHeader> apiKeyHeaders(
+      HttpTransportRequest request, ApiKey apiKey) {
     if (apiKey == null) return null;
     String nameProblem = HttpRequestSupport.headerNameProblem(apiKey.headerName);
     if (nameProblem != null || HttpRequestSupport.RESERVED_HEADERS.contains(apiKey.headerName)) {
@@ -116,6 +142,35 @@ public final class JdkHttpsTransport implements HttpTransport {
       if (!header.name().equals(apiKey.headerName)) result.add(header);
     }
     result.add(new HttpTransportHeader(apiKey.headerName, apiKey.headerValue));
+    return List.copyOf(result);
+  }
+
+  private static List<HttpTransportHeader> basicHeaders(
+      HttpTransportRequest request, BasicCredential credential) {
+    if (credential == null) return null;
+    String reason = basicValidationProblem(credential.username, credential.password).orElse(null);
+    if (reason != null) throw new CredentialProblem(reason);
+    String source = credential.username + ":" + credential.password;
+    String value =
+        "Basic " + Base64.getEncoder().encodeToString(source.getBytes(StandardCharsets.UTF_8));
+    return authorizationHeaders(request, value);
+  }
+
+  private static List<HttpTransportHeader> bearerHeaders(
+      HttpTransportRequest request, BearerCredential credential) {
+    if (credential == null) return null;
+    String reason = bearerValidationProblem(credential.token).orElse(null);
+    if (reason != null) throw new CredentialProblem(reason);
+    return authorizationHeaders(request, "Bearer " + credential.token);
+  }
+
+  private static List<HttpTransportHeader> authorizationHeaders(
+      HttpTransportRequest request, String value) {
+    var result = new ArrayList<HttpTransportHeader>();
+    request.headers().stream()
+        .filter(header -> !header.name().equals("authorization"))
+        .forEach(result::add);
+    result.add(new HttpTransportHeader("authorization", value));
     return List.copyOf(result);
   }
 
@@ -134,6 +189,33 @@ public final class JdkHttpsTransport implements HttpTransport {
     }
     if (headerValue.isEmpty() || HttpRequestSupport.headerValueProblem(headerValue) != null) {
       return Optional.of("HEADER_VALUE_INVALID");
+    }
+    return Optional.empty();
+  }
+
+  /** Basic資格情報を送信時と同じ規則で検証します。 */
+  public static Optional<String> basicValidationProblem(String username, String password) {
+    Objects.requireNonNull(username, "username");
+    Objects.requireNonNull(password, "password");
+    if (username.indexOf(':') >= 0) return Optional.of("BASIC_USERNAME_INVALID");
+    long sourceBytes =
+        (long) username.getBytes(StandardCharsets.UTF_8).length
+            + 1
+            + password.getBytes(StandardCharsets.UTF_8).length;
+    long encodedBytes = 6 + 4 * ((sourceBytes + 2) / 3);
+    if (encodedBytes > HttpRequestSupport.MAX_HEADER_VALUE_BYTES) {
+      return Optional.of("HEADER_VALUE_INVALID");
+    }
+    return Optional.empty();
+  }
+
+  /** Bearer tokenを送信時と同じ規則で検証します。 */
+  public static Optional<String> bearerValidationProblem(String token) {
+    Objects.requireNonNull(token, "token");
+    if (token.isEmpty()
+        || token.length() + 7 > HttpRequestSupport.MAX_HEADER_VALUE_BYTES
+        || !token.matches("[A-Za-z0-9\\-._~+/]+={0,}")) {
+      return Optional.of("BEARER_TOKEN_INVALID");
     }
     return Optional.empty();
   }
@@ -172,13 +254,107 @@ public final class JdkHttpsTransport implements HttpTransport {
             request.connectionName(), request.method(), declared);
       }
     }
-    byte[] body = readBody(response.body(), request.responseBodyLimit());
-    if (body.length > request.responseBodyLimit()) {
+    byte[] wireBody = readBody(response.body(), request.responseBodyLimit());
+    if (wireBody.length > request.responseBodyLimit()) {
       return HttpTransportResult.failure(
-          request.connectionName(), request.method(), "responseTooLarge", body.length);
+          request.connectionName(), request.method(), "responseTooLarge", wireBody.length);
     }
+    ContentCoding coding = contentCoding(checked.headers);
+    if (coding == ContentCoding.INVALID) {
+      return HttpTransportResult.failure(
+          request.connectionName(), request.method(), "contentDecodingFailure", wireBody.length);
+    }
+    DecodingResult decoding = decodeBody(wireBody, coding, request.decodedBodyLimit());
+    if (decoding.body == null) {
+      return HttpTransportResult.failure(
+          request.connectionName(),
+          request.method(),
+          "contentDecodingFailure",
+          wireBody.length,
+          decoding.workBytes);
+    }
+    List<HttpTransportHeader> exposedHeaders =
+        coding == ContentCoding.GZIP || coding == ContentCoding.DEFLATE
+            ? checked.headers.stream()
+                .filter(
+                    header ->
+                        !header.name().equals("content-encoding")
+                            && !header.name().equals("content-length"))
+                .toList()
+            : checked.headers;
     return HttpTransportResult.response(
-        request.connectionName(), request.method(), status, checked.headers, body);
+        request.connectionName(),
+        request.method(),
+        status,
+        exposedHeaders,
+        decoding.body,
+        wireBody.length,
+        decoding.workBytes);
+  }
+
+  private static ContentCoding contentCoding(List<HttpTransportHeader> headers) {
+    List<String> values =
+        headers.stream()
+            .filter(header -> header.name().equals("content-encoding"))
+            .map(header -> header.value().trim().toLowerCase(java.util.Locale.ROOT))
+            .toList();
+    if (values.isEmpty()) return ContentCoding.IDENTITY;
+    if (values.size() != 1 || values.getFirst().indexOf(',') >= 0) return ContentCoding.INVALID;
+    return switch (values.getFirst()) {
+      case "identity" -> ContentCoding.IDENTITY;
+      case "gzip" -> ContentCoding.GZIP;
+      case "deflate" -> ContentCoding.DEFLATE;
+      default -> ContentCoding.INVALID;
+    };
+  }
+
+  private static DecodingResult decodeBody(
+      byte[] wireBody, ContentCoding coding, long decodedLimit) {
+    if (coding == ContentCoding.IDENTITY) {
+      return new DecodingResult(wireBody.length <= decodedLimit ? wireBody : null, 0);
+    }
+    long ratioLimit = saturatedAdd(65_536L, saturatedMultiply(wireBody.length, 100L));
+    long limit = Math.min(decodedLimit, ratioLimit);
+    InputStream source = new java.io.ByteArrayInputStream(wireBody);
+    try (InputStream decoder = decoder(source, coding)) {
+      int maximum = Math.toIntExact(limit + 1);
+      var output = new ByteArrayOutputStream(Math.min(maximum, 8_192));
+      byte[] buffer = new byte[8_192];
+      try {
+        while (output.size() < maximum) {
+          int requested = Math.min(buffer.length, maximum - output.size());
+          int read = decoder.read(buffer, 0, requested);
+          if (read < 0) break;
+          if (read == 0) {
+            int single = decoder.read();
+            if (single < 0) break;
+            output.write(single);
+          } else {
+            output.write(buffer, 0, read);
+          }
+        }
+        byte[] decoded = output.toByteArray();
+        return new DecodingResult(decoded.length > limit ? null : decoded, decoded.length);
+      } catch (IOException failure) {
+        return new DecodingResult(null, output.size());
+      }
+    } catch (IOException failure) {
+      return new DecodingResult(null, 0);
+    }
+  }
+
+  private static InputStream decoder(InputStream source, ContentCoding coding) throws IOException {
+    return coding == ContentCoding.GZIP
+        ? new java.util.zip.GZIPInputStream(source)
+        : new java.util.zip.InflaterInputStream(source);
+  }
+
+  private static long saturatedAdd(long first, long second) {
+    return first > Long.MAX_VALUE - second ? Long.MAX_VALUE : first + second;
+  }
+
+  private static long saturatedMultiply(long first, long second) {
+    return first != 0 && second > Long.MAX_VALUE / first ? Long.MAX_VALUE : first * second;
   }
 
   private static HeaderCheck checkResponseHeaders(List<HttpTransportHeader> headers) {
@@ -312,6 +488,10 @@ public final class JdkHttpsTransport implements HttpTransport {
   /** JDK HTTPS transportの構築器です。 */
   public static final class Builder {
     private final IdentityHashMap<CredentialReference, ApiKey> apiKeys = new IdentityHashMap<>();
+    private final IdentityHashMap<CredentialReference, BasicCredential> basicCredentials =
+        new IdentityHashMap<>();
+    private final IdentityHashMap<CredentialReference, BearerCredential> bearerCredentials =
+        new IdentityHashMap<>();
     private final Set<CredentialReference> deniedCredentials =
         Collections.newSetFromMap(new IdentityHashMap<>());
     private ClientAdapter client = new JdkClientAdapter();
@@ -325,6 +505,33 @@ public final class JdkHttpsTransport implements HttpTransport {
           HttpRequestSupport.normalizeHeaderName(Objects.requireNonNull(headerName, "headerName"));
       apiKeys.put(
           reference, new ApiKey(normalized, Objects.requireNonNull(headerValue, "headerValue")));
+      basicCredentials.remove(reference);
+      bearerCredentials.remove(reference);
+      deniedCredentials.remove(reference);
+      return this;
+    }
+
+    /** 不透明参照へBasic username/passwordを対応させます。 */
+    public Builder basic(CredentialReference reference, String username, String password) {
+      Objects.requireNonNull(reference, "reference");
+      basicCredentials.put(
+          reference,
+          new BasicCredential(
+              Objects.requireNonNull(username, "username"),
+              Objects.requireNonNull(password, "password")));
+      apiKeys.remove(reference);
+      bearerCredentials.remove(reference);
+      deniedCredentials.remove(reference);
+      return this;
+    }
+
+    /** 不透明参照へBearer tokenを対応させます。 */
+    public Builder bearer(CredentialReference reference, String token) {
+      Objects.requireNonNull(reference, "reference");
+      bearerCredentials.put(
+          reference, new BearerCredential(Objects.requireNonNull(token, "token")));
+      apiKeys.remove(reference);
+      basicCredentials.remove(reference);
       deniedCredentials.remove(reference);
       return this;
     }
@@ -333,6 +540,8 @@ public final class JdkHttpsTransport implements HttpTransport {
     public Builder denyCredential(CredentialReference reference) {
       Objects.requireNonNull(reference, "reference");
       apiKeys.remove(reference);
+      basicCredentials.remove(reference);
+      bearerCredentials.remove(reference);
       deniedCredentials.add(reference);
       return this;
     }
@@ -345,7 +554,8 @@ public final class JdkHttpsTransport implements HttpTransport {
     /** process-wide安全条件を検査し、transportを構築します。 */
     public JdkHttpsTransport build() {
       checkProcessProperties(processProperties());
-      return new JdkHttpsTransport(client, apiKeys, deniedCredentials);
+      return new JdkHttpsTransport(
+          client, apiKeys, basicCredentials, bearerCredentials, deniedCredentials);
     }
 
     /**
@@ -361,7 +571,8 @@ public final class JdkHttpsTransport implements HttpTransport {
     }
 
     JdkHttpsTransport buildForTesting() {
-      return new JdkHttpsTransport(client, apiKeys, deniedCredentials);
+      return new JdkHttpsTransport(
+          client, apiKeys, basicCredentials, bearerCredentials, deniedCredentials);
     }
   }
 
@@ -442,13 +653,45 @@ public final class JdkHttpsTransport implements HttpTransport {
     }
   }
 
+  private record BasicCredential(String username, String password) {
+    private BasicCredential {
+      Objects.requireNonNull(username, "username");
+      Objects.requireNonNull(password, "password");
+    }
+
+    @Override
+    public String toString() {
+      return "<basic-credential>";
+    }
+  }
+
+  private record BearerCredential(String token) {
+    private BearerCredential {
+      Objects.requireNonNull(token, "token");
+    }
+
+    @Override
+    public String toString() {
+      return "<bearer-credential>";
+    }
+  }
+
   private record HeaderCheck(List<HttpTransportHeader> headers, String failureKind) {}
+
+  private record DecodingResult(byte[] body, long workBytes) {}
+
+  private enum ContentCoding {
+    IDENTITY,
+    GZIP,
+    DEFLATE,
+    INVALID
+  }
 
   private static final class CredentialProblem extends RuntimeException {
     private final String reason;
 
     private CredentialProblem(String reason) {
-      super("invalid API key credential", null, false, false);
+      super("invalid HTTP credential", null, false, false);
       this.reason = reason;
     }
   }

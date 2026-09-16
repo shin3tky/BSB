@@ -95,7 +95,7 @@ class HttpsHttpTransportRuntimeTest {
 
   @ParameterizedTest
   @MethodSource("failureKinds")
-  void mapsAllNineTransportFailuresToRecoverableResults(String kind) throws Exception {
+  void mapsAllTenTransportFailuresToRecoverableResults(String kind) throws Exception {
     ConnectionPolicy policy = policy("none", Optional.empty(), List.of("POST"), 1, 1);
     ExecutionEnvironment environment =
         environment(
@@ -232,7 +232,7 @@ class HttpsHttpTransportRuntimeTest {
         POST_REFERENCE,
         DiagnosticCode.E_HTTP_REQUEST_SIZE_LIMIT);
     assertPreTransportFailure(
-        policy("basic", Optional.of(CredentialReference.opaque()), List.of("POST"), 1, 1),
+        policy("oauth2", Optional.of(CredentialReference.opaque()), List.of("POST"), 1, 1),
         HttpRequestValue.empty(),
         POST_REFERENCE,
         DiagnosticCode.E_HTTP_AUTHENTICATION_UNSUPPORTED);
@@ -626,6 +626,7 @@ class HttpsHttpTransportRuntimeTest {
         "responseTimeout",
         "responseTooLarge",
         "responseHeadersTooLarge",
+        "contentDecodingFailure",
         "protocolFailure",
         "transportFailure");
   }

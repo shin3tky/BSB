@@ -27,7 +27,7 @@ URI期待は仕様のUTF-8 percent encodingを独立Python oracleで再計算し
 | HTTPS-N005 | header名大小文字、同名置換、応答同名値順序、欠落空配列 |
 | HTTPS-N006 | JSON・文字列・バイト列本文、本文不在・長さ0、Content-Type非自動 |
 | HTTPS-N007 | 200、204、3xx、4xx、5xxを完全応答として成功にする |
-| HTTPS-N008 | 9通信失敗を失敗結果にし、種類だけ取り出す |
+| HTTPS-N008 | 10通信失敗を失敗結果にし、種類だけ取り出す |
 | HTTPS-N009 | `none`とAPIキー注入、利用者同名headerを秘密値で置換 |
 | HTTPS-N010 | resolver 1回、transport 1回、redirect 0、retry 0、2 timeout |
 | HTTPS-N011 | HTTP 3型とラッパーの完全trace非開示、静的説明の非開示 |
@@ -41,10 +41,10 @@ URI期待は仕様のUTF-8 percent encodingを独立Python oracleで再計算し
 | HTTPS-F002 | 未宣言接続、通常値参照、到達不能抑止 |
 | HTTPS-F003 | pathの5理由と8,192／8,193境界 |
 | HTTPS-F004 | query 256／257、65,536／65,537境界 |
-| HTTPS-F005 | header名・値文法、予約10名、個数・総量境界 |
+| HTTPS-F005 | header名・値文法、予約11名、個数・総量境界 |
 | HTTPS-F006 | method不許可、GET・HEAD本文あり、要求本文方針超過 |
 | HTTPS-F007 | 接続未設定・拒否・10設定不正理由 |
-| HTTPS-F008 | Basic・OAuth未対応 |
+| HTTPS-F008 | OAuth未対応 |
 | HTTPS-F009 | APIキー未設定・拒否・名不正・値不正 |
 | HTTPS-F010 | 能力不在、resolver例外、transport例外 |
 | HTTPS-F011 | 取消は捕捉不能で失敗結果にしない |

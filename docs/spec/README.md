@@ -24,6 +24,7 @@
 | `BYTES` | バイト列・UTF-8・Base64 | [バイト列](byte-sequences.md) | [診断](byte-sequences-diagnostics.md) | [適合性](byte-sequences-conformance.md) |
 | `HTTPS` | HTTPS クライアント | [HTTPS](https.md) | [診断](https-diagnostics.md) | [適合性](https-conformance.md) |
 | `HTTP-REL` | HTTP 信頼性 | [再試行と最終送信記録](http-reliability.md) | [診断](http-reliability-diagnostics.md) | [適合性](http-reliability-conformance.md) |
+| `HTTP-API` | HTTP API相互運用 | [form・認証・status・圧縮](http-api-interoperability.md) | [診断](http-api-interoperability-diagnostics.md) | [適合性](http-api-interoperability-conformance.md) |
 | `NARRAY` | 二次元配列 | [二次元配列](nested-arrays.md) | [診断](nested-arrays-diagnostics.md) | [適合性](nested-arrays-conformance.md) |
 | `WST` | 作業領域・ファイル・CSV/TSV | [統合仕様](workspace-tables.md) | [診断](workspace-tables-diagnostics.md) | [適合性](workspace-tables-conformance.md) |
 | `JERG` | JSON参照・構築 | [JSON参照・構築](json-access-construction.md) | [診断](json-access-construction-diagnostics.md) | [適合性](json-access-construction-conformance.md) |

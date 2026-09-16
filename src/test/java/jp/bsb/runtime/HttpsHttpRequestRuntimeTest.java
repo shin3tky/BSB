@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import jp.bsb.diagnostics.DiagnosticCode;
 import jp.bsb.diagnostics.SourcePosition;
 import jp.bsb.diagnostics.SourceSpan;
@@ -113,6 +114,55 @@ class HttpsHttpRequestRuntimeTest {
   }
 
   @Test
+  void encodesFormsAndClassifiesStatusWithoutLosingTheResponse() throws Exception {
+    var form =
+        new ArrayValue(
+            ValueType.arrayOf(ValueType.STRING),
+            List.of(
+                row("name", "東京 station"), row("tag", "a/b~"), row("tag", ""), row("", "*.-_")));
+    var encoded = stack(form);
+    execute("文字列表をフォームURL符号化する", encoded);
+    assertEquals(
+        new StringValue("name=%E6%9D%B1%E4%BA%AC+station&tag=a%2Fb%7E&tag=&=*.-_"),
+        encoded.getFirst());
+
+    var body = ByteSequenceValue.copyOf(new byte[] {1, 2, 3});
+    var successResponse = new HttpResponseValue(299, Map.of(), body);
+    var success = stack(successResponse);
+    execute("HTTP応答を成功状態として検査する", success);
+    var successResult = (ResultValue) success.getFirst();
+    assertTrue(successResult.isSuccess());
+    assertSame(successResponse, successResult.value());
+
+    var failureResponse = new HttpResponseValue(300, Map.of(), body);
+    var failure = stack(failureResponse);
+    execute("HTTP応答を成功状態として検査する", failure);
+    var failureResult = (ResultValue) failure.getFirst();
+    assertTrue(failureResult.isFailure());
+    assertSame(failureResponse, failureResult.value());
+  }
+
+  @Test
+  void rejectsInvalidFormShapeAtomically() {
+    var invalid = new ArrayValue(ValueType.arrayOf(ValueType.STRING), List.of(row("only-one")));
+    var invalidStack = stack(invalid);
+    RuntimeFailure failure =
+        assertThrows(RuntimeFailure.class, () -> execute("文字列表をフォームURL符号化する", invalidStack));
+    assertEquals(DiagnosticCode.E_HTTP_FORM_ROW_WIDTH, failure.diagnostic().code());
+    assertSame(invalid, invalidStack.getFirst());
+
+    var rows = new ArrayList<RuntimeValue>();
+    for (int index = 0; index <= HttpFormUrlEncoder.MAX_ITEMS; index++) {
+      rows.add(row("name", Integer.toString(index)));
+    }
+    var tooMany = new ArrayValue(ValueType.arrayOf(ValueType.STRING), rows);
+    var tooManyStack = stack(tooMany);
+    failure = assertThrows(RuntimeFailure.class, () -> execute("文字列表をフォームURL符号化する", tooManyStack));
+    assertEquals(DiagnosticCode.E_HTTP_FORM_ITEM_LIMIT, failure.diagnostic().code());
+    assertSame(tooMany, tooManyStack.getFirst());
+  }
+
+  @Test
   void rejectsInvalidMetadataAtomicallyAndKeepsOpaqueTypesClosed() {
     var request = stack(HttpRequestValue.empty(), new StringValue("/absolute"));
     List<RuntimeValue> before = List.copyOf(request);
@@ -134,7 +184,7 @@ class HttpsHttpRequestRuntimeTest {
     assertFalse(jp.bsb.stdlib.ValueTypeTraits.isDisplayable(ValueType.HTTP_RESPONSE));
     assertFalse(jp.bsb.stdlib.ValueTypeTraits.isEqualityComparable(ValueType.HTTP_SEND_FAILURE));
     assertEquals("HTTP要求:<redacted>", HttpRequestValue.empty().toString());
-    assertTrue(HttpSendFailureValue.KINDS.size() == 9);
+    assertTrue(HttpSendFailureValue.KINDS.size() == 10);
   }
 
   @Test
@@ -182,6 +232,15 @@ class HttpsHttpRequestRuntimeTest {
 
   private static ArrayList<RuntimeValue> stack(RuntimeValue... values) {
     return new ArrayList<>(List.of(values));
+  }
+
+  private static ArrayValue row(String... values) {
+    return new ArrayValue(
+        ScalarType.STRING,
+        java.util.Arrays.stream(values)
+            .map(StringValue::new)
+            .map(RuntimeValue.class::cast)
+            .toList());
   }
 
   private static void execute(String name, ArrayList<RuntimeValue> stack) throws RuntimeFailure {

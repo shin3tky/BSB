@@ -42,7 +42,8 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar format path/to/program.bsb
 
 - 書き方や型を調べる: [言語リファレンスマニュアル](../reference/README.md)
 - 動くプログラムから学ぶ: [サンプル集](../../samples/README.md)
-- HTTPS やファイルを使う: [外部との接続](../reference/host-and-cli.md)
+- HTTP APIを呼び出す: [HTTP APIを呼び出す](08-http-api-interoperability.md)
+- HTTPS やファイルの規則を調べる: [外部との接続](../reference/host-and-cli.md)
 - 厳密な境界や診断を確認する: [詳細言語仕様](../spec/README.md)
 
 チュートリアルは基本概念を優先して一部の機能を省略しています。現在実装済みの範囲と非対応範囲は

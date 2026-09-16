@@ -1152,7 +1152,21 @@ public final class BuiltinDictionary {
               "大小文字を無視して比較する",
               BuiltinOperation.STRING_CASE_INSENSITIVE_COMPARE,
               List.of("文字列", "文字列"),
-              List.of("整数")));
+              List.of("整数")),
+          httpApiFeature(
+              "文字列表をフォームURL符号化する",
+              BuiltinOperation.HTTP_FORM_URL_ENCODE,
+              "名前と値の文字列二次元配列をapplication/x-www-form-urlencoded文字列へ変換します。",
+              List.of("配列<配列<文字列>>"),
+              List.of("文字列"),
+              "【【「name」、「東京」】】を 文字列表をフォームURL符号化する"),
+          httpApiFeature(
+              "HTTP応答を成功状態として検査する",
+              BuiltinOperation.HTTP_RESPONSE_REQUIRE_SUCCESS,
+              "2xx応答を成功、それ以外の最終応答を本文付きの失敗として結果へ変換します。",
+              List.of("HTTP応答"),
+              List.of("結果<HTTP応答,HTTP応答>"),
+              "HTTP応答を成功状態として検査する"));
 
   private static final Map<String, BuiltinWord> BY_NAME = indexByName();
   private static final Set<String> CANONICAL_NAMES = canonicalNameSet();
@@ -1436,6 +1450,26 @@ public final class BuiltinDictionary {
         operation,
         Set.of(),
         "HTTPS",
+        example);
+  }
+
+  private static BuiltinWord httpApiFeature(
+      String name,
+      BuiltinOperation operation,
+      String description,
+      List<String> inputs,
+      List<String> outputs,
+      String example) {
+    return new BuiltinWord(
+        name,
+        Set.of(),
+        description,
+        inputs,
+        outputs,
+        BuiltinTypeRule.FIXED,
+        operation,
+        Set.of(),
+        "HTTP-API",
         example);
   }
 

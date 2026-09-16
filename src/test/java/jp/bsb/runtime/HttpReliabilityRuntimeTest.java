@@ -343,6 +343,10 @@ class HttpReliabilityRuntimeTest {
   void validatesPolicyBoundaryAndRedactsItsRepresentation() {
     assertEquals(Optional.empty(), HttpRetryPolicies.validationProblem(HttpRetryPolicy.none()));
     assertEquals(
+        Optional.of("FAILURE_KIND_INVALID"),
+        HttpRetryPolicies.validationProblem(
+            retry("safeOnly", 2, List.of("contentDecodingFailure"), List.of(), 0, 0)));
+    assertEquals(
         Optional.empty(),
         HttpRetryPolicies.validationProblem(retry("apiGuaranteed", 1, List.of(), List.of(), 0, 0)));
     HttpRetryPolicy invalid = retry("apiGuaranteed", 9, List.of(), List.of(), 0, 0);

@@ -10,7 +10,8 @@ HTTP-RELは、既存の`HTTP要求を送信する<論理接続,method>`を変更
 
 最終試行の返値はHTTPS機能グループと同じです。200〜599の最終応答は、再試行対象の状態コードであっても
 `成功(HTTP応答)`です。通信失敗で試行を使い切った場合だけ`失敗(HTTP送信失敗)`です。したがって、4xx・5xxを
-通信成功として扱う既存プログラムと、`HTTP送信失敗`の9種類は変わりません。
+通信成功として扱う既存プログラムは変わりません。HTTP-API追加後の`HTTP送信失敗`は
+`contentDecodingFailure`を含む10種類です。
 
 「デッドレター相当」は暗黙の外部キューではなく、ホストが任意で受け取る閉じた最終送信記録とします。
 BSBのstdout、stderr、値、通常traceへ要求・応答本文や秘密を自動出力しません。
@@ -23,7 +24,7 @@ BSBのstdout、stderr、値、通常traceへ要求・応答本文や秘密を自
 |---|---|
 | mode | `none`または`bounded` |
 | maximumAttempts | 1〜8。初回を含む。`none`では1 |
-| retryableFailureKinds | 既存9通信失敗種類の部分集合 |
+| retryableFailureKinds | 10通信失敗種類から`responseTooLarge`と`contentDecodingFailure`を除いた部分集合 |
 | retryableStatusCodes | 408、425、429、500、502、503、504の部分集合 |
 | initialDelayMilliseconds | 0〜60,000 |
 | maximumDelayMilliseconds | 0〜300,000。initial以上 |
@@ -58,7 +59,8 @@ resolverを呼び直さず、途中で方針や資格情報参照を差し替え
 4. それ以外は既存の結果値を返す
 
 接続解決失敗、method不許可、要求サイズ超過、能力不在、取消、資格情報失敗、応答累積超過は再試行しません。
-`responseTooLarge`を含む通信失敗は、方針に明示されていても本文を小さくできないため再試行集合へ指定できません。
+`responseTooLarge`と`contentDecodingFailure`は、方針に明示されていても本文やcodingを変えられないため
+再試行集合へ指定できません。
 
 ## 4. 待機と`Retry-After`
 
@@ -118,7 +120,7 @@ CLI接続設定は`schema-version=2`でだけ信頼性方針を受理します�
 ## 8. 対象外
 
 - jitter、適応的backoff、回路遮断、並行要求、公平な全接続スケジューラ
-- リダイレクト、proxy、圧縮、streaming、接続プールの公開契約
-- OAuth・Basic認証、資格情報の自動更新
+- リダイレクト、proxy、streaming、接続プールの公開契約
+- OAuth token取得、資格情報の自動更新
 - BSB値からのretry方針変更、動的status集合、任意header生成
 - 永続デッドレターキュー、再投入、管理CLI

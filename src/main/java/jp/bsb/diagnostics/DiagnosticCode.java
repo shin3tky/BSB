@@ -565,6 +565,10 @@ public enum DiagnosticCode {
   E_HTTP_FINAL_FAILURE_CANCELLED,
   /** 最終失敗記録数が上限を超えた */
   E_HTTP_FINAL_FAILURE_LIMIT,
+  /** form URL encode入力の行が名前・値の2要素でなかった */
+  E_HTTP_FORM_ROW_WIDTH,
+  /** form URL encode入力の項目数が上限を超えた */
+  E_HTTP_FORM_ITEM_LIMIT,
 
   // --- 診断システム自体の制限 ---
   /** 1回の解析で検出された診断数が上限（100件）に到達したため以降を抑止 */

@@ -141,7 +141,7 @@ CONN機能グループの語は妥当性を検査するだけで、どの項目�
 | 基底URI | ASCII直列化で1〜8,192バイトの絶対`https` URI。小文字化したDNSホストを持ち、userinfo、query、fragmentなし。pathは`/`または`/`終端 |
 | 許可オリジン | 1〜32個の相異なる絶対HTTPS origin。各ASCII直列化は8,192バイト以下、合計262,144バイト以下。path、query、fragment、userinfoなし。基底URIのoriginを含む |
 | 許可メソッド | `GET`、`HEAD`、`POST`、`PUT`、`PATCH`、`DELETE`の空でない部分集合 |
-| 認証方式 | `none`、`basic`、`apiKey`、`oauth2`のいずれか |
+| 認証方式 | `none`、`basic`、`bearer`、`apiKey`、`oauth2`のいずれか |
 | 資格情報参照 | `none`では不在。それ以外ではホスト内の不透明参照が必須。秘密値そのものは禁止 |
 | 接続タイムアウト | 1〜30,000ミリ秒 |
 | 応答タイムアウト | 1〜30,000ミリ秒 |

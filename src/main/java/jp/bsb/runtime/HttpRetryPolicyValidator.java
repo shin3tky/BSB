@@ -18,7 +18,8 @@ final class HttpRetryPolicyValidator {
     var failures = new HashSet<>(policy.retryableFailureKinds());
     if (failures.size() != policy.retryableFailureKinds().size()
         || !HttpSendFailureValue.KINDS.containsAll(failures)
-        || failures.contains("responseTooLarge")) return "FAILURE_KIND_INVALID";
+        || failures.contains("responseTooLarge")
+        || failures.contains("contentDecodingFailure")) return "FAILURE_KIND_INVALID";
     var statuses = new HashSet<>(policy.retryableStatusCodes());
     if (statuses.size() != policy.retryableStatusCodes().size()
         || !ALLOWED_STATUSES.containsAll(statuses)) return "STATUS_CODE_INVALID";
