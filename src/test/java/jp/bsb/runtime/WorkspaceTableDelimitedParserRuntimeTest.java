@@ -67,6 +67,16 @@ class WorkspaceTableDelimitedParserRuntimeTest {
   }
 
   @Test
+  void acceptsLfSeparatedCsvAndTsvLikeTheirCrLfEquivalents() throws Exception {
+    assertEquals(
+        parseOnce("商品,個数\r\nりんご,3\r\nみかん,2\r\n", "CSVを表として解析する"),
+        parseOnce("商品,個数\nりんご,3\nみかん,2\n", "CSVを表として解析する"));
+    assertEquals(
+        parseOnce("商品\t個数\r\nりんご\t3\r\nみかん\t2\r\n", "TSVを表として解析する"),
+        parseOnce("商品\t個数\nりんご\t3\nみかん\t2\n", "TSVを表として解析する"));
+  }
+
+  @Test
   void workLimitIsAtomicAndPrecedesParsing() throws Exception {
     var exact =
         ExecutionBudget.withDelimitedTextWork(

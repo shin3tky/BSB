@@ -143,3 +143,5 @@ transport はすべての要求に `Accept-Encoding: gzip, deflate` を付けま
 [`samples/26-http-api-interoperability.bsb`](../../samples/26-http-api-interoperability.bsb)と
 [`samples/http-api-connections.toml.example`](../../samples/http-api-connections.toml.example)にあります。
 正確な上限と失敗条件は[HTTP API 相互運用仕様](../spec/http-api-interoperability.md)を参照してください。
+
+[次へ: CSV/TSV を扱う](09-csv-tsv.md)

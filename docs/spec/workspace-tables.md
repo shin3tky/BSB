@@ -233,7 +233,8 @@ header、列名、型、null、欠損値は引き続き持ちません。空文�
 
 CSVはASCII comma U+002C、TSVはASCII tab U+0009を区切りとし、それ以外は同じ文法です。
 [RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)を参考にしますが、ここに記す規則をBSBの規範とし、
-特定ライブラリの挙動を採用しません。
+特定ライブラリの挙動を採用しません。RFC 4180がrecord区切りをCRLFと定義する一方、実在するCSV/TSVとの
+相互運用のため、入力ではLF単独とCR単独もrecord区切りとして受理します。直列化出力はCRLFに統一します。
 
 ```text
 document       := bom? (record lineBreak)* record? lineBreak?

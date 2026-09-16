@@ -71,7 +71,8 @@ TSVを表として解析する
 ## 3. 共通方言
 
 CSVの区切りはU+002C comma、TSVはU+0009 tabです。それ以外の規則は共通です。RFC 4180は参考にしますが、
-本節の規則だけをBSBの規範とします。
+本節の規則だけをBSBの規範とします。RFC 4180がrecord区切りをCRLFと定義する一方、実在するCSV/TSVとの
+相互運用のため、入力ではLF単独とCR単独もrecord区切りとして受理します。直列化出力はCRLFに統一します。
 
 ```text
 document       := bom? (record lineBreak)* record? lineBreak?
