@@ -153,4 +153,4 @@ JSON の設定操作は元の空オブジェクトを変更せず、`name` を�
 
 </details>
 
-[次へ: エラーを読み、次へ進む](06-errors-and-next-steps.md)
+[次へ: 任意・結果を合成する](06-optional-result-composition.md)

@@ -31,3 +31,6 @@
 CLI の公開 JSON 契約は [診断 JSON](cli-json.md) と [説明 JSON](explain-json.md)、接続設定は
 [CLI 接続設定](cli-connection-config.md)を参照してください。整形規則は各機能グループの
 `*-format.md`に分離しています。
+
+`任意`・`結果`の局所伝播と、それらを要素に持つ配列の横断契約は
+[任意・結果の合成](optional-result-composition-diagnostics.md)を参照してください。
