@@ -49,24 +49,25 @@ BSB は `メイン` から実行を始めます。
 
 ## 実行前に検査する
 
-`check` は実行せずに構文、名前、型、値の流れを検査します。
+`check` はプログラムを実行せずに、構文、名前、型、スタック上の値の流れを検査します。
 
 ```shell
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar check samples/01-hello-world.bsb
 ```
 
-問題がなければ何も表示せず、終了コード0で終わります。外部へ出力したりファイルを書いたりする
-プログラムを、先に安全に検査したいときに便利です。
+問題がなければ何も表示せず、終了コード0で終わります。ネットワークへ送信したりファイルへ書き込んだりする
+プログラムを、実際に動かす前に検査したいときに便利です。
 
 ## 整形と説明
 
-`format` は標準形へ整えたソースを標準出力へ表示します。元のファイルは上書きしません。
+`format` はソースを標準形に整え、その結果を標準出力へ表示します。元のファイルは上書きしません。
 
 ```shell
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar format samples/01-hello-world.bsb
 ```
 
-`explain --json` は、単語、型、必要な実行環境能力などを機械可読な JSON で説明します。
+`explain --json` は、プログラムが使う単語や型、実行に必要な能力（ファイル操作や HTTPS 通信など、実行環境が
+提供する機能）を、ツールで処理しやすい JSON 形式で出力します。
 
 ```shell
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar explain --json samples/01-hello-world.bsb

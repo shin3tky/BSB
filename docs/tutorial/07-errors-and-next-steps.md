@@ -9,18 +9,19 @@ BSB は構文だけでなく、名前、型、スタックの形、実行環境�
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar check path/to/program.bsb
 ```
 
-診断には安定したコード、問題の位置、期待したもの、実際のもの、修正案が含まれます。先頭のエラーを直すと、
-後続の派生エラーも消えることがあります。
+診断には、`E_TYPE_MISMATCH` のような診断コード、問題の位置（ファイル名:行:列）、「必要」（期待される内容）、
+「実際」（実際の内容）、「修正候補」が含まれます。先頭のエラーを直すと、それが原因で起きていた後続のエラーも
+消えることがあります。
 
 よくある問題は次の5つです。
 
 - 値が足りない: 呼び出す単語のスタック効果で入力数を確認する
 - 型が違う: 暗黙変換はないため、変換単語を使うか値の作り方を直す
 - 分岐・反復の出口が合わない: すべての経路で同じ数・型の値を残す
-- 局所伝播の出力が合わない: 宣言出力末尾のラッパー、保持するprefix、`結果`の失敗型を確認する
-- 名前が見つからない: 綴り、宣言位置、局所スコープ、予約名を確認する
+- 局所伝播の出力が合わない: 宣言出力末尾のラッパー、保持する prefix、`結果` の失敗型を確認する
+- 名前が見つからない: 綴り、宣言の位置、局所名の有効範囲、予約名と重なっていないかを確認する
 
-ツールから扱う場合は `check --json` を使うと、同じ診断を1行 JSON で取得できます。
+ツールから扱う場合は `check --json` を使うと、同じ診断を1行の JSON として取得できます。
 
 ```shell
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar check --json path/to/program.bsb
@@ -34,7 +35,7 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar check --json path/to/program.bsb
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar format path/to/program.bsb
 ```
 
-元ファイルは上書きしないため、出力を見ながら安全に比較できます。
+元のファイルは上書きされないため、出力と元のソースを安心して見比べられます。
 
 ## 次に読むもの
 
@@ -42,9 +43,11 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar format path/to/program.bsb
 
 - 書き方や型を調べる: [言語リファレンスマニュアル](../reference/README.md)
 - 動くプログラムから学ぶ: [サンプル集](../../samples/README.md)
-- HTTP APIを呼び出す: [HTTP APIを呼び出す](08-http-api-interoperability.md)
+- HTTP API を呼び出す: [HTTP API を呼び出す](08-http-api-interoperability.md)
 - HTTPS やファイルの規則を調べる: [外部との接続](../reference/host-and-cli.md)
 - 厳密な境界や診断を確認する: [詳細言語仕様](../spec/README.md)
 
 チュートリアルは基本概念を優先して一部の機能を省略しています。現在実装済みの範囲と非対応範囲は
 [言語仕様の概説](../language-overview.md)で確認できます。
+
+[次へ: HTTP API を呼び出す](08-http-api-interoperability.md)
