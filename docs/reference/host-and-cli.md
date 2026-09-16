@@ -3,7 +3,11 @@
 ## CLI の基本形
 
 ```shell
-java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar COMMAND [OPTIONS] SOURCE [-- PROGRAM_ARGS...]
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar version
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar check [--json] SOURCE
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar explain --json SOURCE
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar format SOURCE
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run [RUN_OPTIONS] SOURCE [-- PROGRAM_ARGS...]
 ```
 
 | コマンド | 動作 |
@@ -16,6 +20,12 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar COMMAND [OPTIONS] SOURCE [-- PRO
 
 `check --json` は診断を機械可読な1行 JSON で返します。プログラムへ渡す起動引数はソースファイルの後ろの
 `--` で分離します。
+
+`run` のオプションは `--connections FILE`、`--workspaces FILE`、反復可能な
+`--file WORKSPACE LOGICAL_NAME ACCESS OS_PATH` です。すべて `SOURCE` より前へ置きます。
+`ACCESS` は `read`、`write`、`read-write` のいずれかです。`--file` と `--workspaces` は相互排他で、
+どちらも `--connections` とは併用できます。`check`、`explain`、`format` にはこれらの実行時設定を
+指定できません。`--json` は `check` または `explain` の直後にだけ置けます。
 
 ```shell
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/12-command-line-arguments.bsb -- 赤 青 緑
@@ -144,3 +154,4 @@ CLI は成功、使用法、I/O、静的検査、字句・構文、実行時、�
 - [HTTP API相互運用](../spec/http-api-interoperability.md)
 - [作業領域とファイル](../spec/workspace-files.md)
 - [CSV/TSV](../spec/delimited-tables.md)
+- [作業領域・ファイル・表の統合仕様](../spec/workspace-tables.md)

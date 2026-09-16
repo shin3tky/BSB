@@ -80,6 +80,7 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar format program.bsb
 
 ## 詳細仕様
 
+- [字句・構文・名前境界](../spec/language-core-grammar.md)
 - [プログラム表記](../spec/language-core-program-notation.md)
 - [Unicode と識別子](../spec/language-core-unicode.md)
 - [指数付き数値リテラル](../spec/exponent-literals.md)

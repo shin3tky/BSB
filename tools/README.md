@@ -73,6 +73,15 @@ python3 tools/builtin_word_coverage.py --strict     # UNCOVEREDが1件でもあ�
 `reason`はcodec理由専用であり、組み込み語の証跡には使いません。こちらの`--strict`も
 機械的に終了1とするのは`UNCOVERED`だけなので、`UNIT_ONLY`、`F_ONLY`、警告は別に確認します。
 
+### 利用者向け組み込み語一覧の生成
+
+`docs/reference/builtin-catalog.md` は、処理系の `explain --json` が返す全 `builtinWords` から生成します。
+組み込み辞書を変更した場合は、有効なソースに対する出力を保存してから次を実行してください。
+
+```shell
+python3 tools/generate_builtin_reference.py explain.json docs/reference/builtin-catalog.md
+```
+
 ## 今後のテスト工程での利用
 
 JaCoCoとこの2ツールを、今後の機能グループ、公開CLI、診断、組み込み語、適合フィクスチャを変更する
