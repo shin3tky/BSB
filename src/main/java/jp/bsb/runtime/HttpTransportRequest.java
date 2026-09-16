@@ -80,7 +80,7 @@ public final class HttpTransportRequest {
   }
 
   /**
-   * @return 検証済み絶対HTTPS対象
+   * @return 検証済み絶対HTTPS対象、または実験用localhost HTTP対象
    */
   public URI targetUri() {
     return targetUri;

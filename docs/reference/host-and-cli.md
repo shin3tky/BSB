@@ -68,6 +68,9 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run \
 対応する method は GET、POST、PUT、PATCH、DELETE、HEAD です。要求は不変値として組み立て、送信結果は
 `結果<HTTP応答,HTTP送信失敗>` で受け取ります。接続設定では有限再試行や開始間隔を指定できます。
 
+ローカルAPIの実験では`base-uri = "http://localhost:8080/"`も指定できます。`localhost`とport番号の
+明示が必須で、port省略、IPアドレス、localhost以外への平文HTTPは拒否されます。本番ではHTTPSを使用してください。
+
 ### formとHTTP status
 
 `文字列表をフォームURL符号化する`は、名前・値の2要素を持つ文字列二次元配列から

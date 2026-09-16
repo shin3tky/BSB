@@ -249,7 +249,8 @@ process-wide propertyがあるため、
 propertyをライブラリ内から変更しません。埋込みホストまたは起動コマンドがclient初期化前に設定し、
 transport構築時に検証します。契約外なら秘密やproperty値を含まないホスト構成失敗です。その上で次を強制します。
 
-- URI schemeは`https`だけ。証明書とホスト名を既定PKIX規則で検証し、検証無効化APIを公開しない
+- URI schemeは原則`https`だけ。証明書とホスト名を既定PKIX規則で検証し、検証無効化APIを公開しない。
+  実験用に限り、明示port付き`http://localhost:<port>/`も許可する
 - `Redirect.NEVER`、明示的な無proxy selector、自動再試行なし、同期1要求
 - TLS 1.2または1.3だけを許可する。既定trust storeとendpoint identificationを使う
 - 接続timeoutは接続方針、応答timeoutは送信開始から最終応答本文完了までの全体期限

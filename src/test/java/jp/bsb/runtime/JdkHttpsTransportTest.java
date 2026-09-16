@@ -411,7 +411,7 @@ class JdkHttpsTransportTest {
   }
 
   @Test
-  void rejectsNonHttpsTargetsBeforeCallingTheClient() {
+  void acceptsExplicitPortLocalhostHttpAndRejectsOtherPlainHttpTargets() {
     var calls = new java.util.concurrent.atomic.AtomicInteger();
     JdkHttpsTransport transport =
         transport(
@@ -419,7 +419,7 @@ class JdkHttpsTransportTest {
               calls.incrementAndGet();
               return response(200, List.of(), new byte[0]);
             });
-    HttpTransportRequest request =
+    HttpTransportRequest remote =
         new HttpTransportRequest(
             "接続",
             "POST",
@@ -430,8 +430,43 @@ class JdkHttpsTransportTest {
             1,
             false);
 
-    assertThrows(IllegalStateException.class, () -> transport.send(request));
+    assertThrows(IllegalStateException.class, () -> transport.send(remote));
     assertEquals(0, calls.get());
+
+    ConnectionPolicy localPolicy =
+        new ConnectionPolicy(
+            "http://localhost:8080/",
+            List.of("http://localhost:8080"),
+            List.of("POST"),
+            "none",
+            Optional.empty(),
+            1_000,
+            2_000,
+            64,
+            1,
+            "deny",
+            "none");
+    HttpTransportRequest local =
+        new HttpTransportRequest(
+            "接続",
+            "POST",
+            URI.create("http://localhost:8080/"),
+            List.of(),
+            Optional.empty(),
+            localPolicy,
+            1,
+            false);
+
+    assertEquals(HttpTransportResult.State.RESPONSE, transport.send(local).state());
+    assertEquals(1, calls.get());
+
+    for (String target : List.of("http://localhost/", "http://127.0.0.1:8080/")) {
+      HttpTransportRequest invalid =
+          new HttpTransportRequest(
+              "接続", "POST", URI.create(target), List.of(), Optional.empty(), localPolicy, 1, false);
+      assertThrows(IllegalStateException.class, () -> transport.send(invalid));
+    }
+    assertEquals(1, calls.get());
   }
 
   private static Stream<Arguments> ioFailures() {

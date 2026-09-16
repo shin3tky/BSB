@@ -138,8 +138,8 @@ CONN機能グループの語は妥当性を検査するだけで、どの項目�
 
 | 項目 | 規則 |
 |---|---|
-| 基底URI | ASCII直列化で1〜8,192バイトの絶対`https` URI。小文字化したDNSホストを持ち、userinfo、query、fragmentなし。pathは`/`または`/`終端 |
-| 許可オリジン | 1〜32個の相異なる絶対HTTPS origin。各ASCII直列化は8,192バイト以下、合計262,144バイト以下。path、query、fragment、userinfoなし。基底URIのoriginを含む |
+| 基底URI | ASCII直列化で1〜8,192バイトの絶対`https` URI、または実験用の明示port付き`http://localhost:<port>/` URI。小文字化したDNSホストを持ち、userinfo、query、fragmentなし。pathは`/`または`/`終端 |
+| 許可オリジン | 1〜32個の相異なる許可対象origin。各ASCII直列化は8,192バイト以下、合計262,144バイト以下。path、query、fragment、userinfoなし。基底URIのoriginを含む |
 | 許可メソッド | `GET`、`HEAD`、`POST`、`PUT`、`PATCH`、`DELETE`の空でない部分集合 |
 | 認証方式 | `none`、`basic`、`bearer`、`apiKey`、`oauth2`のいずれか |
 | 資格情報参照 | `none`では不在。それ以外ではホスト内の不透明参照が必須。秘密値そのものは禁止 |
@@ -150,10 +150,10 @@ CONN機能グループの語は妥当性を検査するだけで、どの項目�
 | リダイレクト方針 | CONN機能グループでは`deny`だけ |
 | 再試行方針 | `none`または[HTTP-REL](http-reliability.md)の不変な`bounded`方針 |
 
-URIのoriginはscheme、ASCII化・小文字化したhost、明示または既定portからなり、既定443は同一とします。
-IPv4・IPv6リテラル、国際化ドメイン名のUnicode入力、相対URI、`http`、TLS設定の上書きは
-CONN機能グループの定義では不正です。国際化ドメイン名を使うホストは、設定を渡す前にIDNAのASCII表記へ
-変換します。
+URIのoriginはscheme、ASCII化・小文字化したhost、明示または既定portからなり、HTTPSの既定443は同一とします。
+平文HTTPは実験用の`localhost`に限り、1〜65535のport明示を必須とします。`localhost`以外のHTTP、
+`127.0.0.1`・`::1`を含むIPv4・IPv6リテラル、国際化ドメイン名のUnicode入力、相対URI、TLS設定の上書きは
+不正です。国際化ドメイン名を使うHTTPSホストは、設定を渡す前にIDNAのASCII表記へ変換します。
 
 認証方式の列挙は接続方針の静的分類だけを固定します。Basic、APIキー、OAuth 2.0の資格情報形式、
 挿入位置、トークン取得、更新はHTTPS機能グループで別途規範化します。CONN機能グループは資格情報参照を解決・呼出しせず、

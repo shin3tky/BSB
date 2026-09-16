@@ -101,14 +101,14 @@ final class ConnectionPolicyValidator {
         && target.getRawFragment() == null
         && origin(base).equals(origin(target))
         && policy.allowedOrigins().stream()
-            .map(ConnectionPolicyValidator::parseAsciiHttps)
+            .map(ConnectionPolicyValidator::parseAllowedUri)
             .filter(java.util.Objects::nonNull)
             .map(ConnectionPolicyValidator::origin)
             .anyMatch(origin(target)::equals);
   }
 
   private static URI parseBase(String text) {
-    URI uri = parseAsciiHttps(text);
+    URI uri = parseAllowedUri(text);
     if (uri == null
         || text.getBytes(StandardCharsets.UTF_8).length > URI_BYTES
         || uri.getRawUserInfo() != null
@@ -129,7 +129,7 @@ final class ConnectionPolicyValidator {
     var normalized = new HashSet<String>();
     long total = 0;
     for (String text : policy.allowedOrigins()) {
-      URI origin = parseAsciiHttps(text);
+      URI origin = parseAllowedUri(text);
       if (origin == null
           || origin.getRawUserInfo() != null
           || origin.getRawQuery() != null
@@ -146,7 +146,7 @@ final class ConnectionPolicyValidator {
     return normalized.contains(origin(base));
   }
 
-  private static URI parseAsciiHttps(String text) {
+  private static URI parseAllowedUri(String text) {
     if (text.isEmpty() || !StandardCharsets.US_ASCII.newEncoder().canEncode(text)) {
       return null;
     }
@@ -154,7 +154,7 @@ final class ConnectionPolicyValidator {
       URI uri = new URI(text);
       String host = uri.getHost();
       if (!uri.isAbsolute()
-          || !"https".equals(uri.getScheme())
+          || !supportedSchemeAndHost(uri)
           || host == null
           || !host.equals(host.toLowerCase(Locale.ROOT))
           || !isDnsName(host)
@@ -166,6 +166,19 @@ final class ConnectionPolicyValidator {
     } catch (URISyntaxException failure) {
       return null;
     }
+  }
+
+  /** HTTPS、または明示port付きlocalhost HTTPだけを送信対象として許可します。 */
+  static boolean supportedTransportTarget(URI uri) {
+    if (uri == null || uri.getHost() == null || uri.getRawUserInfo() != null) return false;
+    return supportedSchemeAndHost(uri) && uri.getPort() != 0 && uri.getPort() <= 65_535;
+  }
+
+  private static boolean supportedSchemeAndHost(URI uri) {
+    if ("https".equals(uri.getScheme())) return true;
+    return "http".equals(uri.getScheme())
+        && "localhost".equals(uri.getHost())
+        && uri.getPort() >= 1;
   }
 
   private static boolean isDnsName(String host) {
@@ -186,7 +199,8 @@ final class ConnectionPolicyValidator {
 
   private static String origin(URI uri) {
     int port = uri.getPort();
-    return "https://" + uri.getHost() + (port == -1 || port == 443 ? "" : ":" + port);
+    boolean defaultHttpsPort = "https".equals(uri.getScheme()) && (port == -1 || port == 443);
+    return uri.getScheme() + "://" + uri.getHost() + (defaultHttpsPort ? "" : ":" + port);
   }
 
   private static boolean within(long value, long minimum, long maximum) {

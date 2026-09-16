@@ -57,6 +57,10 @@ value-env = "CRM_API_KEY"
 redirectは`deny`、retryは`none`に固定します。構築した方針は既存`ConnectionPolicy`の規範検証を
 読込み時と送信時の両方で通します。
 
+ローカルAPIの実験では、`base-uri = "http://localhost:8080/"`のような平文HTTPも指定できます。
+`localhost`というhost名と1〜65535の明示portが必須です。port省略、IPリテラル、localhost以外の
+HTTP URIは拒否します。本番接続にはHTTPSを使用します。
+
 認証なしは次の形です。
 
 ```toml

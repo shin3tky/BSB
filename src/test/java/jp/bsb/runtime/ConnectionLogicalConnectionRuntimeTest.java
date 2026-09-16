@@ -143,6 +143,26 @@ class ConnectionLogicalConnectionRuntimeTest {
   }
 
   @Test
+  void acceptsExperimentalLocalhostHttpPolicyWithExplicitPort() {
+    ConnectionPolicy policy =
+        policy(
+            "http://localhost:8080/api/",
+            List.of("http://localhost:8080"),
+            List.of("GET"),
+            "none",
+            Optional.empty(),
+            1,
+            1,
+            1,
+            1,
+            "deny",
+            "none");
+
+    Run run = run((name, operation) -> ConnectionResolution.resolved(name, policy), true, false);
+    assertEquals(0, run.result().exitCode());
+  }
+
+  @Test
   void policyAndCredentialReferenceAreImmutableAndSafelyPrintable() {
     var origins = new ArrayList<>(List.of("https://api.example.test"));
     var methods = new ArrayList<>(List.of("GET"));

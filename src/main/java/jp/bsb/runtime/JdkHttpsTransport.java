@@ -34,7 +34,7 @@ import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLParameters;
 
-/** JDK標準クライアントで、検証済み要求だけを同期HTTPS送信する能力です。 */
+/** JDK標準クライアントで、検証済みHTTPS要求と実験用localhost HTTP要求だけを同期送信する能力です。 */
 public final class JdkHttpsTransport implements HttpTransport {
   private static final String RETRY_DISABLED = "jdk.httpclient.disableRetryConnect";
   private static final String ALL_METHOD_RETRY = "jdk.httpclient.enableAllMethodRetry";
@@ -71,8 +71,8 @@ public final class JdkHttpsTransport implements HttpTransport {
   @Override
   public HttpTransportResult send(HttpTransportRequest request) {
     Objects.requireNonNull(request, "request");
-    if (!"https".equals(request.targetUri().getScheme())) {
-      throw new IllegalStateException("HTTP transport received a non-HTTPS target");
+    if (!ConnectionPolicyValidator.supportedTransportTarget(request.targetUri())) {
+      throw new IllegalStateException("HTTP transport received an unsupported target");
     }
     List<HttpTransportHeader> headers;
     try {

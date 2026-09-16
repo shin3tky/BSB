@@ -483,17 +483,23 @@ final class ConnectionConfigLoader {
   private static String origin(String baseUri) throws ConnectionConfigException {
     try {
       URI parsed = new URI(baseUri);
-      if (!"https".equals(parsed.getScheme())
+      boolean https = "https".equals(parsed.getScheme());
+      boolean localHttp =
+          "http".equals(parsed.getScheme())
+              && "localhost".equals(parsed.getHost())
+              && parsed.getPort() >= 1;
+      if ((!https && !localHttp)
           || parsed.getHost() == null
           || parsed.getRawUserInfo() != null
           || parsed.getPort() == 0
           || parsed.getPort() > 65_535) {
-        throw problem("base-uriは有効なHTTPS基底URIでなければなりません。");
+        throw problem("base-uriは有効なHTTPS基底URIまたは明示port付きlocalhost HTTP URIでなければなりません。");
       }
       int port = parsed.getPort();
-      return "https://" + parsed.getHost() + (port == -1 || port == 443 ? "" : ":" + port);
+      boolean defaultHttpsPort = https && (port == -1 || port == 443);
+      return parsed.getScheme() + "://" + parsed.getHost() + (defaultHttpsPort ? "" : ":" + port);
     } catch (URISyntaxException failure) {
-      throw problem("base-uriは有効なHTTPS基底URIでなければなりません。");
+      throw problem("base-uriは有効なHTTPS基底URIまたは明示port付きlocalhost HTTP URIでなければなりません。");
     }
   }
 

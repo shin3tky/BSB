@@ -139,6 +139,30 @@ class ConnectionConfigLoaderTest {
   }
 
   @Test
+  void acceptsExperimentalLocalhostHttpOnlyWithAnExplicitPort() throws Exception {
+    String local =
+        baseNoneConfig().replace("https://api.example.test/", "http://localhost:8080/api/");
+    var policy =
+        new ConnectionConfigLoader(name -> null)
+            .load(write(local))
+            .resolver()
+            .resolve("API", "resolve")
+            .policy()
+            .orElseThrow();
+
+    assertEquals("http://localhost:8080/api/", policy.baseUri());
+    assertEquals(List.of("http://localhost:8080"), policy.allowedOrigins());
+
+    for (String invalid :
+        List.of("http://localhost/", "http://127.0.0.1:8080/", "http://api.example.test:8080/")) {
+      String document = baseNoneConfig().replace("https://api.example.test/", invalid);
+      assertThrows(
+          ConnectionConfigException.class,
+          () -> new ConnectionConfigLoader(name -> null).load(write(document)));
+    }
+  }
+
+  @Test
   void loadsVersionThreeBasicAndBearerWithoutExposingSecrets() throws Exception {
     String password = "BASIC_PASSWORD_SECRET";
     String token = "BEARER_TOKEN_SECRET";
