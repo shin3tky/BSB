@@ -253,6 +253,13 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run \
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/131-tic-tac-toe.bsb
 ```
 
+ANSIエスケープシーケンスに対応した端末では、盤面を一度だけ描画し、カーソル移動で
+選んだマスだけを上書きする版も実行できます。
+
+```shell
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/132-fixed-tic-tac-toe.bsb
+```
+
 ## 一覧
 
 | ファイル                           | 内容                             | 主な機能                                     |
@@ -303,6 +310,7 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/131-tic-tac-toe.bsb
 | `129-prime-sieve.bsb`              | エラトステネスの篩による素数列挙 | 単語定義、配列操作、条件ループ               |
 | `130-rpn-calculator.bsb`           | 逆ポーランド記法（RPN）電卓      | 文字列分割、配列によるスタック操作、四則演算 |
 | `131-tic-tac-toe.bsb`              | 2人用の対話式三目並べ             | 一行入力、配列更新、勝敗判定、条件ループ       |
+| `132-fixed-tic-tac-toe.bsb`        | 盤面が流れない三目並べ           | ANSIカーソル移動、行消去、部分上書き         |
 
 `13-decimal-division-rounding.bsb` の精度指定は「小数点以下の桁数」ではなく「有効桁数」です。`1.0 ÷ 3`、`1.0 ÷ 8.0`、`-1.0 ÷ 8.0`を使い、丸め方向による結果の違いを表示します。
 
