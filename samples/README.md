@@ -260,6 +260,17 @@ ANSIエスケープシーケンスに対応した端末では、盤面を一度�
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/132-fixed-tic-tac-toe.bsb
 ```
 
+喜・怒・哀・楽の4状態が色付きで発生・遷移・衰退する「喜怒哀楽ライフゲーム」は、
+各世代を同じ端末座標へ上書きします。盤外は「無」として扱い、初期配置は毎回同じになる
+決定的な模様です。既定値は10×10、30世代、1000ミリ秒間隔です。実行時間と出力量を調整する場合は、
+ソース先頭の4変数を変更できます。盤面か世代数を大きくすると、現行処理系の命令数上限へ
+到達する場合があります。初期配置は、各感情のX座標配列とY座標配列へ0始まりの座標を
+対応する順番で追加すると変更できます。盤外の座標は無視されます。
+
+```shell
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/133-emotional-life-game.bsb
+```
+
 ## 一覧
 
 | ファイル                           | 内容                             | 主な機能                                     |
@@ -311,6 +322,7 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/132-fixed-tic-tac-to
 | `130-rpn-calculator.bsb`           | 逆ポーランド記法（RPN）電卓      | 文字列分割、配列によるスタック操作、四則演算 |
 | `131-tic-tac-toe.bsb`              | 2人用の対話式三目並べ             | 一行入力、配列更新、勝敗判定、条件ループ       |
 | `132-fixed-tic-tac-toe.bsb`        | 盤面が流れない三目並べ           | ANSIカーソル移動、行消去、部分上書き         |
+| `133-emotional-life-game.bsb`      | 喜怒哀楽ライフゲーム               | 色付き固定盤面、8近傍、状態遷移、待機     |
 
 `13-decimal-division-rounding.bsb` の精度指定は「小数点以下の桁数」ではなく「有効桁数」です。`1.0 ÷ 3`、`1.0 ÷ 8.0`、`-1.0 ÷ 8.0`を使い、丸め方向による結果の違いを表示します。
 
