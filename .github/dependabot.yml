@@ -11,6 +11,16 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: deps
+    ignore:
+      # BSBのUnicode仕様は16.0に固定している。ICU 77以降はUnicode 17系となるため、
+      # Unicode仕様を明示的に移行するまでは76系だけを更新対象とする。
+      - dependency-name: com.ibm.icu:icu4j
+        versions:
+          - ">=77.0"
+      # LSP4J 1.0はDiagnostic.message等に破壊的変更があるため、移行を別途行う。
+      - dependency-name: org.eclipse.lsp4j:org.eclipse.lsp4j
+        versions:
+          - ">=1.0.0"
 
   - package-ecosystem: npm
     directory: /editors/vscode
@@ -22,6 +32,15 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: deps
+    ignore:
+      # VS Code 1.91を最低対応版としているため、利用可能なAPIの型も1.91に揃える。
+      - dependency-name: "@types/vscode"
+        versions:
+          - ">=1.92.0"
+      # Extension HostとesbuildのターゲットはNode.js 20。
+      - dependency-name: "@types/node"
+        versions:
+          - ">=21.0.0"
 
   - package-ecosystem: github-actions
     directory: /
