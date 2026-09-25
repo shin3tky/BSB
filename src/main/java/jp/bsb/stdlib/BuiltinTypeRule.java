@@ -32,6 +32,24 @@ public enum BuiltinTypeRule {
   /** {@code 配列<T> T -- 配列<T>}です。 */
   ARRAY_APPEND,
 
+  /** {@code 配列<T> 配列<T> -- 配列<T>}です。 */
+  ARRAY_CONCAT,
+
+  /** {@code 配列<T> T -- 配列<T>}です。 */
+  ARRAY_PREPEND,
+
+  /** {@code 配列<T> -- 配列<T>}です。 */
+  ARRAY_REVERSE,
+
+  /** 等値比較可能な{@code T}について、{@code 配列<T> T -- 真偽}です。 */
+  ARRAY_CONTAINS,
+
+  /** 等値比較可能な{@code T}について、{@code 配列<T> T -- 整数}です。 */
+  ARRAY_FIND,
+
+  /** {@code 配列<T> -- 真偽}です。 */
+  ARRAY_IS_EMPTY,
+
   /** {@code T -- 任意<T>}です。 */
   OPTIONAL_WRAP,
 

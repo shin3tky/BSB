@@ -37,7 +37,7 @@ class DecimalTextDecimalTextCliTest {
     assertEquals("", explained.stderr());
     Map<String, Object> explainDocument = object(StrictJsonParser.parse(explained.stdout()));
     assertEquals(new BigDecimal("1"), explainDocument.get("schemaVersion"));
-    assertEquals(189, list(explainDocument.get("builtinWords")).size());
+    assertEquals(195, list(explainDocument.get("builtinWords")).size());
   }
 
   @Test

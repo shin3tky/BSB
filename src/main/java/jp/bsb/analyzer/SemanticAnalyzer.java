@@ -2693,6 +2693,12 @@ public final class SemanticAnalyzer {
             case ARRAY_SLICE -> applyArraySlice(call, stack);
             case ARRAY_REPLACE -> applyArrayReplace(call, stack);
             case ARRAY_APPEND -> applyArrayAppend(call, stack);
+            case ARRAY_CONCAT -> applyArrayConcat(call, stack);
+            case ARRAY_PREPEND -> applyArrayPrepend(call, stack);
+            case ARRAY_REVERSE -> applyArrayReverse(call, stack);
+            case ARRAY_CONTAINS -> applyArraySearch(call, stack, ValueType.BOOLEAN);
+            case ARRAY_FIND -> applyArraySearch(call, stack, ValueType.INTEGER);
+            case ARRAY_IS_EMPTY -> applyArrayIsEmpty(call, stack);
             case OPTIONAL_WRAP -> applyOptionalWrap(call, stack);
             case OPTIONAL_PREDICATE -> applyOptionalPredicate(call, stack);
             case OPTIONAL_UNWRAP -> applyOptionalUnwrap(call, stack);
@@ -2961,6 +2967,64 @@ public final class SemanticAnalyzer {
       return stack.removeTop(2).push(arrayType, call.span());
     }
 
+    private AbstractStack applyArrayConcat(WordCall call, AbstractStack stack) {
+      ValueType arrayType = requireArrayInputs(call, List.of("配列<T>", "配列<T>"), stack);
+      if (arrayType == null) {
+        return null;
+      }
+      ValueType secondType = stack.slots().getLast().type();
+      if (!requireArrayOperationType(call, 2, arrayType, secondType, "同じ要素型の配列を渡してください")) {
+        return null;
+      }
+      return stack.removeTop(2).push(arrayType, call.span());
+    }
+
+    private AbstractStack applyArrayPrepend(WordCall call, AbstractStack stack) {
+      ValueType arrayType = requireArrayInputs(call, List.of("配列<T>", "T"), stack);
+      if (arrayType == null) {
+        return null;
+      }
+      ValueType elementType = arrayType.arrayElementType().orElseThrow();
+      if (!requireArrayOperationType(
+          call,
+          2,
+          elementType,
+          stack.slots().getLast().type(),
+          "追加値を" + elementType.sourceName() + "にしてください")) {
+        return null;
+      }
+      return stack.removeTop(2).push(arrayType, call.span());
+    }
+
+    private AbstractStack applyArrayReverse(WordCall call, AbstractStack stack) {
+      ValueType arrayType = requireArrayInputs(call, List.of("配列<T>"), stack);
+      return arrayType == null ? null : stack.removeTop(1).push(arrayType, call.span());
+    }
+
+    private AbstractStack applyArraySearch(
+        WordCall call, AbstractStack stack, ValueType outputType) {
+      ValueType arrayType = requireArrayInputs(call, List.of("配列<T>", "T"), stack);
+      if (arrayType == null) {
+        return null;
+      }
+      ValueType elementType = arrayType.arrayElementType().orElseThrow();
+      ValueType actualElementType = stack.slots().getLast().type();
+      if (!requireArrayOperationType(
+          call, 2, elementType, actualElementType, "検索値を" + elementType.sourceName() + "にしてください")) {
+        return null;
+      }
+      if (!ValueTypeTraits.isEqualityComparable(elementType)) {
+        reportArrayOperationTypeMismatch(call, 2, "等値比較可能", elementType, "比較可能な要素型の配列を使用してください");
+        return null;
+      }
+      return stack.removeTop(2).push(outputType, call.span());
+    }
+
+    private AbstractStack applyArrayIsEmpty(WordCall call, AbstractStack stack) {
+      ValueType arrayType = requireArrayInputs(call, List.of("配列<T>"), stack);
+      return arrayType == null ? null : stack.removeTop(1).push(ValueType.BOOLEAN, call.span());
+    }
+
     /** 入力数と第1入力の配列制約を検査し、具体化した配列型を返します。 */
     private ValueType requireArrayInputs(
         WordCall call, List<String> requiredTypes, AbstractStack stack) {
@@ -2993,6 +3057,9 @@ public final class SemanticAnalyzer {
               case "配列の一部を取り出す" -> missingInput == 2 ? "開始位置を追加してください" : "終了位置を追加してください";
               case "配列の要素を置き換える" -> missingInput == 2 ? "整数の添字を追加してください" : "置換値を追加してください";
               case "配列の末尾へ追加する" -> "追加値を置いてください";
+              case "配列をつなぐ" -> "同じ要素型の配列を追加してください";
+              case "配列の先頭へ追加する" -> "追加値を置いてください";
+              case "配列に含まれる", "配列から検索する" -> "検索値を置いてください";
               default -> "配列値を追加してください";
             };
       }

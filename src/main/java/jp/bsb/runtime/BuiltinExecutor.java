@@ -195,6 +195,12 @@ final class BuiltinExecutor {
       case ARRAY_SLICE -> arraySlice(stack, span);
       case ARRAY_REPLACE -> arrayReplace(stack, span);
       case ARRAY_APPEND -> arrayAppend(stack, span);
+      case ARRAY_CONCAT -> arrayConcat(stack, span);
+      case ARRAY_PREPEND -> arrayPrepend(stack, span);
+      case ARRAY_REVERSE -> arrayReverse(stack, span);
+      case ARRAY_CONTAINS -> arraySearch(word, stack, span, true);
+      case ARRAY_FIND -> arraySearch(word, stack, span, false);
+      case ARRAY_IS_EMPTY -> arrayIsEmpty(stack, span);
       case DISPLAY -> display(word, stack, span, false, output);
       case DISPLAY_LINE -> display(word, stack, span, true, output);
       case NEWLINE -> newline(word, span, output);
@@ -5468,6 +5474,195 @@ final class BuiltinExecutor {
     ArrayValue result = new ArrayValue(array.elementType(), elements, logicalLeafCount);
     stack.removeLast();
     stack.set(arrayIndex, result);
+    return new byte[0];
+  }
+
+  private byte[] arrayConcat(ArrayList<RuntimeValue> stack, SourceSpan span) throws RuntimeFailure {
+    int firstIndex = stack.size() - 2;
+    ArrayValue first = (ArrayValue) stack.get(firstIndex);
+    ArrayValue second = (ArrayValue) stack.get(firstIndex + 1);
+    long resultLength = (long) first.size() + second.size();
+    if (resultLength > ArrayLimits.MAX_LENGTH) {
+      throw arrayLengthLimit(span, resultLength, "concat");
+    }
+    long logicalLeafCount = ArrayNestedLimit.concatenate(first, second);
+    ArrayNestedLimit.requireAllowed(
+        sourcePath, span, "concat", first.elementType(), logicalLeafCount);
+    budget.beforeArrayWork(second.size(), second.size(), span, "concat");
+    ArrayValue result = first.concatenated(second, logicalLeafCount);
+    stack.removeLast();
+    stack.set(firstIndex, result);
+    return new byte[0];
+  }
+
+  private byte[] arrayPrepend(ArrayList<RuntimeValue> stack, SourceSpan span)
+      throws RuntimeFailure {
+    int arrayIndex = stack.size() - 2;
+    ArrayValue array = (ArrayValue) stack.get(arrayIndex);
+    RuntimeValue element = stack.get(arrayIndex + 1);
+    long resultLength = (long) array.size() + 1;
+    if (resultLength > ArrayLimits.MAX_LENGTH) {
+      throw arrayLengthLimit(span, resultLength, "prepend");
+    }
+    long logicalLeafCount = ArrayNestedLimit.prepend(array, element);
+    ArrayNestedLimit.requireAllowed(
+        sourcePath, span, "prepend", array.elementType(), logicalLeafCount);
+    budget.beforeArrayWork(1, 1, span, "prepend");
+    ArrayValue result = array.prepended(element, logicalLeafCount);
+    stack.removeLast();
+    stack.set(arrayIndex, result);
+    return new byte[0];
+  }
+
+  private byte[] arrayReverse(ArrayList<RuntimeValue> stack, SourceSpan span)
+      throws RuntimeFailure {
+    int arrayIndex = stack.size() - 1;
+    ArrayValue array = (ArrayValue) stack.get(arrayIndex);
+    budget.beforeArrayWork(array.size(), array.size(), span, "reverse");
+    stack.set(arrayIndex, array.reversed());
+    return new byte[0];
+  }
+
+  private byte[] arraySearch(
+      BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span, boolean contains)
+      throws RuntimeFailure {
+    int arrayIndex = stack.size() - 2;
+    ArrayValue array = (ArrayValue) stack.get(arrayIndex);
+    RuntimeValue sought = stack.get(arrayIndex + 1);
+    int found = -1;
+    long arrayWork = 0;
+    long jsonWork = 0;
+    long byteSequenceWork = 0;
+    for (int index = 0; index < array.size(); index++) {
+      EqualityMeasurement measurement = measureEquality(array.get(index), sought);
+      arrayWork = saturatedAdd(arrayWork, saturatedAdd(1, measurement.arrayWork()));
+      jsonWork = saturatedAdd(jsonWork, measurement.jsonWork());
+      byteSequenceWork = saturatedAdd(byteSequenceWork, measurement.byteSequenceWork());
+      if (measurement.equal()) {
+        found = index;
+        break;
+      }
+    }
+    budget.beforeArrayJsonAndByteSequenceWork(
+        arrayWork, jsonWork, byteSequenceWork, span, word.canonicalName());
+    RuntimeValue result =
+        contains ? new BooleanValue(found >= 0) : new IntegerValue(BigInteger.valueOf(found));
+    stack.removeLast();
+    stack.set(arrayIndex, result);
+    return new byte[0];
+  }
+
+  private EqualityMeasurement measureEquality(RuntimeValue first, RuntimeValue second) {
+    RuntimeValue left = first;
+    RuntimeValue right = second;
+    while (true) {
+      if (left instanceof OptionalValue leftOptional
+          && right instanceof OptionalValue rightOptional) {
+        if (leftOptional.isPresent() != rightOptional.isPresent()) {
+          return EqualityMeasurement.notEqual();
+        }
+        if (!leftOptional.isPresent()) {
+          return EqualityMeasurement.equalMeasurement();
+        }
+        left = leftOptional.value().orElseThrow();
+        right = rightOptional.value().orElseThrow();
+      } else if (left instanceof ResultValue leftResult
+          && right instanceof ResultValue rightResult) {
+        if (leftResult.state() != rightResult.state()) {
+          return EqualityMeasurement.notEqual();
+        }
+        left = leftResult.value();
+        right = rightResult.value();
+      } else {
+        break;
+      }
+    }
+    if (left instanceof ArrayValue leftArray && right instanceof ArrayValue rightArray) {
+      return measureArrayEquality(leftArray, rightArray);
+    }
+    if (left instanceof ByteSequenceValue leftBytes
+        && right instanceof ByteSequenceValue rightBytes) {
+      if (leftBytes.length() != rightBytes.length()) {
+        return EqualityMeasurement.notEqual();
+      }
+      for (int index = 0; index < leftBytes.length(); index++) {
+        if (leftBytes.byteAt(index) != rightBytes.byteAt(index)) {
+          return new EqualityMeasurement(false, 0, 0, index + 1L);
+        }
+      }
+      return new EqualityMeasurement(true, 0, 0, leftBytes.length());
+    }
+    if (left instanceof JsonRuntimeValue leftJson && right instanceof JsonRuntimeValue rightJson) {
+      long work =
+          saturatedAdd(jsonTraversalUnits(leftJson.value()), jsonTraversalUnits(rightJson.value()));
+      return new EqualityMeasurement(left.equals(right), 0, work, 0);
+    }
+    return new EqualityMeasurement(left.equals(right), 0, 0, 0);
+  }
+
+  private EqualityMeasurement measureArrayEquality(ArrayValue first, ArrayValue second) {
+    if (first.size() != second.size()) {
+      return EqualityMeasurement.notEqual();
+    }
+    if (first.elementType() instanceof jp.bsb.stdlib.ArrayType rowType) {
+      for (int index = 0; index < first.size(); index++) {
+        if (((ArrayValue) first.get(index)).size() != ((ArrayValue) second.get(index)).size()) {
+          return EqualityMeasurement.notEqual();
+        }
+      }
+      long arrayWork = saturatedAdd(first.size(), first.logicalLeafCount());
+      long jsonWork =
+          rowType.elementType() == ScalarType.JSON
+              ? DisplayMetrics.nestedJsonEqualityWork(first, second)
+              : 0;
+      return new EqualityMeasurement(first.equals(second), arrayWork, jsonWork, 0);
+    }
+    if (first.elementType().isOptional() || first.elementType().isResult()) {
+      long arrayWork = first.size();
+      if (ValueType.arrayConstructorDepth(first.elementType()) > 0) {
+        arrayWork = saturatedAdd(arrayWork, first.logicalLeafCount());
+      }
+      return new EqualityMeasurement(
+          first.equals(second), arrayWork, DisplayMetrics.deepJsonEqualityWork(first, second), 0);
+    }
+    long arrayWork = 0;
+    long jsonWork = 0;
+    for (int index = 0; index < first.size(); index++) {
+      arrayWork = saturatedAdd(arrayWork, 1);
+      RuntimeValue left = first.get(index);
+      RuntimeValue right = second.get(index);
+      if (left instanceof JsonRuntimeValue leftJson
+          && right instanceof JsonRuntimeValue rightJson) {
+        jsonWork =
+            saturatedAdd(
+                jsonWork,
+                saturatedAdd(
+                    jsonTraversalUnits(leftJson.value()), jsonTraversalUnits(rightJson.value())));
+      }
+      if (!left.equals(right)) {
+        return new EqualityMeasurement(false, arrayWork, jsonWork, 0);
+      }
+    }
+    return new EqualityMeasurement(true, arrayWork, jsonWork, 0);
+  }
+
+  private record EqualityMeasurement(
+      boolean equal, long arrayWork, long jsonWork, long byteSequenceWork) {
+    private static EqualityMeasurement notEqual() {
+      return new EqualityMeasurement(false, 0, 0, 0);
+    }
+
+    private static EqualityMeasurement equalMeasurement() {
+      return new EqualityMeasurement(true, 0, 0, 0);
+    }
+  }
+
+  private byte[] arrayIsEmpty(ArrayList<RuntimeValue> stack, SourceSpan span)
+      throws RuntimeFailure {
+    int arrayIndex = stack.size() - 1;
+    ArrayValue array = (ArrayValue) stack.get(arrayIndex);
+    budget.beforeArrayWork(0, 1, span, "isEmpty");
+    stack.set(arrayIndex, new BooleanValue(array.size() == 0));
     return new byte[0];
   }
 

@@ -1,6 +1,7 @@
 package jp.bsb.runtime;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -79,6 +80,29 @@ public record ArrayValue(ValueType elementType, List<RuntimeValue> elements, lon
     result.addAll(elements);
     result.add(element);
     return new ArrayValue(elementType, result);
+  }
+
+  /** 先頭へ1要素を加え、元の値を変更しない新しい配列を返します。 */
+  ArrayValue prepended(RuntimeValue element, long resultLogicalLeafCount) {
+    var result = new ArrayList<RuntimeValue>(elements.size() + 1);
+    result.add(element);
+    result.addAll(elements);
+    return new ArrayValue(elementType, result, resultLogicalLeafCount);
+  }
+
+  /** 同じ要素型の第2配列を後ろへ連結した新しい配列を返します。 */
+  ArrayValue concatenated(ArrayValue second, long resultLogicalLeafCount) {
+    var result = new ArrayList<RuntimeValue>(elements.size() + second.elements.size());
+    result.addAll(elements);
+    result.addAll(second.elements);
+    return new ArrayValue(elementType, result, resultLogicalLeafCount);
+  }
+
+  /** 要素順だけを反転し、元の値を変更しない新しい配列を返します。 */
+  ArrayValue reversed() {
+    var result = new ArrayList<>(elements);
+    Collections.reverse(result);
+    return new ArrayValue(elementType, result, logicalLeafCount);
   }
 
   @Override

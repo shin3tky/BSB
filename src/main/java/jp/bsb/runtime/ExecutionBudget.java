@@ -569,6 +569,30 @@ final class ExecutionBudget {
     return byteSequenceWorkBytes;
   }
 
+  /** 配列・JSON・バイト列の予算を、検索などの複合処理向けに原子的に予約します。 */
+  void beforeArrayJsonAndByteSequenceWork(
+      long arrayOperationsRequested,
+      long jsonWorkRequested,
+      long byteSequenceWorkRequested,
+      SourceSpan span,
+      String operation)
+      throws RuntimeFailure {
+    long originalArrayConstruction = arrayConstructionUnits;
+    long originalArrayOperations = arrayElementOperationUnits;
+    long originalJsonConstruction = jsonConstructionUnits;
+    long originalJsonWork = jsonWorkUnits;
+    try {
+      beforeArrayAndJsonWork(0, arrayOperationsRequested, 0, jsonWorkRequested, span, operation);
+      beforeByteSequenceWork(0, byteSequenceWorkRequested, span, operation);
+    } catch (RuntimeFailure failure) {
+      arrayConstructionUnits = originalArrayConstruction;
+      arrayElementOperationUnits = originalArrayOperations;
+      jsonConstructionUnits = originalJsonConstruction;
+      jsonWorkUnits = originalJsonWork;
+      throw failure;
+    }
+  }
+
   /** HTTP metadata構築予算を検査し、受理できる場合だけ加算します。 */
   void beforeHttpMetadata(long requested, SourceSpan span, String word) throws RuntimeFailure {
     if (requested < 0) {

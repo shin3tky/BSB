@@ -14,7 +14,7 @@ class RecoverableJsonBuiltinDictionaryTest {
             .filter(word -> word.featureGroup().equals("RJSON"))
             .toList();
 
-    assertEquals(189, BuiltinDictionary.words().size());
+    assertEquals(195, BuiltinDictionary.words().size());
     assertEquals(
         List.of(
             "JSONを解析して結果を返す",

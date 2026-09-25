@@ -1166,7 +1166,55 @@ public final class BuiltinDictionary {
               "2xx応答を成功、それ以外の最終応答を本文付きの失敗として結果へ変換します。",
               List.of("HTTP応答"),
               List.of("結果<HTTP応答,HTTP応答>"),
-              "HTTP応答を成功状態として検査する"));
+              "HTTP応答を成功状態として検査する"),
+          arrayOperation(
+              "配列をつなぐ",
+              BuiltinOperation.ARRAY_CONCAT,
+              BuiltinTypeRule.ARRAY_CONCAT,
+              "第1配列の後ろへ第2配列の要素を順に置いた新しい配列を返します。",
+              List.of("配列<T>", "配列<T>"),
+              List.of("配列<T>"),
+              "【1、2】 と 【3、4】を 配列をつなぐ"),
+          arrayOperation(
+              "配列の先頭へ追加する",
+              BuiltinOperation.ARRAY_PREPEND,
+              BuiltinTypeRule.ARRAY_PREPEND,
+              "先頭へ要素を追加した新しい配列を返します。",
+              List.of("配列<T>", "T"),
+              List.of("配列<T>"),
+              "【2、3】 と 1 を 配列の先頭へ追加する"),
+          arrayOperation(
+              "配列を逆順にする",
+              BuiltinOperation.ARRAY_REVERSE,
+              BuiltinTypeRule.ARRAY_REVERSE,
+              "要素を逆順に並べた新しい配列を返します。",
+              List.of("配列<T>"),
+              List.of("配列<T>"),
+              "【1、2、3】を 配列を逆順にする"),
+          arrayOperation(
+              "配列に含まれる",
+              BuiltinOperation.ARRAY_CONTAINS,
+              BuiltinTypeRule.ARRAY_CONTAINS,
+              "等しい要素が含まれるかを調べます。",
+              List.of("配列<T>", "T"),
+              List.of("真偽"),
+              "【1、2、3】 と 2 を 配列に含まれる"),
+          arrayOperation(
+              "配列から検索する",
+              BuiltinOperation.ARRAY_FIND,
+              BuiltinTypeRule.ARRAY_FIND,
+              "最初に等しい要素の位置を返し、見つからなければ-1を返します。",
+              List.of("配列<T>", "T"),
+              List.of("整数"),
+              "【1、2、1】 と 1 を 配列から検索する"),
+          arrayOperation(
+              "配列が空である",
+              BuiltinOperation.ARRAY_IS_EMPTY,
+              BuiltinTypeRule.ARRAY_IS_EMPTY,
+              "配列の要素数が0かを調べます。",
+              List.of("配列<T>"),
+              List.of("真偽"),
+              "空の整数配列 を 配列が空である"));
 
   private static final Map<String, BuiltinWord> BY_NAME = indexByName();
   private static final Set<String> CANONICAL_NAMES = canonicalNameSet();

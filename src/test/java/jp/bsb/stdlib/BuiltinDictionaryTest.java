@@ -112,7 +112,7 @@ class BuiltinDictionaryTest {
   }
 
   @Test
-  void publishesGenericRulesForAllFiveArrayOperations() {
+  void publishesGenericRulesForAllArrayOperations() {
     assertEquals(
         List.of(
             BuiltinTypeRule.ARRAY_LENGTH,
@@ -127,6 +127,26 @@ class BuiltinDictionaryTest {
     assertTrue(
         BuiltinDictionary.words().subList(12, 17).stream()
             .allMatch(word -> word.sideEffects().isEmpty()));
+  }
+
+  @Test
+  void appendsSixExtendedArrayOperationsWithoutRenumberingExistingWords() {
+    List<BuiltinWord> words = BuiltinDictionary.words().subList(189, 195);
+
+    assertEquals(
+        List.of("配列をつなぐ", "配列の先頭へ追加する", "配列を逆順にする", "配列に含まれる", "配列から検索する", "配列が空である"),
+        words.stream().map(BuiltinWord::canonicalName).toList());
+    assertEquals(
+        List.of(
+            BuiltinTypeRule.ARRAY_CONCAT,
+            BuiltinTypeRule.ARRAY_PREPEND,
+            BuiltinTypeRule.ARRAY_REVERSE,
+            BuiltinTypeRule.ARRAY_CONTAINS,
+            BuiltinTypeRule.ARRAY_FIND,
+            BuiltinTypeRule.ARRAY_IS_EMPTY),
+        words.stream().map(BuiltinWord::typeRule).toList());
+    assertTrue(words.stream().allMatch(word -> word.featureGroup().equals("ARRAY")));
+    assertTrue(words.stream().allMatch(word -> word.sideEffects().isEmpty()));
   }
 
   @Test

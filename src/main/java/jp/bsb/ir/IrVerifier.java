@@ -137,6 +137,36 @@ final class IrVerifier {
               && inputs.getFirst() instanceof ArrayType array
               && inputs.get(1).equals(array.elementType())
               && outputs.equals(List.of(array));
+      case ARRAY_CONCAT ->
+          inputs.size() == 2
+              && inputs.getFirst() instanceof ArrayType array
+              && inputs.get(1).equals(array)
+              && outputs.equals(List.of(array));
+      case ARRAY_PREPEND ->
+          inputs.size() == 2
+              && inputs.getFirst() instanceof ArrayType array
+              && inputs.get(1).equals(array.elementType())
+              && outputs.equals(List.of(array));
+      case ARRAY_REVERSE ->
+          inputs.size() == 1
+              && inputs.getFirst() instanceof ArrayType array
+              && outputs.equals(List.of(array));
+      case ARRAY_CONTAINS ->
+          inputs.size() == 2
+              && inputs.getFirst() instanceof ArrayType array
+              && inputs.get(1).equals(array.elementType())
+              && ValueTypeTraits.isEqualityComparable(array.elementType())
+              && outputs.equals(List.of(ValueType.BOOLEAN));
+      case ARRAY_FIND ->
+          inputs.size() == 2
+              && inputs.getFirst() instanceof ArrayType array
+              && inputs.get(1).equals(array.elementType())
+              && ValueTypeTraits.isEqualityComparable(array.elementType())
+              && outputs.equals(List.of(ValueType.INTEGER));
+      case ARRAY_IS_EMPTY ->
+          inputs.size() == 1
+              && inputs.getFirst() instanceof ArrayType
+              && outputs.equals(List.of(ValueType.BOOLEAN));
       case OPTIONAL_WRAP ->
           inputs.size() == 1 && outputs.equals(List.of(ValueType.optionalOf(inputs.getFirst())));
       case OPTIONAL_PREDICATE ->

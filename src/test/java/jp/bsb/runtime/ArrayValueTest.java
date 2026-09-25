@@ -45,6 +45,22 @@ class ArrayValueTest {
   }
 
   @Test
+  void prependConcatenateAndReverseNeverChangeTheOriginalValue() {
+    ArrayValue original = integers(2, 3);
+    ArrayValue prepended = original.prepended(integer(1), 3);
+    ArrayValue concatenated = original.concatenated(integers(4, 5), 4);
+    ArrayValue reversed = original.reversed();
+
+    assertEquals("【2、3】", original.displayText());
+    assertEquals("【1、2、3】", prepended.displayText());
+    assertEquals("【2、3、4、5】", concatenated.displayText());
+    assertEquals("【3、2】", reversed.displayText());
+    assertNotSame(original, prepended);
+    assertNotSame(original, concatenated);
+    assertNotSame(original, reversed);
+  }
+
+  @Test
   void rendersCharacterAndStringElementsAsCanonicalArrayLiterals() {
     ArrayValue characters =
         new ArrayValue(

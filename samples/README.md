@@ -3,6 +3,13 @@
 現在実装されている仕様を使ったサンプルです。
 コマンドはリポジトリのルートで実行してください。
 
+配列の連結、先頭追加、逆順、含有、位置検索、空判定は次のサンプルで確認できます。
+
+```shell
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar check samples/27-array-operations.bsb
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/27-array-operations.bsb
+```
+
 ## 検査と実行
 
 ```shell

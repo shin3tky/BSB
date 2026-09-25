@@ -105,6 +105,18 @@ public enum BuiltinOperation {
   ARRAY_REPLACE,
   /** 配列の末尾追加。 */
   ARRAY_APPEND,
+  /** 2配列の連結。 */
+  ARRAY_CONCAT,
+  /** 配列の先頭追加。 */
+  ARRAY_PREPEND,
+  /** 配列の逆順化。 */
+  ARRAY_REVERSE,
+  /** 配列の要素包含判定。 */
+  ARRAY_CONTAINS,
+  /** 配列内の最初の要素位置検索。 */
+  ARRAY_FIND,
+  /** 配列の空判定。 */
+  ARRAY_IS_EMPTY,
   /** 改行なし表示。 */
   DISPLAY,
   /** 表示後にLFを出力。 */

@@ -93,8 +93,8 @@ class ByteSequenceCliConformanceTest {
         expected(
             chapter,
             "explain-json",
-            71_160,
-            "d7c30c75cfa05a300aa68df825c1efa3d50a3b24927a5922d92521bf5208b775"),
+            73_319,
+            "6ef64f950d1df8b410f63e804e2b248b45d1f9b0e921f2719d3120a6f4aa73da"),
         expected(sample, "check", 0, EMPTY_SHA256),
         expected(
             sample,
@@ -111,8 +111,8 @@ class ByteSequenceCliConformanceTest {
         expected(
             sample,
             "explain-json",
-            71_073,
-            "00b57a4df3efe6e8ba01e6948e32e67bb30a94f0eb94624ca6dff8c064fcced4"));
+            73_232,
+            "e7dccb8336124d27d6917d8aa44a8cace284506984e716cd3aad9900e12d4f31"));
   }
 
   private static Expected expected(String source, String command, int bytes, String hash) {

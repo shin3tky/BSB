@@ -47,6 +47,14 @@ final class ArrayNestedLimit {
     return Math.addExact(array.logicalLeafCount(), logicalLeafCount(element));
   }
 
+  static long prepend(ArrayValue array, RuntimeValue element) {
+    return append(array, element);
+  }
+
+  static long concatenate(ArrayValue first, ArrayValue second) {
+    return Math.addExact(first.logicalLeafCount(), second.logicalLeafCount());
+  }
+
   static void requireAllowed(
       String sourcePath, SourceSpan span, String operation, ValueType elementType, long observed)
       throws RuntimeFailure {

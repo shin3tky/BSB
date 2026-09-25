@@ -558,6 +558,12 @@ public final class ProgramExplainer {
       case ARRAY_SLICE -> "arraySlice";
       case ARRAY_REPLACE -> "arrayReplace";
       case ARRAY_APPEND -> "arrayAppend";
+      case ARRAY_CONCAT -> "arrayConcat";
+      case ARRAY_PREPEND -> "arrayPrepend";
+      case ARRAY_REVERSE -> "arrayReverse";
+      case ARRAY_CONTAINS -> "arrayContains";
+      case ARRAY_FIND -> "arrayFind";
+      case ARRAY_IS_EMPTY -> "arrayIsEmpty";
       case OPTIONAL_WRAP -> "optionalWrap";
       case OPTIONAL_PREDICATE -> "optionalPredicate";
       case OPTIONAL_UNWRAP -> "optionalUnwrap";

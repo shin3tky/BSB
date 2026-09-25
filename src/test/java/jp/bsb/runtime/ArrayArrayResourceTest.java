@@ -13,6 +13,7 @@ import jp.bsb.diagnostics.DiagnosticCode;
 import jp.bsb.diagnostics.SourcePosition;
 import jp.bsb.diagnostics.SourceSpan;
 import jp.bsb.stdlib.ArrayLimits;
+import jp.bsb.stdlib.ArrayType;
 import jp.bsb.stdlib.BuiltinDictionary;
 import jp.bsb.stdlib.ScalarType;
 import org.junit.jupiter.api.Test;
@@ -130,9 +131,63 @@ class ArrayArrayResourceTest {
     execute("配列の末尾へ追加する", stack(integers(2), integer(3)), budget);
     execute("一行表示する", stack(integers(2)), budget);
     execute("等しい", stack(array(1, 2, 3), array(1, 9, 3)), budget);
+    execute("配列をつなぐ", stack(array(1), array(2, 3)), budget);
+    execute("配列の先頭へ追加する", stack(array(2, 3), integer(1)), budget);
+    execute("配列を逆順にする", stack(array(1, 2, 3)), budget);
+    execute("配列に含まれる", stack(array(1, 2, 3), integer(2)), budget);
+    execute("配列から検索する", stack(array(1, 2, 3), integer(9)), budget);
+    execute("配列が空である", stack(integers(0)), budget);
 
-    assertEquals(2, budget.arrayConstructionUnits());
-    assertEquals(10, budget.arrayElementOperationUnits());
+    assertEquals(8, budget.arrayConstructionUnits());
+    assertEquals(22, budget.arrayElementOperationUnits());
+  }
+
+  @Test
+  void extendedOperationsRejectLengthAndNestedLeafOverflowWithoutChangingTheStack()
+      throws Exception {
+    ArrayValue maximum = integers(ArrayLimits.MAX_LENGTH);
+    var prependStack = stack(maximum, integer(1));
+    RuntimeFailure prependFailure =
+        assertThrows(
+            RuntimeFailure.class,
+            () -> execute("配列の先頭へ追加する", prependStack, new ExecutionBudget(SOURCE_PATH, () -> 0L)));
+    assertEquals(DiagnosticCode.E_ARRAY_LENGTH_LIMIT, prependFailure.diagnostic().code());
+    assertEquals(java.util.List.of(maximum, integer(1)), prependStack);
+
+    var concatStack = stack(maximum, array(1));
+    RuntimeFailure concatFailure =
+        assertThrows(
+            RuntimeFailure.class,
+            () -> execute("配列をつなぐ", concatStack, new ExecutionBudget(SOURCE_PATH, () -> 0L)));
+    assertEquals(DiagnosticCode.E_ARRAY_LENGTH_LIMIT, concatFailure.diagnostic().code());
+    assertEquals(java.util.List.of(maximum, array(1)), concatStack);
+
+    ArrayValue row = integers(ArrayLimits.MAX_LENGTH);
+    ArrayValue first = rows(row, 15);
+    ArrayValue second = rows(row, 1);
+    var nestedStack = stack(first, second);
+    ExecutionBudget nestedBudget = new ExecutionBudget(SOURCE_PATH, () -> 0L);
+    RuntimeFailure nestedFailure =
+        assertThrows(RuntimeFailure.class, () -> execute("配列をつなぐ", nestedStack, nestedBudget));
+    assertEquals(DiagnosticCode.E_ARRAY_NESTED_ELEMENT_LIMIT, nestedFailure.diagnostic().code());
+    assertEquals(java.util.List.of(first, second), nestedStack);
+    assertEquals(0, nestedBudget.arrayConstructionUnits());
+    assertEquals(0, nestedBudget.arrayElementOperationUnits());
+  }
+
+  @Test
+  void searchReservesItsWholeWorkBeforeChangingBudgetsOrStack() {
+    ArrayValue original = array(1, 2, 3);
+    IntegerValue sought = integer(9);
+    var rejectedStack = stack(original, sought);
+    var budget = budget(0, ArrayLimits.MAX_ELEMENT_OPERATION_UNITS - 2);
+
+    RuntimeFailure failure =
+        assertThrows(RuntimeFailure.class, () -> execute("配列から検索する", rejectedStack, budget));
+
+    assertEquals(DiagnosticCode.E_ARRAY_ELEMENT_OPERATION_LIMIT, failure.diagnostic().code());
+    assertEquals(java.util.List.of(original, sought), rejectedStack);
+    assertEquals(ArrayLimits.MAX_ELEMENT_OPERATION_UNITS - 2, budget.arrayElementOperationUnits());
   }
 
   private static ExecutionBudget budget(long construction, long operations) {
@@ -160,6 +215,10 @@ class ArrayArrayResourceTest {
     return new ArrayValue(
         ScalarType.INTEGER,
         java.util.Arrays.stream(values).mapToObj(value -> (RuntimeValue) integer(value)).toList());
+  }
+
+  private static ArrayValue rows(ArrayValue row, int count) {
+    return new ArrayValue(new ArrayType(ScalarType.INTEGER), Collections.nCopies(count, row));
   }
 
   private static IntegerValue integer(int value) {
