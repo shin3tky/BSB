@@ -2688,6 +2688,8 @@ public final class SemanticAnalyzer {
             case SAME_TYPE_PAIR -> applySameTypePair(call, stack);
             case SAME_NUMERIC_TYPE -> applySameNumericType(call, word, stack);
             case INDEPENDENT_NUMERIC_INPUTS -> applyIndependentNumericInputs(call, word, stack);
+            case NUMERIC_BASE_INTEGER_EXPONENT ->
+                applyNumericBaseIntegerExponent(call, word, stack);
             case ARRAY_LENGTH -> applyArrayLength(call, stack);
             case ARRAY_GET -> applyArrayGet(call, stack);
             case ARRAY_SLICE -> applyArraySlice(call, stack);
@@ -3420,7 +3422,7 @@ public final class SemanticAnalyzer {
               numericType.sourceName(),
               actual,
               expectedTypes,
-              "両入力を同じ数値型にしてください",
+              word.inputTypeNames().size() == 2 ? "両入力を同じ数値型にしてください" : "すべての入力を同じ数値型にしてください",
               stack);
           return null;
         }
@@ -3441,6 +3443,33 @@ public final class SemanticAnalyzer {
         result = result.push(outputType, call.span());
       }
       return result;
+    }
+
+    private AbstractStack applyNumericBaseIntegerExponent(
+        WordCall call, BuiltinWord word, AbstractStack stack) {
+      if (!requireStackDepth(call, List.of("整数または小数", "整数"), stack)) {
+        return null;
+      }
+      int inputStart = stack.size() - 2;
+      ValueType baseType = stack.slots().get(inputStart).type();
+      ValueType exponentType = stack.slots().get(inputStart + 1).type();
+      if (!isNumeric(baseType)) {
+        reportBuiltinTypeMismatch(
+            call, 1, "整数または小数", baseType, word.inputTypeNames(), "数値の底を渡してください", stack);
+        return null;
+      }
+      if (!ValueType.INTEGER.equals(exponentType)) {
+        reportBuiltinTypeMismatch(
+            call,
+            2,
+            "整数",
+            exponentType,
+            List.of(baseType.sourceName(), "整数"),
+            "整数の指数を渡してください",
+            stack);
+        return null;
+      }
+      return stack.removeTop(2).push(baseType, call.span());
     }
 
     private List<String> concreteNumericRequirements(BuiltinWord word, AbstractStack stack) {

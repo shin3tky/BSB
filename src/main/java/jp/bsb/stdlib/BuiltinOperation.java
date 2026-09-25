@@ -33,6 +33,16 @@ public enum BuiltinOperation {
   MINIMUM,
   /** 同型数値の最大値。 */
   MAXIMUM,
+  /** 数値の符号を整数で取得。 */
+  SIGN,
+  /** 数値を同型の上下限へ収める。 */
+  CLAMP,
+  /** 2整数の非負の最大公約数。 */
+  GREATEST_COMMON_DIVISOR,
+  /** 2整数の非負の最小公倍数。 */
+  LEAST_COMMON_MULTIPLE,
+  /** 数値の非負整数乗。 */
+  INTEGER_POWER,
   /** 整数から小数への正確な変換。 */
   INTEGER_TO_DECIMAL,
   /** 小数から整数への正確な変換。 */

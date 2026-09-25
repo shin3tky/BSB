@@ -14,12 +14,13 @@ class ProgramExplainerTest {
   void publishesEveryBuiltinWithStablePublicMetadata() {
     ProgramExplanation explanation = explain("メインとは （--）\nこと。\n");
 
-    assertEquals(208, explanation.builtinWords().size());
+    assertEquals(213, explanation.builtinWords().size());
     assertEquals("足す", explanation.builtinWords().getFirst().name());
     assertEquals("JSONオブジェクトを構築する", explanation.builtinWords().get(183).name());
     assertEquals("大小文字を無視して比較する", explanation.builtinWords().get(186).name());
     assertEquals("HTTP応答を成功状態として検査する", explanation.builtinWords().get(188).name());
-    assertEquals("二次元配列から列を任意で取り出す", explanation.builtinWords().getLast().name());
+    assertEquals("整数乗する", explanation.builtinWords().getLast().name());
+    assertEquals("numericBaseIntegerExponent", findBuiltin(explanation, "整数乗する").typeRule());
     assertEquals("WST", findBuiltin(explanation, "ファイルを読む").featureGroup());
     assertEquals("NARRAY", findBuiltin(explanation, "空の整数二次元配列").featureGroup());
     assertEquals("CONN", findBuiltin(explanation, "論理接続を確認する").featureGroup());

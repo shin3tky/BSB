@@ -14,6 +14,9 @@ public enum BuiltinTypeRule {
   /** 各{@code 数値}入力を、互いに独立した整数または小数へ具体化します。 */
   INDEPENDENT_NUMERIC_INPUTS,
 
+  /** {@code N 整数 -- N}として、底だけを整数または小数へ具体化します。 */
+  NUMERIC_BASE_INTEGER_EXPONENT,
+
   /** 表示可能な具体型を1値受理します。辞書上の {@code 表示可能} に対応します。 */
   DISPLAYABLE,
 

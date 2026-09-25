@@ -553,6 +553,7 @@ public final class ProgramExplainer {
       case DISPLAYABLE -> "displayable";
       case SAME_NUMERIC_TYPE -> "sameNumericType";
       case INDEPENDENT_NUMERIC_INPUTS -> "independentNumericInputs";
+      case NUMERIC_BASE_INTEGER_EXPONENT -> "numericBaseIntegerExponent";
       case ARRAY_LENGTH -> "arrayLength";
       case ARRAY_GET -> "arrayGet";
       case ARRAY_SLICE -> "arraySlice";

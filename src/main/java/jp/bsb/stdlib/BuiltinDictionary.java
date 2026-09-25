@@ -1318,7 +1318,46 @@ public final class BuiltinDictionary {
               "全行に存在する指定列を値ありで返し、空表または列が欠ける場合は値なしを返します。",
               List.of("配列<配列<T>>", "整数"),
               List.of("任意<配列<T>>"),
-              "【【「a」、「b」】、【「c」、「d」】】 と 1 を 二次元配列から列を任意で取り出す"));
+              "【【「a」、「b」】、【「c」、「d」】】 と 1 を 二次元配列から列を任意で取り出す"),
+          numeric(
+              "符号を得る",
+              BuiltinOperation.SIGN,
+              "数値が負なら-1、0なら0、正なら1を返します。",
+              List.of("N"),
+              List.of("整数"),
+              "-42 を 符号を得る"),
+          numeric(
+              "範囲内に収める",
+              BuiltinOperation.CLAMP,
+              "数値を同じ型の下限以上かつ上限以下へ収めます。",
+              List.of("N", "N", "N"),
+              List.of("N"),
+              "12 と 0 と 10 を 範囲内に収める"),
+          fixedNumeric(
+              "最大公約数",
+              BuiltinOperation.GREATEST_COMMON_DIVISOR,
+              "2整数の非負の最大公約数を返します。",
+              List.of("整数", "整数"),
+              List.of("整数"),
+              "48 と 18 を 最大公約数"),
+          fixedNumeric(
+              "最小公倍数",
+              BuiltinOperation.LEAST_COMMON_MULTIPLE,
+              "2整数の非負の最小公倍数を返します。",
+              List.of("整数", "整数"),
+              List.of("整数"),
+              "12 と 18 を 最小公倍数"),
+          new BuiltinWord(
+              "整数乗する",
+              Set.of(),
+              "数値を0以上の整数で正確に累乗します。",
+              List.of("N", "整数"),
+              List.of("N"),
+              BuiltinTypeRule.NUMERIC_BASE_INTEGER_EXPONENT,
+              BuiltinOperation.INTEGER_POWER,
+              Set.of(),
+              "NUM",
+              "2 と 10 で 整数乗する"));
 
   private static final Map<String, BuiltinWord> BY_NAME = indexByName();
   private static final Set<String> CANONICAL_NAMES = canonicalNameSet();

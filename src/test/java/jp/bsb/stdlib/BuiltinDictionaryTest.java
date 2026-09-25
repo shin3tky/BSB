@@ -256,6 +256,9 @@ class BuiltinDictionaryTest {
         BuiltinDictionary.find("精度指定で割る").orElseThrow().inputTypeNames());
     assertEquals(
         List.of("整数", "整数"), BuiltinDictionary.find("割った商と剰余").orElseThrow().outputTypeNames());
+    assertEquals(
+        BuiltinTypeRule.NUMERIC_BASE_INTEGER_EXPONENT,
+        BuiltinDictionary.find("整数乗する").orElseThrow().typeRule());
   }
 
   @Test
@@ -267,5 +270,16 @@ class BuiltinDictionaryTest {
     assertTrue(values.stream().allMatch(word -> word.typeRule() == BuiltinTypeRule.FIXED));
     assertTrue(
         values.stream().allMatch(word -> word.operation() == BuiltinOperation.ROUNDING_MODE_VALUE));
+  }
+
+  @Test
+  void appendsFiveExtendedMathOperationsWithoutRenumberingExistingWords() {
+    List<BuiltinWord> words = BuiltinDictionary.words().subList(208, 213);
+
+    assertEquals(
+        List.of("符号を得る", "範囲内に収める", "最大公約数", "最小公倍数", "整数乗する"),
+        words.stream().map(BuiltinWord::canonicalName).toList());
+    assertTrue(words.stream().allMatch(word -> word.featureGroup().equals("NUM")));
+    assertTrue(words.stream().allMatch(word -> word.sideEffects().isEmpty()));
   }
 }

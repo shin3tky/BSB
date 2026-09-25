@@ -156,6 +156,11 @@ final class BuiltinExecutor {
       case ABSOLUTE -> absolute(stack);
       case MINIMUM -> extremum(stack, true);
       case MAXIMUM -> extremum(stack, false);
+      case SIGN -> sign(stack);
+      case CLAMP -> clamp(word, stack, span);
+      case GREATEST_COMMON_DIVISOR -> greatestCommonDivisor(stack);
+      case LEAST_COMMON_MULTIPLE -> leastCommonMultiple(word, stack, span);
+      case INTEGER_POWER -> integerPower(word, stack, span);
       case DECIMAL_DIVIDE -> decimalDivide(word, stack, span);
       case PRECISION_DECIMAL_DIVIDE -> precisionDecimalDivide(word, stack, span);
       case INTEGER_TO_DECIMAL -> integerToDecimal(stack);
@@ -3477,6 +3482,191 @@ final class BuiltinExecutor {
     stack.removeLast();
     stack.set(firstIndex, result);
     return new byte[0];
+  }
+
+  private static byte[] sign(ArrayList<RuntimeValue> stack) {
+    int index = stack.size() - 1;
+    RuntimeValue input = stack.get(index);
+    int sign =
+        switch (input) {
+          case IntegerValue integer -> integer.value().signum();
+          case DecimalValue decimal -> decimal.value().signum();
+          default -> throw new IllegalStateException("sign received a non-numeric value");
+        };
+    stack.set(index, new IntegerValue(BigInteger.valueOf(sign)));
+    return new byte[0];
+  }
+
+  private byte[] clamp(BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span)
+      throws RuntimeFailure {
+    int valueIndex = stack.size() - 3;
+    RuntimeValue value = stack.get(valueIndex);
+    RuntimeValue lower = stack.get(valueIndex + 1);
+    RuntimeValue upper = stack.get(valueIndex + 2);
+    if (compareNumeric(lower, upper) > 0) {
+      NumericPreview lowerPreview = NumericPreview.ofValue(lower);
+      NumericPreview upperPreview = NumericPreview.ofValue(upper);
+      var builder =
+          Diagnostic.builder(
+                  DiagnosticCode.E_NUMERIC_RANGE_INVALID,
+                  Severity.ERROR,
+                  DiagnosticStage.RUNTIME,
+                  sourcePath,
+                  span)
+              .field("word", word.canonicalName())
+              .field("lowerPreview", lowerPreview.text())
+              .field("upperPreview", upperPreview.text());
+      addPreviewLength(builder, "lower", lowerPreview);
+      addPreviewLength(builder, "upper", upperPreview);
+      throw new RuntimeFailure(
+          builder
+              .expected("下限が上限以下")
+              .actual(lowerPreview.text() + " > " + upperPreview.text())
+              .fix("下限と上限を入れ替えるか、同じ値にしてください")
+              .build());
+    }
+    RuntimeValue result =
+        compareNumeric(value, lower) < 0 ? lower : compareNumeric(value, upper) > 0 ? upper : value;
+    stack.removeLast();
+    stack.removeLast();
+    stack.set(valueIndex, result);
+    return new byte[0];
+  }
+
+  private static byte[] greatestCommonDivisor(ArrayList<RuntimeValue> stack) {
+    int firstIndex = stack.size() - 2;
+    BigInteger first = ((IntegerValue) stack.get(firstIndex)).value();
+    BigInteger second = ((IntegerValue) stack.get(firstIndex + 1)).value();
+    stack.removeLast();
+    stack.set(firstIndex, new IntegerValue(first.gcd(second)));
+    return new byte[0];
+  }
+
+  private byte[] leastCommonMultiple(
+      BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span) throws RuntimeFailure {
+    int firstIndex = stack.size() - 2;
+    BigInteger first = ((IntegerValue) stack.get(firstIndex)).value();
+    BigInteger second = ((IntegerValue) stack.get(firstIndex + 1)).value();
+    BigInteger result = BigInteger.ZERO;
+    if (first.signum() != 0 && second.signum() != 0) {
+      BigInteger reduced = first.divide(first.gcd(second));
+      long minimumDigits = (long) digits(reduced) + digits(second) - 1;
+      if (minimumDigits > RuntimeLimits.INTEGER_DIGITS) {
+        throw integerLimit(word, span, minimumDigits);
+      }
+      result = reduced.multiply(second).abs();
+      int resultDigits = digits(result);
+      if (resultDigits > RuntimeLimits.INTEGER_DIGITS) {
+        throw integerLimit(word, span, resultDigits);
+      }
+    }
+    stack.removeLast();
+    stack.set(firstIndex, new IntegerValue(result));
+    return new byte[0];
+  }
+
+  private byte[] integerPower(BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span)
+      throws RuntimeFailure {
+    int baseIndex = stack.size() - 2;
+    RuntimeValue base = stack.get(baseIndex);
+    BigInteger exponent = ((IntegerValue) stack.get(baseIndex + 1)).value();
+    if (exponent.signum() < 0) {
+      NumericPreview preview = NumericPreview.ofInteger(exponent);
+      var builder =
+          Diagnostic.builder(
+                  DiagnosticCode.E_NEGATIVE_EXPONENT,
+                  Severity.ERROR,
+                  DiagnosticStage.RUNTIME,
+                  sourcePath,
+                  span)
+              .field("word", word.canonicalName())
+              .field("exponentPreview", preview.text());
+      addPreviewLength(builder, "exponent", preview);
+      throw new RuntimeFailure(
+          builder.expected("0以上の整数").actual(preview.text()).fix("指数を0以上にしてください").build());
+    }
+    RuntimeValue result =
+        base instanceof IntegerValue integer
+            ? integerPowerResult(word, span, integer.value(), exponent)
+            : decimalPowerResult(word, span, (DecimalValue) base, exponent);
+    stack.removeLast();
+    stack.set(baseIndex, result);
+    return new byte[0];
+  }
+
+  private IntegerValue integerPowerResult(
+      BuiltinWord word, SourceSpan span, BigInteger base, BigInteger exponent)
+      throws RuntimeFailure {
+    if (exponent.signum() == 0) {
+      return new IntegerValue(BigInteger.ONE);
+    }
+    if (base.signum() == 0) {
+      return new IntegerValue(BigInteger.ZERO);
+    }
+    if (base.abs().equals(BigInteger.ONE)) {
+      boolean negative = base.signum() < 0 && exponent.testBit(0);
+      return new IntegerValue(negative ? BigInteger.ONE.negate() : BigInteger.ONE);
+    }
+    BigInteger minimumDigits =
+        BigInteger.valueOf(digits(base) - 1L).multiply(exponent).add(BigInteger.ONE);
+    if (minimumDigits.compareTo(BigInteger.valueOf(RuntimeLimits.INTEGER_DIGITS)) > 0) {
+      long observed =
+          minimumDigits.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0
+              ? Long.MAX_VALUE
+              : minimumDigits.longValueExact();
+      throw integerLimit(word, span, observed);
+    }
+    if (exponent.compareTo(BigInteger.valueOf(217_706L)) > 0) {
+      throw integerLimit(word, span, RuntimeLimits.INTEGER_DIGITS + 1L);
+    }
+    BigInteger result = base.pow(exponent.intValueExact());
+    int resultDigits = digits(result);
+    if (resultDigits > RuntimeLimits.INTEGER_DIGITS) {
+      throw integerLimit(word, span, resultDigits);
+    }
+    return new IntegerValue(result);
+  }
+
+  private DecimalValue decimalPowerResult(
+      BuiltinWord word, SourceSpan span, DecimalValue base, BigInteger exponent)
+      throws RuntimeFailure {
+    if (exponent.signum() == 0) {
+      return new DecimalValue(BigDecimal.ONE);
+    }
+    if (base.value().signum() == 0) {
+      return new DecimalValue(BigDecimal.ZERO);
+    }
+    if (base.value().abs().compareTo(BigDecimal.ONE) == 0) {
+      boolean negative = base.value().signum() < 0 && exponent.testBit(0);
+      return new DecimalValue(negative ? BigDecimal.ONE.negate() : BigDecimal.ONE);
+    }
+    long absoluteScale = Math.abs((long) base.scale());
+    if (absoluteScale != 0) {
+      BigInteger resultingScale = BigInteger.valueOf(absoluteScale).multiply(exponent);
+      if (resultingScale.compareTo(BigInteger.valueOf(RuntimeLimits.DECIMAL_ABSOLUTE_SCALE)) > 0) {
+        long observed =
+            resultingScale.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0
+                ? Long.MAX_VALUE
+                : resultingScale.longValueExact();
+        throw decimalScaleLimit(word, span, observed);
+      }
+    }
+    BigInteger coefficient = base.coefficient().abs();
+    BigInteger minimumPrecision =
+        BigInteger.valueOf(base.precision() - 1L).multiply(exponent).add(BigInteger.ONE);
+    if (minimumPrecision.compareTo(BigInteger.valueOf(RuntimeLimits.DECIMAL_PRECISION)) > 0) {
+      long observed =
+          minimumPrecision.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0
+              ? Long.MAX_VALUE
+              : minimumPrecision.longValueExact();
+      throw decimalPrecisionLimit(word, span, observed);
+    }
+    if (coefficient.compareTo(BigInteger.ONE) > 0
+        && exponent.compareTo(BigInteger.valueOf(217_706L)) > 0) {
+      throw decimalPrecisionLimit(word, span, RuntimeLimits.DECIMAL_PRECISION + 1L);
+    }
+    BigDecimal result = base.value().pow(exponent.intValueExact());
+    return checkedDecimalResult(word, span, result);
   }
 
   private byte[] integerDivision(

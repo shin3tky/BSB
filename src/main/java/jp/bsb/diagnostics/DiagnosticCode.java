@@ -355,6 +355,10 @@ public enum DiagnosticCode {
   E_DECIMAL_RESULT_PRECISION_LIMIT,
   /** 小数リテラルまたは小数演算結果のスケール絶対値が65,536を超えた */
   E_DECIMAL_SCALE_LIMIT,
+  /** 範囲内に収める操作で下限が上限より大きかった */
+  E_NUMERIC_RANGE_INVALID,
+  /** 正確な整数乗へ負の指数が指定された */
+  E_NEGATIVE_EXPONENT,
   /** 書記素単位の文字列位置が範囲外 */
   E_STRING_INDEX_OUT_OF_BOUNDS,
   /** 書記素単位の文字列半開区間が不正 */

@@ -97,6 +97,29 @@ class NumericNumericBuiltinAnalyzerTest {
   }
 
   @Test
+  void resolvesExtendedMathSignaturesAndRejectsMixedNumericTypes() {
+    AnalysisResult accepted =
+        AnalyzerTestSupport.checkText(
+            "メインとは （--）\n"
+                + "    1.5 を 符号を得る を 一行表示する\n"
+                + "    1.0 と 0.0 と 2.0 を 範囲内に収める を 一行表示する\n"
+                + "    2.0 と 3 で 整数乗する を 一行表示する\n"
+                + "こと。\n");
+    assertTrue(accepted.successful(), accepted.diagnostics().toString());
+
+    AnalysisResult mixedClamp =
+        AnalyzerTestSupport.checkText("メインとは （--）\n    1 と 0.0 と 2 を 範囲内に収める\nこと。\n");
+    assertFalse(mixedClamp.successful());
+    assertEquals(DiagnosticCode.E_TYPE_MISMATCH, mixedClamp.diagnostics().getFirst().code());
+
+    AnalysisResult decimalExponent =
+        AnalyzerTestSupport.checkText("メインとは （--）\n    2 と 3.0 で 整数乗する\nこと。\n");
+    assertFalse(decimalExponent.successful());
+    assertEquals(DiagnosticCode.E_TYPE_MISMATCH, decimalExponent.diagnostics().getFirst().code());
+    assertEquals("2", decimalExponent.diagnostics().getFirst().fields().get("inputIndex"));
+  }
+
+  @Test
   void reportsTheNormativeNumericFeatureStaticDiagnostics() throws Exception {
     assertDiagnostic(
         "NUM-F001",

@@ -111,6 +111,11 @@ final class IrVerifier {
               && outputs.equals(List.of(ValueType.BOOLEAN));
       case SAME_NUMERIC_TYPE -> matchesSameNumericRule(word, inputs, outputs);
       case INDEPENDENT_NUMERIC_INPUTS -> matchesIndependentNumericRule(word, inputs, outputs);
+      case NUMERIC_BASE_INTEGER_EXPONENT ->
+          inputs.size() == 2
+              && isNumeric(inputs.getFirst())
+              && inputs.get(1).equals(ValueType.INTEGER)
+              && outputs.equals(List.of(inputs.getFirst()));
       case ARRAY_LENGTH ->
           inputs.size() == 1
               && inputs.getFirst() instanceof ArrayType
