@@ -57,7 +57,9 @@ class BuiltinDictionaryTest {
     assertTrue(
         BuiltinDictionary.words().subList(17, 34).stream()
             .allMatch(word -> word.featureGroup().equals("NUM")));
-    assertTrue(BuiltinDictionary.words().stream().allMatch(word -> word.aliases().isEmpty()));
+    assertTrue(
+        BuiltinDictionary.words().subList(0, 213).stream()
+            .allMatch(word -> word.aliases().isEmpty()));
   }
 
   @Test
@@ -273,13 +275,15 @@ class BuiltinDictionaryTest {
   }
 
   @Test
-  void appendsFiveExtendedMathOperationsWithoutRenumberingExistingWords() {
-    List<BuiltinWord> words = BuiltinDictionary.words().subList(208, 213);
+  void appendsExtendedMathOperationsWithoutRenumberingExistingWords() {
+    List<BuiltinWord> words = BuiltinDictionary.words().subList(208, 217);
 
     assertEquals(
-        List.of("符号を得る", "範囲内に収める", "最大公約数", "最小公倍数", "整数乗する"),
+        List.of(
+            "符号を得る", "範囲内に収める", "最大公約数", "最小公倍数", "整数乗する", "偶数である", "奇数である", "小数桁で丸める", "有効桁で丸める"),
         words.stream().map(BuiltinWord::canonicalName).toList());
     assertTrue(words.stream().allMatch(word -> word.featureGroup().equals("NUM")));
     assertTrue(words.stream().allMatch(word -> word.sideEffects().isEmpty()));
+    assertTrue(BuiltinDictionary.find("少数桁で丸める").isPresent());
   }
 }

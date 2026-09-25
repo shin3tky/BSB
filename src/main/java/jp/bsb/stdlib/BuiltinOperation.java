@@ -43,6 +43,14 @@ public enum BuiltinOperation {
   LEAST_COMMON_MULTIPLE,
   /** 数値の非負整数乗。 */
   INTEGER_POWER,
+  /** 整数が偶数かの判定。 */
+  IS_EVEN,
+  /** 整数が奇数かの判定。 */
+  IS_ODD,
+  /** 小数を指定した小数桁数へ丸める。 */
+  ROUND_TO_DECIMAL_PLACES,
+  /** 小数を指定した有効桁数へ丸める。 */
+  ROUND_TO_SIGNIFICANT_DIGITS,
   /** 整数から小数への正確な変換。 */
   INTEGER_TO_DECIMAL,
   /** 小数から整数への正確な変換。 */

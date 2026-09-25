@@ -161,6 +161,10 @@ final class BuiltinExecutor {
       case GREATEST_COMMON_DIVISOR -> greatestCommonDivisor(stack);
       case LEAST_COMMON_MULTIPLE -> leastCommonMultiple(word, stack, span);
       case INTEGER_POWER -> integerPower(word, stack, span);
+      case IS_EVEN -> parity(stack, true);
+      case IS_ODD -> parity(stack, false);
+      case ROUND_TO_DECIMAL_PLACES -> roundDecimal(word, stack, span, false);
+      case ROUND_TO_SIGNIFICANT_DIGITS -> roundDecimal(word, stack, span, true);
       case DECIMAL_DIVIDE -> decimalDivide(word, stack, span);
       case PRECISION_DECIMAL_DIVIDE -> precisionDecimalDivide(word, stack, span);
       case INTEGER_TO_DECIMAL -> integerToDecimal(stack);
@@ -3804,6 +3808,60 @@ final class BuiltinExecutor {
     stack.removeLast();
     stack.set(valueIndex, new IntegerValue(result));
     return new byte[0];
+  }
+
+  private static byte[] parity(ArrayList<RuntimeValue> stack, boolean even) {
+    int index = stack.size() - 1;
+    boolean odd = ((IntegerValue) stack.get(index)).value().testBit(0);
+    stack.set(index, new BooleanValue(even != odd));
+    return new byte[0];
+  }
+
+  private byte[] roundDecimal(
+      BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span, boolean significant)
+      throws RuntimeFailure {
+    int valueIndex = stack.size() - 3;
+    DecimalValue input = (DecimalValue) stack.get(valueIndex);
+    BigInteger digits = ((IntegerValue) stack.get(valueIndex + 1)).value();
+    RoundingModeValue rounding = (RoundingModeValue) stack.get(valueIndex + 2);
+    int minimum = significant ? 1 : 0;
+    int checkedDigits = checkedRoundingDigits(word, span, digits, minimum);
+    BigDecimal result =
+        significant
+            ? input.value().round(new MathContext(checkedDigits, javaRoundingMode(rounding)))
+            : input.value().setScale(checkedDigits, javaRoundingMode(rounding));
+    DecimalValue checked = checkedDecimalResult(word, span, result);
+    stack.removeLast();
+    stack.removeLast();
+    stack.set(valueIndex, checked);
+    return new byte[0];
+  }
+
+  private int checkedRoundingDigits(
+      BuiltinWord word, SourceSpan span, BigInteger digits, int minimum) throws RuntimeFailure {
+    BigInteger maximum = BigInteger.valueOf(RuntimeLimits.DECIMAL_PRECISION);
+    if (digits.compareTo(BigInteger.valueOf(minimum)) >= 0 && digits.compareTo(maximum) <= 0) {
+      return digits.intValueExact();
+    }
+    NumericPreview preview = NumericPreview.ofInteger(digits);
+    var builder =
+        Diagnostic.builder(
+                DiagnosticCode.E_ROUNDING_DIGITS_OUT_OF_RANGE,
+                Severity.ERROR,
+                DiagnosticStage.RUNTIME,
+                sourcePath,
+                span)
+            .field("word", word.canonicalName())
+            .field("digits", preview.text())
+            .field("minimum", Integer.toString(minimum))
+            .field("maximum", maximum.toString());
+    addPreviewLength(builder, "digits", preview);
+    throw new RuntimeFailure(
+        builder
+            .expected(minimum + "以上" + maximum + "以下")
+            .actual(preview.text())
+            .fix("桁数を" + minimum + "から" + maximum + "にしてください")
+            .build());
   }
 
   private static BigDecimal asBigDecimal(RuntimeValue value) {

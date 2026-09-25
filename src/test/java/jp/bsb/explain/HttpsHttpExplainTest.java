@@ -24,7 +24,7 @@ class HttpsHttpExplainTest {
     ProgramExplanation explanation =
         new ProgramExplainer().explain(analysis.programForIrGeneration());
 
-    assertEquals(213, explanation.builtinWords().size());
+    assertEquals(217, explanation.builtinWords().size());
     assertEquals(List.of("connection.resolve", "http.send"), explanation.summary().capabilities());
     var parameterized = explanation.parameterizedCapabilities();
     assertEquals(

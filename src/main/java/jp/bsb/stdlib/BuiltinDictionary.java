@@ -1357,7 +1357,39 @@ public final class BuiltinDictionary {
               BuiltinOperation.INTEGER_POWER,
               Set.of(),
               "NUM",
-              "2 と 10 で 整数乗する"));
+              "2 と 10 で 整数乗する"),
+          fixedNumeric(
+              "偶数である",
+              BuiltinOperation.IS_EVEN,
+              "整数が偶数かを返します。",
+              List.of("整数"),
+              List.of("真偽"),
+              "42 は 偶数である"),
+          fixedNumeric(
+              "奇数である",
+              BuiltinOperation.IS_ODD,
+              "整数が奇数かを返します。",
+              List.of("整数"),
+              List.of("真偽"),
+              "-3 は 奇数である"),
+          new BuiltinWord(
+              "小数桁で丸める",
+              Set.of("少数桁で丸める"),
+              "小数を指定した小数桁数へ丸めます。",
+              List.of("小数", "整数", "丸め方法"),
+              List.of("小数"),
+              BuiltinTypeRule.FIXED,
+              BuiltinOperation.ROUND_TO_DECIMAL_PLACES,
+              Set.of(),
+              "NUM",
+              "1.235 と 2 と 最近接偶数丸め で 小数桁で丸める"),
+          fixedNumeric(
+              "有効桁で丸める",
+              BuiltinOperation.ROUND_TO_SIGNIFICANT_DIGITS,
+              "小数を指定した有効桁数へ丸めます。",
+              List.of("小数", "整数", "丸め方法"),
+              List.of("小数"),
+              "123.45 と 3 と 最近接偶数丸め で 有効桁で丸める"));
 
   private static final Map<String, BuiltinWord> BY_NAME = indexByName();
   private static final Set<String> CANONICAL_NAMES = canonicalNameSet();

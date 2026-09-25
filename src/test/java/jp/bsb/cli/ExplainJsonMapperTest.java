@@ -18,7 +18,7 @@ class ExplainJsonMapperTest {
 
     ExplainJson mapped = new ExplainJsonMapper().map(explanation, analysis.source().orElseThrow());
 
-    assertEquals(213, mapped.builtinWords().size());
+    assertEquals(217, mapped.builtinWords().size());
     assertEquals(2, mapped.userWords().getFirst().declaration().start().line());
     assertEquals(1, mapped.bindings().getFirst().declaration().start().line());
     assertEquals(3, mapped.bindings().getFirst().uses().getFirst().location().start().line());

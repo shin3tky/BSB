@@ -71,6 +71,62 @@ class NumericExtendedMathRuntimeTest {
     assertEquals(2, decimal.finalDataStack().size());
   }
 
+  @Test
+  void testsParityForPositiveNegativeAndZeroIntegers() {
+    String source =
+        "メインとは （--）\n"
+            + "    0 を 偶数である を 一行表示する\n"
+            + "    -2 を 偶数である を 一行表示する\n"
+            + "    3 を 偶数である を 一行表示する\n"
+            + "    0 を 奇数である を 一行表示する\n"
+            + "    -3 を 奇数である を 一行表示する\n"
+            + "    2 を 奇数である を 一行表示する\n"
+            + "こと。\n";
+
+    var output = new MemoryOutputSink();
+    ProgramRunResult result = run("parity.bsb", source, output);
+
+    assertTrue(result.successful(), result.diagnostics().toString());
+    assertEquals("はい\nはい\nいいえ\nいいえ\nはい\nいいえ\n", output.utf8Text());
+  }
+
+  @Test
+  void roundsToDecimalPlacesAndSignificantDigitsWithExistingModes() {
+    String source =
+        "メインとは （--）\n"
+            + "    1.245 と 2 と 最近接偶数丸め で 小数桁で丸める を 一行表示する\n"
+            + "    1.245 と 2 と 四捨五入 で 少数桁で丸める を 一行表示する\n"
+            + "    -1.239 と 2 と 0方向へ丸め で 小数桁で丸める を 一行表示する\n"
+            + "    1.231 と 2 と 正方向へ丸め で 小数桁で丸める を 一行表示する\n"
+            + "    -1.231 と 2 と 負方向へ丸め で 小数桁で丸める を 一行表示する\n"
+            + "    12345.0 と 3 と 最近接偶数丸め で 有効桁で丸める を 一行表示する\n"
+            + "    0.001255 と 3 と 最近接偶数丸め で 有効桁で丸める を 一行表示する\n"
+            + "こと。\n";
+
+    var output = new MemoryOutputSink();
+    ProgramRunResult result = run("rounding.bsb", source, output);
+
+    assertTrue(result.successful(), result.diagnostics().toString());
+    assertEquals("1.24\n1.25\n-1.23\n1.24\n-1.24\n12300.0\n0.00126\n", output.utf8Text());
+  }
+
+  @Test
+  void invalidRoundingDigitsKeepAllInputs() {
+    ProgramRunResult decimalPlaces = failingRun("1.23 と -1 と 最近接偶数丸め で 小数桁で丸める");
+    Diagnostic decimalDiagnostic = decimalPlaces.diagnostics().getFirst();
+    assertEquals(DiagnosticCode.E_ROUNDING_DIGITS_OUT_OF_RANGE, decimalDiagnostic.code());
+    assertEquals("0", decimalDiagnostic.fields().get("minimum"));
+    assertEquals("-1", decimalDiagnostic.fields().get("digits"));
+    assertEquals(3, decimalPlaces.finalDataStack().size());
+
+    ProgramRunResult significant = failingRun("1.23 と 0 と 最近接偶数丸め で 有効桁で丸める");
+    Diagnostic significantDiagnostic = significant.diagnostics().getFirst();
+    assertEquals(DiagnosticCode.E_ROUNDING_DIGITS_OUT_OF_RANGE, significantDiagnostic.code());
+    assertEquals("1", significantDiagnostic.fields().get("minimum"));
+    assertEquals("0", significantDiagnostic.fields().get("digits"));
+    assertEquals(3, significant.finalDataStack().size());
+  }
+
   private static ProgramRunResult failingRun(String expression) {
     return run(
         "extended-math-failure.bsb",

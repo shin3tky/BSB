@@ -359,6 +359,8 @@ public enum DiagnosticCode {
   E_NUMERIC_RANGE_INVALID,
   /** 正確な整数乗へ負の指数が指定された */
   E_NEGATIVE_EXPONENT,
+  /** 丸めの小数桁数または有効桁数が許容範囲外だった */
+  E_ROUNDING_DIGITS_OUT_OF_RANGE,
   /** 書記素単位の文字列位置が範囲外 */
   E_STRING_INDEX_OUT_OF_BOUNDS,
   /** 書記素単位の文字列半開区間が不正 */

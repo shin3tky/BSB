@@ -14,7 +14,7 @@ class ByteSequenceBuiltinDictionaryTest {
             .filter(word -> word.featureGroup().equals("BYTES"))
             .toList();
 
-    assertEquals(213, BuiltinDictionary.words().size());
+    assertEquals(217, BuiltinDictionary.words().size());
     assertEquals(
         List.of(
             "空のバイト列",

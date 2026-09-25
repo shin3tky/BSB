@@ -71,7 +71,7 @@ class BsbCliTest {
     assertEquals(0, explained.exitCode());
     assertTrue(explained.stdout().startsWith("{\"schemaVersion\":1,\"command\":\"explain\""));
     assertTrue(explained.stdout().contains("\"summary\":{\"entryPoint\":\"メイン\""));
-    assertEquals(213, occurrences(explained.stdout(), "\"featureGroup\":"));
+    assertEquals(217, occurrences(explained.stdout(), "\"featureGroup\":"));
     assertTrue(explained.stdout().contains("\"userWords\":[{\"name\":\"二倍\""));
     assertTrue(explained.stdout().contains("\"name\":\"メイン\",\"spelling\":\"メイン\""));
     assertTrue(explained.stdout().contains("\"scopes\":["));

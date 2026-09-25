@@ -120,6 +120,30 @@ class NumericNumericBuiltinAnalyzerTest {
   }
 
   @Test
+  void resolvesParityAndRoundingSignatures() {
+    AnalysisResult accepted =
+        AnalyzerTestSupport.checkText(
+            "メインとは （--）\n"
+                + "    -2 を 偶数である を 一行表示する\n"
+                + "    3 を 奇数である を 一行表示する\n"
+                + "    1.235 と 2 と 最近接偶数丸め で 小数桁で丸める を 一行表示する\n"
+                + "    123.45 と 3 と 四捨五入 で 有効桁で丸める を 一行表示する\n"
+                + "こと。\n");
+    assertTrue(accepted.successful(), accepted.diagnostics().toString());
+
+    AnalysisResult wrongParity =
+        AnalyzerTestSupport.checkText("メインとは （--）\n    2.0 を 偶数である\nこと。\n");
+    assertFalse(wrongParity.successful());
+    assertEquals(DiagnosticCode.E_TYPE_MISMATCH, wrongParity.diagnostics().getFirst().code());
+
+    AnalysisResult wrongRoundingValue =
+        AnalyzerTestSupport.checkText("メインとは （--）\n    2 と 1 と 最近接偶数丸め で 有効桁で丸める\nこと。\n");
+    assertFalse(wrongRoundingValue.successful());
+    assertEquals(
+        DiagnosticCode.E_TYPE_MISMATCH, wrongRoundingValue.diagnostics().getFirst().code());
+  }
+
+  @Test
   void reportsTheNormativeNumericFeatureStaticDiagnostics() throws Exception {
     assertDiagnostic(
         "NUM-F001",
