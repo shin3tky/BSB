@@ -113,6 +113,15 @@ public record ArrayValue(ValueType elementType, List<RuntimeValue> elements, lon
     return new ArrayValue(elementType, result, resultLogicalLeafCount);
   }
 
+  /** 指定位置の直前へ1要素を挿入し、元の値を変更しない新しい配列を返します。 */
+  ArrayValue inserted(int index, RuntimeValue element, long resultLogicalLeafCount) {
+    var result = new ArrayList<RuntimeValue>(elements.size() + 1);
+    result.addAll(elements.subList(0, index));
+    result.add(element);
+    result.addAll(elements.subList(index, elements.size()));
+    return new ArrayValue(elementType, result, resultLogicalLeafCount);
+  }
+
   @Override
   public ValueType type() {
     return new ArrayType(elementType);

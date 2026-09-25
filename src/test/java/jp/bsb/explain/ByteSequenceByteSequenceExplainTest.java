@@ -28,7 +28,7 @@ class ByteSequenceByteSequenceExplainTest {
         explanation.builtinWords().stream()
             .filter(word -> word.featureGroup().equals("BYTES"))
             .toList();
-    assertEquals(200, explanation.builtinWords().size());
+    assertEquals(206, explanation.builtinWords().size());
     assertEquals(11, ByteSequence.size());
     assertEquals("空のバイト列", ByteSequence.getFirst().name());
     assertEquals("Base64復号失敗の文字位置を取り出す", ByteSequence.getLast().name());

@@ -127,6 +127,18 @@ public enum BuiltinOperation {
   ARRAY_DELETE_LAST,
   /** 配列の半開区間削除。 */
   ARRAY_DELETE_RANGE,
+  /** 配列内の等しい要素数。 */
+  ARRAY_COUNT,
+  /** 配列の指定位置への挿入。 */
+  ARRAY_INSERT,
+  /** 配列の指定位置の削除。 */
+  ARRAY_DELETE_AT,
+  /** 配列の指定位置以降の検索。 */
+  ARRAY_FIND_FROM,
+  /** 配列の順序を保つ重複除去。 */
+  ARRAY_UNIQUE,
+  /** 同じ値を指定数並べた配列の構築。 */
+  ARRAY_REPEAT_VALUE,
   /** 改行なし表示。 */
   DISPLAY,
   /** 表示後にLFを出力。 */

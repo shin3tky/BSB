@@ -169,6 +169,26 @@ class BuiltinDictionaryTest {
   }
 
   @Test
+  void appendsSixNonHigherOrderArrayOperationsAfterSelectionAndDeletion() {
+    List<BuiltinWord> words = BuiltinDictionary.words().subList(200, 206);
+
+    assertEquals(
+        List.of("配列内の個数を数える", "配列の位置へ挿入する", "配列の位置を削除する", "開始位置から配列を検索する", "配列の重複を除く", "同じ値で配列を作る"),
+        words.stream().map(BuiltinWord::canonicalName).toList());
+    assertEquals(
+        List.of(
+            BuiltinTypeRule.ARRAY_COUNT,
+            BuiltinTypeRule.ARRAY_INSERT,
+            BuiltinTypeRule.ARRAY_DELETE_AT,
+            BuiltinTypeRule.ARRAY_FIND_FROM,
+            BuiltinTypeRule.ARRAY_UNIQUE,
+            BuiltinTypeRule.ARRAY_REPEAT_VALUE),
+        words.stream().map(BuiltinWord::typeRule).toList());
+    assertTrue(words.stream().allMatch(word -> word.featureGroup().equals("ARRAY")));
+    assertTrue(words.stream().allMatch(word -> word.sideEffects().isEmpty()));
+  }
+
+  @Test
   void publishesConcreteTypesForAllTypedEmptyArrayValues() {
     assertEquals(
         List.of(

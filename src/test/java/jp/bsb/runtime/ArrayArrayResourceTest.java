@@ -142,9 +142,15 @@ class ArrayArrayResourceTest {
     execute("配列の先頭を削除する", stack(array(1, 2, 3)), budget);
     execute("配列の末尾を削除する", stack(array(1, 2, 3)), budget);
     execute("配列の一部を削除する", stack(array(1, 2, 3), integer(1), integer(3)), budget);
+    execute("配列内の個数を数える", stack(array(1, 2, 3), integer(2)), budget);
+    execute("配列の位置へ挿入する", stack(array(1, 3), integer(1), integer(2)), budget);
+    execute("配列の位置を削除する", stack(array(1, 2, 3), integer(1)), budget);
+    execute("開始位置から配列を検索する", stack(array(1, 2, 3), integer(3), integer(1)), budget);
+    execute("配列の重複を除く", stack(array(1, 2, 1)), budget);
+    execute("同じ値で配列を作る", stack(integer(7), integer(3)), budget);
 
-    assertEquals(8, budget.arrayConstructionUnits());
-    assertEquals(29, budget.arrayElementOperationUnits());
+    assertEquals(12, budget.arrayConstructionUnits());
+    assertEquals(42, budget.arrayElementOperationUnits());
   }
 
   @Test

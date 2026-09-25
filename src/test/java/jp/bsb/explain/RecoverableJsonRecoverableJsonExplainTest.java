@@ -24,7 +24,7 @@ class RecoverableJsonRecoverableJsonExplainTest {
 
     ProgramExplanation explanation =
         new ProgramExplainer().explain(analysis.programForIrGeneration());
-    assertEquals(200, explanation.builtinWords().size());
+    assertEquals(206, explanation.builtinWords().size());
     ProgramExplanation.BuiltinWordEntry parser =
         explanation.builtinWords().stream()
             .filter(word -> word.name().equals("JSONを解析して結果を返す"))

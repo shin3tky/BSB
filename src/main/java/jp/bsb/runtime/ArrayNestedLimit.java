@@ -63,6 +63,13 @@ final class ArrayNestedLimit {
     return Math.subtractExact(array.logicalLeafCount(), removed);
   }
 
+  static long repeat(RuntimeValue element, int count) {
+    if (ValueType.arrayConstructorDepth(element.type()) == 0) {
+      return count;
+    }
+    return Math.multiplyExact(logicalLeafCount(element), count);
+  }
+
   static void requireAllowed(
       String sourcePath, SourceSpan span, String operation, ValueType elementType, long observed)
       throws RuntimeFailure {

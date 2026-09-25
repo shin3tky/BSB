@@ -1254,7 +1254,55 @@ public final class BuiltinDictionary {
               "指定した半開区間を除いた新しい配列を返します。",
               List.of("配列<T>", "整数", "整数"),
               List.of("配列<T>"),
-              "【1、2、3、4】 と 1 と 3 を 配列の一部を削除する"));
+              "【1、2、3、4】 と 1 と 3 を 配列の一部を削除する"),
+          arrayOperation(
+              "配列内の個数を数える",
+              BuiltinOperation.ARRAY_COUNT,
+              BuiltinTypeRule.ARRAY_COUNT,
+              "等しい要素が現れる回数を返します。",
+              List.of("配列<T>", "T"),
+              List.of("整数"),
+              "【1、2、1】 と 1 を 配列内の個数を数える"),
+          arrayOperation(
+              "配列の位置へ挿入する",
+              BuiltinOperation.ARRAY_INSERT,
+              BuiltinTypeRule.ARRAY_INSERT,
+              "指定位置の直前へ要素を挿入した新しい配列を返します。",
+              List.of("配列<T>", "整数", "T"),
+              List.of("配列<T>"),
+              "【1、3】 と 1 と 2 を 配列の位置へ挿入する"),
+          arrayOperation(
+              "配列の位置を削除する",
+              BuiltinOperation.ARRAY_DELETE_AT,
+              BuiltinTypeRule.ARRAY_DELETE_AT,
+              "指定位置の要素を除いた新しい配列を返します。",
+              List.of("配列<T>", "整数"),
+              List.of("配列<T>"),
+              "【1、2、3】 と 1 を 配列の位置を削除する"),
+          arrayOperation(
+              "開始位置から配列を検索する",
+              BuiltinOperation.ARRAY_FIND_FROM,
+              BuiltinTypeRule.ARRAY_FIND_FROM,
+              "指定位置以降で最初に等しい要素の位置を返します。",
+              List.of("配列<T>", "T", "整数"),
+              List.of("整数"),
+              "【1、2、1】 と 1 と 1 を 開始位置から配列を検索する"),
+          arrayOperation(
+              "配列の重複を除く",
+              BuiltinOperation.ARRAY_UNIQUE,
+              BuiltinTypeRule.ARRAY_UNIQUE,
+              "最初の出現順を保って等しい重複要素を除きます。",
+              List.of("配列<T>"),
+              List.of("配列<T>"),
+              "【1、2、1】を 配列の重複を除く"),
+          arrayOperation(
+              "同じ値で配列を作る",
+              BuiltinOperation.ARRAY_REPEAT_VALUE,
+              BuiltinTypeRule.ARRAY_REPEAT_VALUE,
+              "同じ値を指定個数並べた新しい配列を返します。",
+              List.of("T", "整数"),
+              List.of("配列<T>"),
+              "7 と 3 を 同じ値で配列を作る"));
 
   private static final Map<String, BuiltinWord> BY_NAME = indexByName();
   private static final Set<String> CANONICAL_NAMES = canonicalNameSet();

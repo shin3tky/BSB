@@ -567,6 +567,12 @@ public final class ProgramExplainer {
       case ARRAY_EDGE_OPTIONAL -> "arrayEdgeOptional";
       case ARRAY_DELETE_EDGE -> "arrayDeleteEdge";
       case ARRAY_DELETE_RANGE -> "arrayDeleteRange";
+      case ARRAY_COUNT -> "arrayCount";
+      case ARRAY_INSERT -> "arrayInsert";
+      case ARRAY_DELETE_AT -> "arrayDeleteAt";
+      case ARRAY_FIND_FROM -> "arrayFindFrom";
+      case ARRAY_UNIQUE -> "arrayUnique";
+      case ARRAY_REPEAT_VALUE -> "arrayRepeatValue";
       case OPTIONAL_WRAP -> "optionalWrap";
       case OPTIONAL_PREDICATE -> "optionalPredicate";
       case OPTIONAL_UNWRAP -> "optionalUnwrap";

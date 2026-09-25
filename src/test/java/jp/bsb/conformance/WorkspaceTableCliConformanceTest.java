@@ -57,7 +57,7 @@ class WorkspaceTableCliConformanceTest {
         }
         if (arguments.getFirst().equals("explain")) {
           String json = new String(first.stdout(), StandardCharsets.UTF_8);
-          assertEquals(200, occurrences(json, "\"featureGroup\":"));
+          assertEquals(206, occurrences(json, "\"featureGroup\":"));
           assertTrue(json.contains("\"workspaceDeclarations\":["));
           assertTrue(json.contains("\"kind\":\"workspace\""));
           if (sample.equals(DELIMITED_SAMPLE)) {

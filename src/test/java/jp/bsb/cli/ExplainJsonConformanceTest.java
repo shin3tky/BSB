@@ -39,7 +39,7 @@ class ExplainJsonConformanceTest {
         withEmptyWorkspaceDeclarations(asObject(parse(spec.expectedBytes()), "expected document"));
     Map<String, Object> actual = asObject(parse(invocation.stdout()), "actual document");
     validateDocument(expected, 125);
-    validateDocument(actual, 200);
+    validateDocument(actual, 206);
     if (spec.exitCode() == 0) {
       List<Object> expectedBuiltins = asArray(expected.get("builtinWords"), "expected builtins");
       List<Object> actualBuiltins = asArray(actual.get("builtinWords"), "actual builtins");
@@ -150,7 +150,7 @@ class ExplainJsonConformanceTest {
   }
 
   private static void validateDocument(Map<String, Object> document) {
-    validateDocument(document, 200);
+    validateDocument(document, 206);
   }
 
   private static void validateDocument(Map<String, Object> document, int successfulBuiltinCount) {

@@ -59,6 +59,24 @@ public enum BuiltinTypeRule {
   /** {@code 配列<T> 整数 整数 -- 配列<T>}です。 */
   ARRAY_DELETE_RANGE,
 
+  /** 等値比較可能な{@code T}について、{@code 配列<T> T -- 整数}です。 */
+  ARRAY_COUNT,
+
+  /** {@code 配列<T> 整数 T -- 配列<T>}です。 */
+  ARRAY_INSERT,
+
+  /** {@code 配列<T> 整数 -- 配列<T>}です。 */
+  ARRAY_DELETE_AT,
+
+  /** 等値比較可能な{@code T}について、{@code 配列<T> T 整数 -- 整数}です。 */
+  ARRAY_FIND_FROM,
+
+  /** 等値比較可能な{@code T}について、{@code 配列<T> -- 配列<T>}です。 */
+  ARRAY_UNIQUE,
+
+  /** 配列要素にできる{@code T}について、{@code T 整数 -- 配列<T>}です。 */
+  ARRAY_REPEAT_VALUE,
+
   /** {@code T -- 任意<T>}です。 */
   OPTIONAL_WRAP,
 

@@ -17,6 +17,13 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar check samples/28-array-selection
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/28-array-selection-deletion.bsb
 ```
 
+配列の個数集計、位置挿入・削除、開始位置付き検索、重複除去、反復生成の例です。
+
+```shell
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar check samples/29-array-convenience-operations.bsb
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/29-array-convenience-operations.bsb
+```
+
 ## 検査と実行
 
 ```shell

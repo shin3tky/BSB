@@ -206,6 +206,12 @@ final class BuiltinExecutor {
       case ARRAY_DELETE_FIRST -> arrayDeleteEdge(stack, span, true);
       case ARRAY_DELETE_LAST -> arrayDeleteEdge(stack, span, false);
       case ARRAY_DELETE_RANGE -> arrayDeleteRange(stack, span);
+      case ARRAY_COUNT -> arrayCount(word, stack, span);
+      case ARRAY_INSERT -> arrayInsert(stack, span);
+      case ARRAY_DELETE_AT -> arrayDeleteAt(stack, span);
+      case ARRAY_FIND_FROM -> arrayFindFrom(word, stack, span);
+      case ARRAY_UNIQUE -> arrayUnique(word, stack, span);
+      case ARRAY_REPEAT_VALUE -> arrayRepeatValue(stack, span);
       case DISPLAY -> display(word, stack, span, false, output);
       case DISPLAY_LINE -> display(word, stack, span, true, output);
       case NEWLINE -> newline(word, span, output);
@@ -5712,6 +5718,196 @@ final class BuiltinExecutor {
     stack.removeLast();
     stack.set(arrayIndex, result);
     return new byte[0];
+  }
+
+  private byte[] arrayCount(BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span)
+      throws RuntimeFailure {
+    int arrayIndex = stack.size() - 2;
+    ArrayValue array = (ArrayValue) stack.get(arrayIndex);
+    RuntimeValue sought = stack.get(arrayIndex + 1);
+    int count = 0;
+    long arrayWork = 0;
+    long jsonWork = 0;
+    long byteSequenceWork = 0;
+    for (RuntimeValue element : array.elements()) {
+      EqualityMeasurement measurement = measureEquality(element, sought);
+      arrayWork = saturatedAdd(arrayWork, saturatedAdd(1, measurement.arrayWork()));
+      jsonWork = saturatedAdd(jsonWork, measurement.jsonWork());
+      byteSequenceWork = saturatedAdd(byteSequenceWork, measurement.byteSequenceWork());
+      if (measurement.equal()) {
+        count++;
+      }
+    }
+    budget.beforeArrayJsonAndByteSequenceWork(
+        arrayWork, jsonWork, byteSequenceWork, span, word.canonicalName());
+    stack.removeLast();
+    stack.set(arrayIndex, new IntegerValue(BigInteger.valueOf(count)));
+    return new byte[0];
+  }
+
+  private byte[] arrayInsert(ArrayList<RuntimeValue> stack, SourceSpan span) throws RuntimeFailure {
+    int arrayIndex = stack.size() - 3;
+    ArrayValue array = (ArrayValue) stack.get(arrayIndex);
+    BigInteger indexValue = ((IntegerValue) stack.get(arrayIndex + 1)).value();
+    RuntimeValue element = stack.get(arrayIndex + 2);
+    int index = checkedArrayPosition(array, indexValue, true, "insert", span);
+    long resultLength = (long) array.size() + 1;
+    if (resultLength > ArrayLimits.MAX_LENGTH) {
+      throw arrayLengthLimit(span, resultLength, "insert");
+    }
+    long logicalLeafCount = ArrayNestedLimit.append(array, element);
+    ArrayNestedLimit.requireAllowed(
+        sourcePath, span, "insert", array.elementType(), logicalLeafCount);
+    budget.beforeArrayWork(1, 1, span, "insert");
+    ArrayValue result = array.inserted(index, element, logicalLeafCount);
+    stack.removeLast();
+    stack.removeLast();
+    stack.set(arrayIndex, result);
+    return new byte[0];
+  }
+
+  private byte[] arrayDeleteAt(ArrayList<RuntimeValue> stack, SourceSpan span)
+      throws RuntimeFailure {
+    int arrayIndex = stack.size() - 2;
+    ArrayValue array = (ArrayValue) stack.get(arrayIndex);
+    BigInteger indexValue = ((IntegerValue) stack.get(arrayIndex + 1)).value();
+    int index = checkedArrayPosition(array, indexValue, false, "deleteAt", span);
+    int resultLength = array.size() - 1;
+    long logicalLeafCount = ArrayNestedLimit.deleteRange(array, index, index + 1);
+    budget.beforeArrayWork(0, resultLength, span, "deleteAt");
+    stack.removeLast();
+    stack.set(arrayIndex, array.deletedRange(index, index + 1, logicalLeafCount));
+    return new byte[0];
+  }
+
+  private byte[] arrayFindFrom(BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span)
+      throws RuntimeFailure {
+    int arrayIndex = stack.size() - 3;
+    ArrayValue array = (ArrayValue) stack.get(arrayIndex);
+    RuntimeValue sought = stack.get(arrayIndex + 1);
+    BigInteger startValue = ((IntegerValue) stack.get(arrayIndex + 2)).value();
+    int start = checkedArrayPosition(array, startValue, true, "findFrom", span);
+    int found = -1;
+    long arrayWork = 0;
+    long jsonWork = 0;
+    long byteSequenceWork = 0;
+    for (int index = start; index < array.size(); index++) {
+      EqualityMeasurement measurement = measureEquality(array.get(index), sought);
+      arrayWork = saturatedAdd(arrayWork, saturatedAdd(1, measurement.arrayWork()));
+      jsonWork = saturatedAdd(jsonWork, measurement.jsonWork());
+      byteSequenceWork = saturatedAdd(byteSequenceWork, measurement.byteSequenceWork());
+      if (measurement.equal()) {
+        found = index;
+        break;
+      }
+    }
+    budget.beforeArrayJsonAndByteSequenceWork(
+        arrayWork, jsonWork, byteSequenceWork, span, word.canonicalName());
+    stack.removeLast();
+    stack.removeLast();
+    stack.set(arrayIndex, new IntegerValue(BigInteger.valueOf(found)));
+    return new byte[0];
+  }
+
+  private byte[] arrayUnique(BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span)
+      throws RuntimeFailure {
+    int arrayIndex = stack.size() - 1;
+    ArrayValue array = (ArrayValue) stack.get(arrayIndex);
+    var unique = new ArrayList<RuntimeValue>(array.size());
+    long arrayWork = 0;
+    long jsonWork = 0;
+    long byteSequenceWork = 0;
+    long remainingArrayWork =
+        ArrayLimits.MAX_ELEMENT_OPERATION_UNITS - budget.arrayElementOperationUnits();
+    uniqueLoop:
+    for (RuntimeValue candidate : array.elements()) {
+      boolean duplicate = false;
+      for (RuntimeValue retained : unique) {
+        EqualityMeasurement measurement = measureEquality(retained, candidate);
+        arrayWork = saturatedAdd(arrayWork, saturatedAdd(1, measurement.arrayWork()));
+        jsonWork = saturatedAdd(jsonWork, measurement.jsonWork());
+        byteSequenceWork = saturatedAdd(byteSequenceWork, measurement.byteSequenceWork());
+        if (arrayWork > remainingArrayWork) {
+          break uniqueLoop;
+        }
+        if (measurement.equal()) {
+          duplicate = true;
+          break;
+        }
+      }
+      if (!duplicate) {
+        unique.add(candidate);
+      }
+    }
+    budget.beforeArrayJsonAndByteSequenceWork(
+        arrayWork, jsonWork, byteSequenceWork, span, word.canonicalName());
+    long logicalLeafCount = ArrayNestedLimit.measure(array.elementType(), unique);
+    stack.set(arrayIndex, new ArrayValue(array.elementType(), unique, logicalLeafCount));
+    return new byte[0];
+  }
+
+  private byte[] arrayRepeatValue(ArrayList<RuntimeValue> stack, SourceSpan span)
+      throws RuntimeFailure {
+    int valueIndex = stack.size() - 2;
+    RuntimeValue value = stack.get(valueIndex);
+    BigInteger countValue = ((IntegerValue) stack.get(valueIndex + 1)).value();
+    if (countValue.signum() < 0
+        || countValue.compareTo(BigInteger.valueOf(ArrayLimits.MAX_LENGTH)) > 0) {
+      throw requestedArrayLengthOutOfRange(span, countValue, "repeatValue");
+    }
+    int count = countValue.intValueExact();
+    long logicalLeafCount = ArrayNestedLimit.repeat(value, count);
+    ArrayNestedLimit.requireAllowed(
+        sourcePath, span, "repeatValue", value.type(), logicalLeafCount);
+    budget.beforeArrayWork(count, count, span, "repeatValue");
+    ArrayValue result =
+        new ArrayValue(value.type(), java.util.Collections.nCopies(count, value), logicalLeafCount);
+    stack.removeLast();
+    stack.set(valueIndex, result);
+    return new byte[0];
+  }
+
+  private int checkedArrayPosition(
+      ArrayValue array, BigInteger index, boolean allowEnd, String operation, SourceSpan span)
+      throws RuntimeFailure {
+    int upper = allowEnd ? array.size() : array.size() - 1;
+    if (index.signum() < 0 || index.compareTo(BigInteger.valueOf(upper)) > 0) {
+      String validRange = allowEnd ? "[0," + array.size() + "]" : "[0," + array.size() + ")";
+      String expected = allowEnd ? "0以上" + array.size() + "以下" : "0以上" + array.size() + "未満";
+      throw new RuntimeFailure(
+          Diagnostic.builder(
+                  DiagnosticCode.E_ARRAY_INDEX_OUT_OF_BOUNDS,
+                  Severity.ERROR,
+                  DiagnosticStage.RUNTIME,
+                  sourcePath,
+                  span)
+              .field("operation", operation)
+              .field("index", index.toString())
+              .field("length", Integer.toString(array.size()))
+              .field("validRange", validRange)
+              .expected(expected)
+              .actual(index.toString())
+              .fix(allowEnd ? "位置を0から配列の長さまでにしてください" : "有効な要素位置を指定してください")
+              .build());
+    }
+    return index.intValueExact();
+  }
+
+  private RuntimeFailure requestedArrayLengthOutOfRange(
+      SourceSpan span, BigInteger observed, String operation) {
+    return new RuntimeFailure(
+        Diagnostic.builder(
+                DiagnosticCode.E_ARRAY_LENGTH_LIMIT,
+                Severity.ERROR,
+                DiagnosticStage.RUNTIME,
+                sourcePath,
+                span)
+            .field("operation", operation)
+            .limit("arrayLength", Integer.toString(ArrayLimits.MAX_LENGTH), observed.toString())
+            .expected("0以上" + ArrayLimits.MAX_LENGTH + "要素以下")
+            .actual(observed + "要素")
+            .fix("個数を0から" + ArrayLimits.MAX_LENGTH + "までにしてください。")
+            .build());
   }
 
   private int checkedIndex(ArrayValue array, BigInteger index, String operation, SourceSpan span)

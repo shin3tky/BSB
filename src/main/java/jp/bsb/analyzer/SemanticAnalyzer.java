@@ -2702,6 +2702,12 @@ public final class SemanticAnalyzer {
             case ARRAY_EDGE_OPTIONAL -> applyArrayEdgeOptional(call, stack);
             case ARRAY_DELETE_EDGE -> applyArrayDeleteEdge(call, stack);
             case ARRAY_DELETE_RANGE -> applyArrayDeleteRange(call, stack);
+            case ARRAY_COUNT -> applyArraySearch(call, stack, ValueType.INTEGER);
+            case ARRAY_INSERT -> applyArrayInsert(call, stack);
+            case ARRAY_DELETE_AT -> applyArrayDeleteAt(call, stack);
+            case ARRAY_FIND_FROM -> applyArrayFindFrom(call, stack);
+            case ARRAY_UNIQUE -> applyArrayUnique(call, stack);
+            case ARRAY_REPEAT_VALUE -> applyArrayRepeatValue(call, stack);
             case OPTIONAL_WRAP -> applyOptionalWrap(call, stack);
             case OPTIONAL_PREDICATE -> applyOptionalPredicate(call, stack);
             case OPTIONAL_UNWRAP -> applyOptionalUnwrap(call, stack);
@@ -3070,6 +3076,102 @@ public final class SemanticAnalyzer {
       return stack.removeTop(3).push(arrayType, call.span());
     }
 
+    private AbstractStack applyArrayInsert(WordCall call, AbstractStack stack) {
+      ValueType arrayType = requireArrayInputs(call, List.of("配列<T>", "整数", "T"), stack);
+      if (arrayType == null) {
+        return null;
+      }
+      int inputStart = stack.size() - 3;
+      ValueType elementType = arrayType.arrayElementType().orElseThrow();
+      if (!requireArrayOperationType(
+              call,
+              2,
+              ValueType.INTEGER,
+              stack.slots().get(inputStart + 1).type(),
+              "挿入位置を整数にしてください")
+          || !requireArrayOperationType(
+              call,
+              3,
+              elementType,
+              stack.slots().get(inputStart + 2).type(),
+              "挿入値を" + elementType.sourceName() + "にしてください")) {
+        return null;
+      }
+      return stack.removeTop(3).push(arrayType, call.span());
+    }
+
+    private AbstractStack applyArrayDeleteAt(WordCall call, AbstractStack stack) {
+      ValueType arrayType = requireArrayInputs(call, List.of("配列<T>", "整数"), stack);
+      if (arrayType == null) {
+        return null;
+      }
+      int inputStart = stack.size() - 2;
+      if (!requireArrayOperationType(
+          call, 2, ValueType.INTEGER, stack.slots().get(inputStart + 1).type(), "削除位置を整数にしてください")) {
+        return null;
+      }
+      return stack.removeTop(2).push(arrayType, call.span());
+    }
+
+    private AbstractStack applyArrayFindFrom(WordCall call, AbstractStack stack) {
+      ValueType arrayType = requireArrayInputs(call, List.of("配列<T>", "T", "整数"), stack);
+      if (arrayType == null) {
+        return null;
+      }
+      int inputStart = stack.size() - 3;
+      ValueType elementType = arrayType.arrayElementType().orElseThrow();
+      if (!requireArrayOperationType(
+              call,
+              2,
+              elementType,
+              stack.slots().get(inputStart + 1).type(),
+              "検索値を" + elementType.sourceName() + "にしてください")
+          || !requireArrayOperationType(
+              call,
+              3,
+              ValueType.INTEGER,
+              stack.slots().get(inputStart + 2).type(),
+              "開始位置を整数にしてください")) {
+        return null;
+      }
+      if (!ValueTypeTraits.isEqualityComparable(elementType)) {
+        reportArrayOperationTypeMismatch(call, 2, "等値比較可能", elementType, "比較可能な要素型の配列を使用してください");
+        return null;
+      }
+      return stack.removeTop(3).push(ValueType.INTEGER, call.span());
+    }
+
+    private AbstractStack applyArrayUnique(WordCall call, AbstractStack stack) {
+      ValueType arrayType = requireArrayInputs(call, List.of("配列<T>"), stack);
+      if (arrayType == null) {
+        return null;
+      }
+      ValueType elementType = arrayType.arrayElementType().orElseThrow();
+      if (!ValueTypeTraits.isEqualityComparable(elementType)) {
+        reportArrayOperationTypeMismatch(
+            call, 1, "等値比較可能な要素を持つ配列", arrayType, "比較可能な要素型の配列を使用してください");
+        return null;
+      }
+      return stack.removeTop(1).push(arrayType, call.span());
+    }
+
+    private AbstractStack applyArrayRepeatValue(WordCall call, AbstractStack stack) {
+      if (!requireStackDepth(call, List.of("T", "整数"), stack)) {
+        return null;
+      }
+      int inputStart = stack.size() - 2;
+      ValueType elementType = stack.slots().get(inputStart).type();
+      if (!elementType.isArrayElementType()) {
+        reportArrayOperationTypeMismatch(call, 1, "配列要素型", elementType, "配列に格納できる値を使用してください");
+        return null;
+      }
+      if (!requireArrayOperationType(
+          call, 2, ValueType.INTEGER, stack.slots().get(inputStart + 1).type(), "個数を整数にしてください")) {
+        return null;
+      }
+      return stack.removeTop(2).push(ValueType.arrayOf(elementType), call.span());
+    }
+
     /** 入力数と第1入力の配列制約を検査し、具体化した配列型を返します。 */
     private ValueType requireArrayInputs(
         WordCall call, List<String> requiredTypes, AbstractStack stack) {
@@ -3106,6 +3208,9 @@ public final class SemanticAnalyzer {
               case "配列の先頭へ追加する" -> "追加値を置いてください";
               case "配列に含まれる", "配列から検索する" -> "検索値を置いてください";
               case "配列の一部を削除する" -> missingInput == 2 ? "開始位置を追加してください" : "終了位置を追加してください";
+              case "配列の位置へ挿入する" -> missingInput == 2 ? "挿入位置を追加してください" : "挿入値を追加してください";
+              case "配列の位置を削除する" -> "削除位置を追加してください";
+              case "開始位置から配列を検索する" -> missingInput == 2 ? "検索値を追加してください" : "開始位置を追加してください";
               default -> "配列値を追加してください";
             };
       }

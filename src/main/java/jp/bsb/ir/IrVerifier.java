@@ -181,6 +181,40 @@ final class IrVerifier {
               && inputs.get(1).equals(ValueType.INTEGER)
               && inputs.get(2).equals(ValueType.INTEGER)
               && outputs.equals(List.of(array));
+      case ARRAY_COUNT ->
+          inputs.size() == 2
+              && inputs.getFirst() instanceof ArrayType array
+              && inputs.get(1).equals(array.elementType())
+              && ValueTypeTraits.isEqualityComparable(array.elementType())
+              && outputs.equals(List.of(ValueType.INTEGER));
+      case ARRAY_INSERT ->
+          inputs.size() == 3
+              && inputs.getFirst() instanceof ArrayType array
+              && inputs.get(1).equals(ValueType.INTEGER)
+              && inputs.get(2).equals(array.elementType())
+              && outputs.equals(List.of(array));
+      case ARRAY_DELETE_AT ->
+          inputs.size() == 2
+              && inputs.getFirst() instanceof ArrayType array
+              && inputs.get(1).equals(ValueType.INTEGER)
+              && outputs.equals(List.of(array));
+      case ARRAY_FIND_FROM ->
+          inputs.size() == 3
+              && inputs.getFirst() instanceof ArrayType array
+              && inputs.get(1).equals(array.elementType())
+              && inputs.get(2).equals(ValueType.INTEGER)
+              && ValueTypeTraits.isEqualityComparable(array.elementType())
+              && outputs.equals(List.of(ValueType.INTEGER));
+      case ARRAY_UNIQUE ->
+          inputs.size() == 1
+              && inputs.getFirst() instanceof ArrayType array
+              && ValueTypeTraits.isEqualityComparable(array.elementType())
+              && outputs.equals(List.of(array));
+      case ARRAY_REPEAT_VALUE ->
+          inputs.size() == 2
+              && inputs.getFirst().isArrayElementType()
+              && inputs.get(1).equals(ValueType.INTEGER)
+              && outputs.equals(List.of(ValueType.arrayOf(inputs.getFirst())));
       case OPTIONAL_WRAP ->
           inputs.size() == 1 && outputs.equals(List.of(ValueType.optionalOf(inputs.getFirst())));
       case OPTIONAL_PREDICATE ->
