@@ -80,6 +80,16 @@ python3 tools/diagnostic_coverage.py --format json --strict
 python3 tools/builtin_word_coverage.py --format json --strict
 ```
 
+## 依存関係の管理
+
+Dependabot は毎週月曜日に Gradle、VS Code 拡張の npm、GitHub Actions の更新を確認し、
+更新があれば Pull Request を作成します。GitHub Actions はすべての push と Pull Request、
+および週次スケジュールで Java と VS Code 拡張を検証します。Pull Request では新しく導入される
+脆弱な依存関係も検査し、push と週次実行では Gradle の依存グラフを GitHub へ提出します。
+
+Dependency review と脆弱性通知を利用するには、GitHub リポジトリの Dependency graph と
+Dependabot alerts を有効にしてください。
+
 ## ドキュメント
 
 - [ドキュメント案内](docs/README.md)

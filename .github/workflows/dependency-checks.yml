@@ -1,0 +1,98 @@
+name: Dependency checks
+
+on:
+  push:
+  pull_request:
+  schedule:
+    # 毎週月曜日 09:17 JST。GitHub Actions の cron は UTC で解釈される。
+    - cron: "17 0 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dependency-checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  java:
+    name: Java and Gradle
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "25"
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+      - name: Run Java tests
+        run: ./gradlew test --no-daemon --stacktrace
+
+  vscode:
+    name: VS Code extension
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: editors/vscode
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "25"
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: editors/vscode/package-lock.json
+      - name: Install npm dependencies
+        run: npm ci
+      - name: Audit npm dependencies
+        run: npm audit --audit-level=high
+      - name: Test extension
+        run: npm test
+      - name: Package extension
+        run: npm run package:vsix
+
+  dependency-review:
+    name: Dependency review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Reject vulnerable dependency changes
+        uses: actions/dependency-review-action@v5
+
+  gradle-dependency-graph:
+    name: Submit Gradle dependency graph
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "25"
+      - name: Generate and submit dependency graph
+        uses: gradle/actions/dependency-submission@v6
+        with:
+          cache-provider: basic
+          dependency-graph: generate-and-submit
