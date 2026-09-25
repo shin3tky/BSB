@@ -10,3 +10,8 @@ tools/reports/
 __pycache__/
 *.connections.local.toml
 docs_internal/
+/editors/vscode/dist/
+/editors/vscode/node_modules/
+/editors/vscode/server/
+/editors/vscode/*.vsix
+/editors/vscode/LICENSE

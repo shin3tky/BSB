@@ -1,0 +1,106 @@
+{
+  "name": "bsb-language-support",
+  "displayName": "BSB Language Support",
+  "description": "Language support for the BSB programming language",
+  "version": "0.1.0",
+  "publisher": "shin3tky",
+  "icon": "icon.png",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shin3tky/BSB.git"
+  },
+  "engines": {
+    "vscode": "^1.91.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters"
+  ],
+  "keywords": [
+    "BSB",
+    "Japanese",
+    "language server"
+  ],
+  "extensionKind": [
+    "workspace"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": {
+      "supported": true
+    }
+  },
+  "activationEvents": [
+    "onLanguage:bsb"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "bsb",
+        "aliases": [
+          "BSB",
+          "bsb"
+        ],
+        "extensions": [
+          ".bsb"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "bsb",
+        "scopeName": "source.bsb",
+        "path": "./syntaxes/bsb.tmLanguage.json"
+      }
+    ],
+    "configuration": {
+      "title": "BSB",
+      "properties": {
+        "bsb.java.path": {
+          "type": "string",
+          "default": "java",
+          "scope": "machine",
+          "description": "BSB Language Serverの起動に使うJava 25以降の実行ファイル。"
+        },
+        "bsb.trace.server": {
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "scope": "window",
+          "description": "BSB Language Serverとの通信トレース。"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "check": "tsc --noEmit",
+    "compile": "node esbuild.mjs",
+    "compile:production": "node esbuild.mjs --production",
+    "watch": "node esbuild.mjs --watch",
+    "generate:icon": "python3 ../../tools/gen-icon.py",
+    "test": "npm run check && npm run compile && node --test test/*.test.js",
+    "build:server": "node scripts/build-server.mjs",
+    "build:all": "npm run build:server && npm run check && npm run compile:production",
+    "vscode:prepublish": "npm run build:all",
+    "package:vsix": "vsce package --out bsb-language-support.vsix"
+  },
+  "dependencies": {
+    "vscode-languageclient": "10.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "1.91.0",
+    "@vscode/vsce": "4.0.0",
+    "esbuild": "0.28.2",
+    "typescript": "7.0.2"
+  }
+}

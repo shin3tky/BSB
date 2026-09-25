@@ -103,6 +103,7 @@ python3 tools/builtin_word_coverage.py --format json --strict
 src/main/java/       処理系本体
 src/test/java/       単体・統合・適合性テスト
 language-server/     Java製Language Serverとプロトコル単体テスト
+editors/vscode/      VS Codeクライアント、言語定義、VSIXビルド
 tests/conformance/   機能グループ別の宣言的な適合データ
 samples/             独立して実行できる BSB プログラムと埋込み例
 docs/                公開ドキュメントと詳細言語仕様

@@ -1,0 +1,130 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "BSB",
+  "scopeName": "source.bsb",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#characters" },
+    { "include": "#definitions" },
+    { "include": "#declarations" },
+    { "include": "#numbers" },
+    { "include": "#constants" },
+    { "include": "#keywords" },
+    { "include": "#types" },
+    { "include": "#punctuation" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.bsb",
+          "match": "#.*$"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.bsb",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            { "name": "constant.character.escape.bsb", "match": "\\\\(?:[\\\\\"nrt]|u\\{[0-9A-Fa-f]+\\})" }
+          ]
+        },
+        {
+          "name": "string.quoted.other.japanese.bsb",
+          "begin": "「",
+          "end": "」",
+          "patterns": [
+            { "name": "constant.character.escape.bsb", "match": "\\\\(?:[\\\\\"nrt]|u\\{[0-9A-Fa-f]+\\})" }
+          ]
+        }
+      ]
+    },
+    "characters": {
+      "patterns": [
+        {
+          "name": "string.quoted.single.bsb",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            { "name": "constant.character.escape.bsb", "match": "\\\\(?:[\\\\'nrt]|u\\{[0-9A-Fa-f]+\\})" }
+          ]
+        }
+      ]
+    },
+    "definitions": {
+      "patterns": [
+        {
+          "match": "([^\\s、，。#()（）【】]+)(とは)",
+          "captures": {
+            "1": { "name": "entity.name.function.bsb" },
+            "2": { "name": "keyword.declaration.function.bsb" }
+          }
+        }
+      ]
+    },
+    "declarations": {
+      "patterns": [
+        {
+          "match": "([^\\s、，。#()（）【】]+)(は)(?=\\s*(?:定数|変数|論理接続|作業領域))",
+          "captures": {
+            "1": { "name": "variable.other.bsb" },
+            "2": { "name": "keyword.operator.declaration.bsb" }
+          }
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.bsb",
+          "match": "(?<![^\\s、，。#()（）【】])-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?"
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        {
+          "name": "constant.language.boolean.bsb",
+          "match": "(?<![^\\s、，。#()（）【】])(?:はい|いいえ)(?![^\\s、，。#()（）【】])"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.bsb",
+          "match": "(?<![^\\s、，。#()（）【】])(?:ならば|さもなければ|つぎに|または|かつ|回だけ|各要素について|ここから|続く間|繰り返す|打ち切る|続ける|戻る|伝播する)(?![^\\s、，。#()（）【】])"
+        },
+        {
+          "name": "keyword.declaration.bsb",
+          "match": "(?<![^\\s、，。#()（）【】])(?:定数|変数|論理接続|作業領域|こと)(?![^\\s、，。#()（）【】])"
+        },
+        {
+          "name": "keyword.operator.particle.bsb",
+          "match": "(?<![^\\s、，。#()（）【】])(?:を|に|と|から|で)(?![^\\s、，。#()（）【】])"
+        }
+      ]
+    },
+    "types": {
+      "patterns": [
+        {
+          "name": "storage.type.bsb",
+          "match": "(?<![^\\s、，。#()（）【】])(?:整数|小数|真偽|文字|文字列|正規表現|JSON|バイト列|丸め方向|任意|結果|配列)(?![^\\s、，。#()（）【】])"
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        { "name": "keyword.operator.stack.bsb", "match": "--" },
+        { "name": "punctuation.section.group.begin.bsb", "match": "[（(【]" },
+        { "name": "punctuation.section.group.end.bsb", "match": "[）)】]" },
+        { "name": "punctuation.separator.bsb", "match": "[、，]" },
+        { "name": "punctuation.terminator.bsb", "match": "。" }
+      ]
+    }
+  }
+}

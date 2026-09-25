@@ -1,0 +1,10 @@
+**
+!dist/**
+!server/**
+!syntaxes/**
+!language-configuration.json
+!icon.png
+!CHANGELOG.md
+!LICENSE
+!package.json
+!README.md
