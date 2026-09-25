@@ -239,6 +239,26 @@ class BsbCliTest {
   }
 
   @Test
+  void runAcceptsAnExplicitInstructionLimitAndKeepsTheDefaultOtherwise() throws IOException {
+    Path source = copyResource("sources/CORE-N001.bsb", "instruction-limit.bsb");
+
+    Invocation limited = invoke("run", "--instruction-limit", "1", source.toString());
+    Invocation raised = invoke("run", "--instruction-limit", "100", source.toString());
+    Invocation defaulted = invoke("run", source.toString());
+
+    assertEquals(10, limited.exitCode());
+    assertEquals("", limited.stdout());
+    assertTrue(limited.stderr().contains("エラー[E_INSTRUCTION_LIMIT]"));
+    assertTrue(limited.stderr().contains("上限: executedInstructions=1"));
+    assertEquals(0, raised.exitCode());
+    assertEquals("42\n", raised.stdout());
+    assertEquals("", raised.stderr());
+    assertEquals(0, defaulted.exitCode());
+    assertEquals("42\n", defaulted.stdout());
+    assertEquals("", defaulted.stderr());
+  }
+
+  @Test
   void warningsUseStderrButKeepSuccessfulCheckAndRunExitCodes() throws IOException {
     Path source = copyResource("sources/CORE-F026.bsb", "CORE-F026.bsb");
 
@@ -656,6 +676,25 @@ class BsbCliTest {
         Arguments.of(new String[] {"check", "input.bsb", "--"}, "余分な引数があります。"),
         Arguments.of(new String[] {"format", "input.bsb", "--", "arg"}, "余分な引数があります。"),
         Arguments.of(new String[] {"run", "input.bsb", "arg"}, "runの起動引数の前に -- を指定してください。"),
+        Arguments.of(
+            new String[] {"run", "--instruction-limit"}, "--instruction-limit の後に正の整数を1つ指定してください。"),
+        Arguments.of(
+            new String[] {"run", "--instruction-limit", "0", "input.bsb"},
+            "--instruction-limit には正の10進整数を指定してください。"),
+        Arguments.of(
+            new String[] {"run", "--instruction-limit", "abc", "input.bsb"},
+            "--instruction-limit には正の10進整数を指定してください。"),
+        Arguments.of(
+            new String[] {"run", "--instruction-limit", "9223372036854775808", "input.bsb"},
+            "--instruction-limit には正の10進整数を指定してください。"),
+        Arguments.of(
+            new String[] {
+              "run", "--instruction-limit", "10", "--instruction-limit", "20", "input.bsb"
+            },
+            "--instruction-limit は1回だけ指定できます。"),
+        Arguments.of(
+            new String[] {"check", "--instruction-limit", "10", "input.bsb"},
+            "--instruction-limit は run でだけ使用できます。"),
         Arguments.of(new String[] {"inspect"}, "未知のサブコマンドです: inspect"),
         Arguments.of(new String[] {"inspect", "input.bsb"}, "未知のサブコマンドです: inspect"),
         Arguments.of(

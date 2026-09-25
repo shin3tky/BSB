@@ -14,6 +14,7 @@ final class ExecutionBudget {
   private final String sourcePath;
   private final MonotonicClock clock;
   private final long startNanos;
+  private final long instructionLimit;
   private long executed;
   private long arrayConstructionUnits;
   private long arrayElementOperationUnits;
@@ -38,6 +39,10 @@ final class ExecutionBudget {
 
   ExecutionBudget(String sourcePath, MonotonicClock clock) {
     this(sourcePath, clock, 0, clock.nanoTime(), 0, 0, 0, 0, 0, 0, 0);
+  }
+
+  ExecutionBudget(String sourcePath, MonotonicClock clock, long instructionLimit) {
+    this(sourcePath, clock, 0, clock.nanoTime(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, instructionLimit);
   }
 
   ExecutionBudget(String sourcePath, MonotonicClock clock, long executed, long startNanos) {
@@ -178,10 +183,50 @@ final class ExecutionBudget {
       long httpSendCalls,
       long httpRequestAttemptBytes,
       long httpResponseReceivedBytes) {
+    this(
+        sourcePath,
+        clock,
+        executed,
+        startNanos,
+        arrayConstructionUnits,
+        arrayElementOperationUnits,
+        regexWorkUnits,
+        jsonConstructionUnits,
+        jsonWorkUnits,
+        byteSequenceConstructionBytes,
+        byteSequenceWorkBytes,
+        httpMetadataConstructionBytes,
+        httpSendCalls,
+        httpRequestAttemptBytes,
+        httpResponseReceivedBytes,
+        RuntimeLimits.EXECUTED_INSTRUCTIONS);
+  }
+
+  private ExecutionBudget(
+      String sourcePath,
+      MonotonicClock clock,
+      long executed,
+      long startNanos,
+      long arrayConstructionUnits,
+      long arrayElementOperationUnits,
+      long regexWorkUnits,
+      long jsonConstructionUnits,
+      long jsonWorkUnits,
+      long byteSequenceConstructionBytes,
+      long byteSequenceWorkBytes,
+      long httpMetadataConstructionBytes,
+      long httpSendCalls,
+      long httpRequestAttemptBytes,
+      long httpResponseReceivedBytes,
+      long instructionLimit) {
     this.sourcePath = sourcePath;
     this.clock = clock;
     this.executed = executed;
     this.startNanos = startNanos;
+    if (instructionLimit <= 0 || executed < 0 || executed > instructionLimit) {
+      throw new IllegalArgumentException("invalid instruction resource limit or count");
+    }
+    this.instructionLimit = instructionLimit;
     if (arrayConstructionUnits < 0
         || arrayConstructionUnits > ArrayLimits.MAX_CONSTRUCTION_UNITS
         || arrayElementOperationUnits < 0
@@ -220,7 +265,7 @@ final class ExecutionBudget {
   }
 
   void beforeInstruction(SourceSpan span) throws RuntimeFailure {
-    if (executed >= RuntimeLimits.EXECUTED_INSTRUCTIONS) {
+    if (executed >= instructionLimit) {
       throw new RuntimeFailure(
           Diagnostic.builder(
                   DiagnosticCode.E_INSTRUCTION_LIMIT,
@@ -228,8 +273,8 @@ final class ExecutionBudget {
                   DiagnosticStage.RUNTIME,
                   sourcePath,
                   span)
-              .limit("executedInstructions", RuntimeLimits.EXECUTED_INSTRUCTIONS, executed + 1)
-              .expected(RuntimeLimits.EXECUTED_INSTRUCTIONS + "命令以下")
+              .limit("executedInstructions", instructionLimit, executed + 1)
+              .expected(instructionLimit + "命令以下")
               .actual((executed + 1) + "命令目")
               .fix("無限ループまたは過大な処理を見直してください。")
               .build());

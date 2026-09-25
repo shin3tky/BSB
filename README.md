@@ -55,6 +55,7 @@ Windows（PowerShell / コマンドプロンプト）では、最後のコマン
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar check samples/01-hello-world.bsb
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar version
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/01-hello-world.bsb
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run --instruction-limit 50000000 samples/01-hello-world.bsb
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar format samples/01-hello-world.bsb
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar explain --json samples/01-hello-world.bsb
 ```

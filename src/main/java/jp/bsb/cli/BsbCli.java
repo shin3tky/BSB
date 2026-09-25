@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalLong;
 import jp.bsb.diagnostics.Diagnostic;
 import jp.bsb.diagnostics.DiagnosticMessageCatalog;
 import jp.bsb.diagnostics.DiagnosticRenderer;
@@ -17,6 +18,7 @@ import jp.bsb.runtime.CapabilityException;
 import jp.bsb.runtime.ConsoleOutput;
 import jp.bsb.runtime.ExecutionContext;
 import jp.bsb.runtime.ExecutionEnvironment;
+import jp.bsb.runtime.ExecutionLimits;
 import jp.bsb.runtime.MonotonicClock;
 import jp.bsb.runtime.MonotonicTime;
 import jp.bsb.runtime.OutputSink;
@@ -55,6 +57,7 @@ public final class BsbCli {
           + "        bsb check --json <ソース.bsb>\n"
           + "        bsb explain --json <ソース.bsb>\n"
           + "        bsb run <ソース.bsb>\n"
+          + "        bsb run --instruction-limit <命令数> <ソース.bsb>\n"
           + "        bsb run --file <作業領域名> <論理名> <read|write|read-write> <OSパス> [--file ...] <ソース.bsb>\n"
           + "        bsb run --workspaces <設定.toml> <ソース.bsb>\n"
           + "        bsb run --connections <設定.toml> <ソース.bsb>\n"
@@ -318,6 +321,7 @@ public final class BsbCli {
               invocation.workspaceConfigPath(),
               invocation.directFiles(),
               invocation.programArguments(),
+              invocation.instructionLimit(),
               standardInput,
               standardOutput,
               standardError);
@@ -337,6 +341,7 @@ public final class BsbCli {
       Optional<Path> workspaceConfigPath,
       List<DirectFileOption> directFiles,
       List<String> programArguments,
+      OptionalLong instructionLimit,
       InputStream standardInput,
       OutputStream standardOutput,
       OutputStream standardError)
@@ -422,7 +427,11 @@ public final class BsbCli {
     ExecutionEnvironment environment = environmentBuilder.build();
     OutputSink compatibilityOutput = bytes -> {};
     var context = new ExecutionContext(compatibilityOutput, clock, TraceSink.none(), environment);
-    var result = backend.run(sourcePath, context);
+    var limits =
+        instructionLimit.isPresent()
+            ? new ExecutionLimits(instructionLimit.getAsLong())
+            : ExecutionLimits.defaults();
+    var result = backend.run(sourcePath, context, limits);
     if (!result.diagnostics().isEmpty() && errorLastByte[0] >= 0 && errorLastByte[0] != '\n') {
       standardError.write('\n');
     }

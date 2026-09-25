@@ -7,6 +7,7 @@ import jp.bsb.analyzer.SourceChecker;
 import jp.bsb.format.FormatResult;
 import jp.bsb.format.SourceFormatter;
 import jp.bsb.runtime.ExecutionContext;
+import jp.bsb.runtime.ExecutionLimits;
 import jp.bsb.runtime.ProgramRunResult;
 import jp.bsb.runtime.ProgramRunner;
 
@@ -29,6 +30,12 @@ final class DefaultCliBackend implements CliBackend {
   @Override
   public ProgramRunResult run(Path path, ExecutionContext context) throws IOException {
     return runner.run(path, context);
+  }
+
+  @Override
+  public ProgramRunResult run(Path path, ExecutionContext context, ExecutionLimits limits)
+      throws IOException {
+    return runner.run(path, context, limits);
   }
 
   @Override

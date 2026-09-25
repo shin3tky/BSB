@@ -30,9 +30,16 @@ public final class ProgramRunner {
    * @throws IOException ファイルの物理的なI/Oエラーが発生した場合
    */
   public ProgramRunResult run(Path path, ExecutionContext context) throws IOException {
+    return run(path, context, ExecutionLimits.defaults());
+  }
+
+  /** ファイルを読み込み、指定された実行上限で実行します。 */
+  public ProgramRunResult run(Path path, ExecutionContext context, ExecutionLimits limits)
+      throws IOException {
     Objects.requireNonNull(path, "path");
     Objects.requireNonNull(context, "context");
-    return runAnalyzed(checker.check(path), context);
+    Objects.requireNonNull(limits, "limits");
+    return runAnalyzed(checker.check(path), context, limits);
   }
 
   /**
@@ -44,15 +51,22 @@ public final class ProgramRunner {
    * @return パイプラインの終了結果
    */
   public ProgramRunResult run(String sourcePath, byte[] bytes, ExecutionContext context) {
+    return run(sourcePath, bytes, context, ExecutionLimits.defaults());
+  }
+
+  /** 生の入力バイト列を、指定された実行上限で実行します。 */
+  public ProgramRunResult run(
+      String sourcePath, byte[] bytes, ExecutionContext context, ExecutionLimits limits) {
     Objects.requireNonNull(sourcePath, "sourcePath");
     Objects.requireNonNull(bytes, "bytes");
     Objects.requireNonNull(context, "context");
+    Objects.requireNonNull(limits, "limits");
 
-    return runAnalyzed(checker.check(sourcePath, bytes), context);
+    return runAnalyzed(checker.check(sourcePath, bytes), context, limits);
   }
 
   private ProgramRunResult runAnalyzed(
-      jp.bsb.analyzer.AnalysisResult analysis, ExecutionContext context) {
+      jp.bsb.analyzer.AnalysisResult analysis, ExecutionContext context, ExecutionLimits limits) {
     if (!analysis.successful()) {
       return new ProgramRunResult(analysis.exitCode(), analysis.diagnostics(), List.of(), 0, 0);
     }
@@ -64,7 +78,7 @@ public final class ProgramRunner {
       return new ProgramRunResult(8, diagnostics, List.of(), 0, 0);
     }
 
-    var execution = interpreter.execute(ir.programForExecution(), context);
+    var execution = interpreter.execute(ir.programForExecution(), context, limits);
     var diagnostics = new ArrayList<>(analysis.diagnostics());
     execution.diagnostic().ifPresent(diagnostics::add);
     return new ProgramRunResult(

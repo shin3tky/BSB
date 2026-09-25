@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalLong;
 
 /** 一度だけ解析・検証された不変のCLI呼出しです。 */
 record CliInvocation(
@@ -14,7 +15,8 @@ record CliInvocation(
     Optional<Path> connectionConfigPath,
     Optional<Path> workspaceConfigPath,
     List<DirectFileOption> directFiles,
-    List<String> programArguments)
+    List<String> programArguments,
+    OptionalLong instructionLimit)
     implements CliArgumentResult {
   CliInvocation {
     Objects.requireNonNull(command, "command");
@@ -25,8 +27,12 @@ record CliInvocation(
     workspaceConfigPath = Objects.requireNonNull(workspaceConfigPath, "workspaceConfigPath");
     directFiles = List.copyOf(directFiles);
     programArguments = List.copyOf(programArguments);
+    instructionLimit = Objects.requireNonNull(instructionLimit, "instructionLimit");
     if (command != CliCommand.RUN && !programArguments.isEmpty()) {
       throw new IllegalArgumentException("only run accepts program arguments");
+    }
+    if (command != CliCommand.RUN && instructionLimit.isPresent()) {
+      throw new IllegalArgumentException("only run accepts an instruction limit");
     }
     if (command != CliCommand.RUN && connectionConfigPath.isPresent()) {
       throw new IllegalArgumentException("only run accepts a connection configuration");

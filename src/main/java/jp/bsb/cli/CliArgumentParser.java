@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalLong;
 
 /** 公開CLI引数を検証し、位置に依存する解釈を不変値へ閉じ込めます。 */
 final class CliArgumentParser {
@@ -64,6 +65,7 @@ final class CliArgumentParser {
     var mappingKeys = new LinkedHashSet<String>();
     Optional<Path> connections = Optional.empty();
     Optional<Path> workspaces = Optional.empty();
+    OptionalLong instructionLimit = OptionalLong.empty();
     int index = 1;
     while (index < arguments.length && arguments[index].startsWith("-")) {
       String option = arguments[index];
@@ -112,6 +114,20 @@ final class CliArgumentParser {
           directFiles.add(new DirectFileOption(workspace, logicalName, access, path));
           index += 5;
         }
+        case "--instruction-limit" -> {
+          if (instructionLimit.isPresent()) {
+            return usage("--instruction-limit は1回だけ指定できます。");
+          }
+          if (index + 1 >= arguments.length) {
+            return usage("--instruction-limit の後に正の整数を1つ指定してください。");
+          }
+          Long parsedLimit = positiveLong(arguments[index + 1]);
+          if (parsedLimit == null) {
+            return usage("--instruction-limit には正の10進整数を指定してください。");
+          }
+          instructionLimit = OptionalLong.of(parsedLimit);
+          index += 2;
+        }
         case "--" -> {
           return usage("runのソースファイルを -- より前に指定してください。");
         }
@@ -155,7 +171,8 @@ final class CliArgumentParser {
         connections,
         workspaces,
         directFiles,
-        programArguments);
+        programArguments,
+        instructionLimit);
   }
 
   private static CliArgumentResult parseSingleSource(
@@ -164,7 +181,8 @@ final class CliArgumentParser {
         && arguments.length >= 2
         && (arguments[1].equals("--connections")
             || arguments[1].equals("--workspaces")
-            || arguments[1].equals("--file"))) {
+            || arguments[1].equals("--file")
+            || arguments[1].equals("--instruction-limit"))) {
       return error(outputFormat, arguments, false, arguments[1] + " は run でだけ使用できます。");
     }
     int sourceIndex = json ? 2 : 1;
@@ -196,7 +214,22 @@ final class CliArgumentParser {
         Optional.empty(),
         Optional.empty(),
         List.of(),
-        List.of());
+        List.of(),
+        OptionalLong.empty());
+  }
+
+  private static Long positiveLong(String value) {
+    if (value.isEmpty()) return null;
+    for (int index = 0; index < value.length(); index++) {
+      char character = value.charAt(index);
+      if (character < '0' || character > '9') return null;
+    }
+    try {
+      long parsed = Long.parseLong(value);
+      return parsed > 0 ? parsed : null;
+    } catch (NumberFormatException exception) {
+      return null;
+    }
   }
 
   private static Path optionPath(String value) {

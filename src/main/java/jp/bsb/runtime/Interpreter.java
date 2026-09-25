@@ -50,6 +50,15 @@ public final class Interpreter {
    * @return 成功または実行時診断
    */
   public ExecutionResult execute(IrProgram program, ExecutionContext context) {
+    return execute(program, context, ExecutionLimits.defaults());
+  }
+
+  /** 指定された実行上限でIRプログラムを実行します。 */
+  public ExecutionResult execute(
+      IrProgram program, ExecutionContext context, ExecutionLimits limits) {
+    java.util.Objects.requireNonNull(program, "program");
+    java.util.Objects.requireNonNull(context, "context");
+    java.util.Objects.requireNonNull(limits, "limits");
     var dataStack = new ArrayList<RuntimeValue>();
     var callStack = new ArrayList<Frame>();
     List<IrWord> startupWords = program.startupWords();
@@ -57,7 +66,8 @@ public final class Interpreter {
     callStack.add(new Frame(startupWords.getFirst()));
     var globalValues = new StorageArea(program.globalSlots(), BindingStorage.GLOBAL);
     var output = BoundedOutput.standard(program.sourcePath(), context.environment());
-    var budget = new ExecutionBudget(program.sourcePath(), context.clock());
+    var budget =
+        new ExecutionBudget(program.sourcePath(), context.clock(), limits.instructionLimit());
     var builtins = new BuiltinExecutor(program.sourcePath(), output, budget, context.environment());
     boolean tracing = context.trace().enabled();
     long sequence = 0;

@@ -28,6 +28,16 @@ class RuntimeResourceLimitTest {
       new SourceSpan(new SourcePosition(0, 1, 1), new SourcePosition(1, 1, 2));
 
   @Test
+  void executionLimitsKeepTheExistingDefaultAndRejectNonPositiveValues() {
+    assertEquals(
+        RuntimeLimits.EXECUTED_INSTRUCTIONS, ExecutionLimits.defaults().instructionLimit());
+    org.junit.jupiter.api.Assertions.assertThrows(
+        IllegalArgumentException.class, () -> new ExecutionLimits(0));
+    org.junit.jupiter.api.Assertions.assertThrows(
+        IllegalArgumentException.class, () -> new ExecutionLimits(-1));
+  }
+
+  @Test
   void acceptsAndRejectsIntegerResultDigitBoundaryBeforeOversizedMultiplication() {
     BigInteger largest = BigInteger.TEN.pow(RuntimeLimits.INTEGER_DIGITS - 1);
     ExecutionResult accepted = executeArithmetic(largest, BigInteger.ONE);
@@ -84,6 +94,22 @@ class RuntimeResourceLimitTest {
         org.junit.jupiter.api.Assertions.assertThrows(
             RuntimeFailure.class, () -> budget.beforeInstruction(SPAN));
     assertEquals(DiagnosticCode.E_INSTRUCTION_LIMIT, failure.diagnostic().code());
+  }
+
+  @Test
+  void acceptsAnExplicitInstructionLimitAndReportsThatLimit() throws Exception {
+    var budget = new ExecutionBudget("synthetic.bsb", () -> 0L, 2);
+
+    budget.beforeInstruction(SPAN);
+    budget.beforeInstruction(SPAN);
+    RuntimeFailure failure =
+        org.junit.jupiter.api.Assertions.assertThrows(
+            RuntimeFailure.class, () -> budget.beforeInstruction(SPAN));
+
+    assertEquals(2, budget.executed());
+    assertEquals(DiagnosticCode.E_INSTRUCTION_LIMIT, failure.diagnostic().code());
+    assertEquals("2", failure.diagnostic().limit().orElseThrow());
+    assertEquals("3", failure.diagnostic().observed().orElseThrow());
   }
 
   @Test

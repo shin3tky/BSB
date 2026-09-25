@@ -21,11 +21,21 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run [RUN_OPTIONS] SOURCE [-- PRO
 `check --json` は診断を機械可読な1行 JSON で返します。プログラムへ渡す起動引数はソースファイルの後ろの
 `--` で分離します。
 
-`run` のオプションは `--connections FILE`、`--workspaces FILE`、反復可能な
+`run` のオプションは `--connections FILE`、`--workspaces FILE`、`--instruction-limit COUNT`、反復可能な
 `--file WORKSPACE LOGICAL_NAME ACCESS OS_PATH` です。すべて `SOURCE` より前へ置きます。
 `ACCESS` は `read`、`write`、`read-write` のいずれかです。`--file` と `--workspaces` は相互排他で、
 どちらも `--connections` とは併用できます。`check`、`explain`、`format` にはこれらの実行時設定を
 指定できません。`--json` は `check` または `explain` の直後にだけ置けます。
+
+`--instruction-limit` には正の10進整数を指定します。未指定時は従来どおり10,000,000命令です。
+上限を引き上げても30秒の能動実行時間上限と、配列・文字列・CSV/TSVなどの機能別上限は
+変更されません。
+
+```shell
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run \
+  --instruction-limit 50000000 \
+  samples/133-emotional-life-game.bsb
+```
 
 ```shell
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/12-command-line-arguments.bsb -- 赤 青 緑
