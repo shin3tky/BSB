@@ -60,6 +60,15 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar format samples/01-hello-world.bs
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar explain --json samples/01-hello-world.bsb
 ```
 
+最小 Language Server は標準入出力で LSP 3.17 の接続を受け付けます。開いた文書と全文変更を検査し、
+BSB の構造化診断を UTF-16 座標の LSP 診断として配信します。
+
+```shell
+./gradlew :language-server:run
+./gradlew :language-server:shadowJar
+java -jar language-server/build/libs/language-server-all.jar
+```
+
 `version` は処理系の版とビルド時のコミットハッシュを表示、`check` は静的検査、`run` は検査後の実行、`format` はソースを標準形へ整形して出力、`explain --json` は
 語・束縛・能力・副作用の静的な説明を行います。`format` は入力ファイルを上書きしません。
 
@@ -93,6 +102,7 @@ python3 tools/builtin_word_coverage.py --format json --strict
 ```text
 src/main/java/       処理系本体
 src/test/java/       単体・統合・適合性テスト
+language-server/     Java製Language Serverとプロトコル単体テスト
 tests/conformance/   機能グループ別の宣言的な適合データ
 samples/             独立して実行できる BSB プログラムと埋込み例
 docs/                公開ドキュメントと詳細言語仕様
