@@ -48,16 +48,16 @@ UTF-8期待はコードポイント列と固定16進列、Base64期待は入力1
 | BYTES-N006 | RFC 4648の空、`f`〜`foobar`、0/1/2 paddingの規範Base64 |
 | BYTES-N007 | 0〜255全バイトと基本alphabetのBase64往復 |
 | BYTES-N008 | Base64の4失敗種類、文字位置／EOF、空白・URL-safe・pad bit拒否 |
-| BYTES-N009 | 長さ、`[0,0)`、`[N,N)`、`[0,N)`、中間slice、元値不変 |
+| BYTES-N009 | 長さ、`[0,0)`、`[N,N)`、`[0,N)`、中間の一部取得、元値不変 |
 | BYTES-N010 | 同値、先頭・中間・末尾不一致、長さ不一致、任意・結果内の比較と短絡 |
 | BYTES-N011 | 11語のformat冪等性、136語のexplain版1、能力・副作用・名前付き要求不変 |
-| BYTES-N012 | 章末でUTF-8／Base64成功と両失敗分岐、slice、比較、通常trace非開示 |
+| BYTES-N012 | 章末でUTF-8／Base64成功と両失敗分岐、一部取得、比較、通常trace非開示 |
 
 ## 3. 失敗例 BYTES-F001〜BYTES-F012
 
 | ID | 入力・観測 | 期待 |
 |---|---|---|
-| BYTES-F001 | 変換・長さ・sliceの入力不足 | `E_STACK_UNDERFLOW` |
+| BYTES-F001 | 変換・長さ・一部取得の入力不足 | `E_STACK_UNDERFLOW` |
 | BYTES-F002 | 各固定入力位置の型違い | `E_TYPE_MISMATCH` |
 | BYTES-F003 | `バイト列`を表示 | `E_TYPE_MISMATCH`、原因`バイト列` |
 | BYTES-F004 | `UTF8復号失敗`を表示 | `E_TYPE_MISMATCH`、原因型を保持 |
@@ -67,7 +67,7 @@ UTF-8期待はコードポイント列と固定16進列、Base64期待は入力1
 | BYTES-F008 | `配列<バイト列>` | `E_ARRAY_ELEMENT_TYPE_NOT_ALLOWED` |
 | BYTES-F009 | `配列<UTF8復号失敗>` | 同上 |
 | BYTES-F010 | `配列<Base64復号失敗>` | 同上 |
-| BYTES-F011 | sliceの負数、逆順、終端超過 | `E_BYTE_SEQUENCE_RANGE_OUT_OF_BOUNDS` |
+| BYTES-F011 | 一部取得の負数、逆順、終端超過 | `E_BYTE_SEQUENCE_RANGE_OUT_OF_BOUNDS` |
 | BYTES-F012 | UTF-8復号・Base64符号化の文字列結果16 MiB超 | `E_STRING_UTF8_LIMIT` |
 
 復号入力不正はF系でも診断にせず、BYTES-N005・008の正常な失敗結果として扱います。到達不能コードは
@@ -81,12 +81,12 @@ UTF-8期待はコードポイント列と固定16進列、Base64期待は入力1
 | BYTES-R002 | 構築累積134,217,728／134,217,729バイト、拒否予約0追加 |
 | BYTES-R003 | 作業累積268,435,456／268,435,457バイト、拒否予約0追加 |
 | BYTES-R004 | Base64出力入力12,582,912／12,582,913、UTF-8文字列16,777,216／1超過 |
-| BYTES-R005 | 全体sliceを64 MiBで構築0・作業1、範囲viewの元値不変 |
+| BYTES-R005 | 全体の一部取得を64 MiBで構築0・作業1、共有範囲の元値不変 |
 | BYTES-R006 | 64 MiB比較の同値・末尾不一致、長さ違い0、途中の作業拒否原子性 |
 | BYTES-R007 | 不正UTF-8・Base64が入力全長作業、構築0、失敗結果1値になる |
 | BYTES-R008 | Base64復号の先行走査後、構築・追加作業の同時予約が片側だけ増えない |
 | BYTES-R009 | 内容・長さ・状態・接頭辞・ハッシュ・例外markerが全公開面にない |
-| BYTES-R010 | 最大型深さ、最大値、slice view、変換、traceを最大ヒープ512 MiBで統合 |
+| BYTES-R010 | 最大型深さ、最大値、一部取得の共有表現、変換、traceを最大ヒープ512 MiBで統合 |
 
 OOM、StackOverflow、Java例外名は期待終了にしません。内部不変条件違反は利用者診断へ推測変換せず
 内部終了70とします。
@@ -106,7 +106,7 @@ OOM、StackOverflow、Java例外名は期待終了にしません。内部不変
 ## 6. 章末成果物 BYTES-N012
 
 章末は`「こんにちは🌍」`をUTF-8バイト列へ変換し、長さ、規範Base64、UTF-8復号成功を表示します。
-先頭15バイトのsliceを`「こんにちは」`の符号化結果と比較し、`はい`を表示します。
+先頭15バイトを取り出して`「こんにちは」`の符号化結果と比較し、`はい`を表示します。
 `/w==`から作った`FF`はUTF-8復号で`invalidLeadingByte`位置0、`Zg`はBase64復号で
 `invalidLength`位置2になります。失敗値自体とバイト列を直接表示しません。
 

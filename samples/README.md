@@ -116,7 +116,7 @@ java -cp build/libs/bsb-0.1.0-SNAPSHOT-all.jar:/tmp/bsb-connection-example Logic
 java -cp build/libs/bsb-0.1.0-SNAPSHOT-all.jar:/tmp/bsb-connection-example LogicalConnectionEmbedding invalid
 ```
 
-不変`バイト列`の長さ・slice・等値比較、UTF-8・Base64変換、回復可能な復号失敗を確認する例です。
+不変`バイト列`の長さ・一部取得・等値比較、UTF-8・Base64変換、回復可能な復号失敗を確認する例です。
 
 ```shell
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar check samples/19-byte-sequences.bsb
@@ -316,7 +316,7 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/133-emotional-life-g
 | `17-recoverable-json.bsb`          | 受信JSONの回復可能な解析         | 結果値、JSON解析失敗、入力内位置        |
 | `json-shape-validation.bsb`        | 外部JSONの構造検証               | 必須・任意キー、配列形状、null許容      |
 | `18-logical-connections.bsb`       | 2つの論理接続の確認              | 接続宣言、静的引数、直接・推移要求       |
-| `19-byte-sequences.bsb`            | 不変バイト列の変換と検査         | UTF-8、Base64、slice、等値、復号失敗     |
+| `19-byte-sequences.bsb`            | 不変バイト列の変換と検査         | UTF-8、Base64、一部取得、等値、復号失敗  |
 | `20-minimal-https.bsb`              | stdin JSONからHTTPS API連携       | 不変要求、論理接続、status、header、JSON応答 |
 | `21-httpbin-ip.bsb`                 | httpbinから送信元IPを取得         | HTTPS GET、応答JSON、文字列取出し             |
 | `http-reliability-connections.toml.example` | HTTP信頼性のCLI設定例 | 有限再試行、Retry-After、開始間隔 |
