@@ -122,6 +122,8 @@ final class TextRegexDiagnosticSupport {
           E_STRING_RANGE_OUT_OF_BOUNDS,
           E_CODE_POINT_INDEX_OUT_OF_BOUNDS,
           E_CODE_POINT_RANGE_OUT_OF_BOUNDS,
+          E_STRING_SEARCH_START_OUT_OF_BOUNDS,
+          E_NEGATIVE_REPEAT_COUNT,
           E_EMPTY_SEARCH_TEXT,
           E_EMPTY_DELIMITER,
           E_INTEGER_TEXT_INVALID,

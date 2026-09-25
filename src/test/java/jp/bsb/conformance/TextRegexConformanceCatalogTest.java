@@ -14,10 +14,10 @@ import jp.bsb.conformance.TextRegexConformanceData.CaseSpec;
 import jp.bsb.conformance.TextRegexConformanceData.CheckedProperties;
 import org.junit.jupiter.api.Test;
 
-/** N7、F7、R7と全参照・生成成果物を欠落・重複・未使用なく発見できることを固定します。 */
+/** TEXTのN、F、Rと全参照・生成成果物を欠落・重複・未使用なく発見できることを固定します。 */
 class TextRegexConformanceCatalogTest {
   @Test
-  void discoversAllSixtySevenIdsAndEveryReferencedArtifact() throws IOException {
+  void discoversAllSeventyIdsAndEveryReferencedArtifact() throws IOException {
     ConformanceData.validateMessages();
     var catalog = TextRegexConformanceData.loadCases();
     var diagnostics = TextRegexConformanceData.loadDiagnostics();
@@ -25,7 +25,7 @@ class TextRegexConformanceCatalogTest {
     List<String> caseIds = catalog.cases().stream().map(CaseSpec::id).toList();
     List<String> resourceIds =
         resources.stream().map(TextRegexConformanceData.ResourceSpec::id).distinct().toList();
-    List<String> expectedCases = Stream.concat(ids("TEXT-N", 26), ids("TEXT-F", 30)).toList();
+    List<String> expectedCases = Stream.concat(ids("TEXT-N", 27), ids("TEXT-F", 32)).toList();
     List<String> expectedResources = ids("TEXT-R", 11).toList();
 
     assertEquals(expectedCases, caseIds);
@@ -33,8 +33,8 @@ class TextRegexConformanceCatalogTest {
     var allIds = new LinkedHashSet<String>();
     allIds.addAll(caseIds);
     allIds.addAll(resourceIds);
-    assertEquals(67, allIds.size());
-    assertEquals(30, diagnostics.size());
+    assertEquals(70, allIds.size());
+    assertEquals(32, diagnostics.size());
     assertEquals(27, resources.size());
 
     for (CaseSpec spec : catalog.cases()) {

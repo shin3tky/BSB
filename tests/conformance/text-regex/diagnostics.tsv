@@ -29,3 +29,5 @@ TEXT-F027	run	error	E_REGEX_GROUP_UNMATCHED	2	35	word=正規表現の名前付�
 TEXT-F028	run	error	E_REGEX_REPLACEMENT_TEMPLATE	2	48	word=正規表現で置き換える;templateOffset=0;reference=missing;available=n;groupCount=1	存在するキャプチャ参照	${missing}	${n}を使用してください	-
 TEXT-F029	run	error	E_REGEX_NO_MATCH	3	28	word=正規表現で最初を取り出す;inputPreview=abc;patternPreview=[0-9]+	一致する入力	abc	パターンまたは入力を確認してください	-
 TEXT-F030	check	warning	W_UNREACHABLE_CODE	3	5	cause=戻る;causeLine=2;causeColumn=5	到達可能な処理	文字列を置き換える	この処理を削除するか戻る前へ移動してください	2:5 戻る
+TEXT-F031	run	error	E_STRING_SEARCH_START_OUT_OF_BOUNDS	2	19	word=開始位置から文字列を探す;unit=grapheme;index=3;length=2;validRange=[0,2]	0以上2以下	3	開始位置を0から文字列の長さまでにしてください	-
+TEXT-F032	run	error	E_NEGATIVE_REPEAT_COUNT	2	15	count=-1;word=文字列を繰り返す	0以上	-1	反復回数を0以上にしてください	-

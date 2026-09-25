@@ -29,7 +29,7 @@ public final class TextRegexConformanceData {
 
   private TextRegexConformanceData() {}
 
-  /** N7/F7の全56ケースとコマンド期待値を厳密に読み込みます。 */
+  /** TEXTの全59ケースとコマンド期待値を厳密に読み込みます。 */
   public static CaseCatalog loadCases() throws IOException {
     CheckedProperties properties = loadProperties("cases.properties");
     assertEquals("1", properties.require("schema.version"));
@@ -100,14 +100,14 @@ public final class TextRegexConformanceData {
     assertTrue(
         ids.containsAll(staticallyRejected.ids()), "failure.static.ids contains an unknown case");
     assertTrue(ids.containsAll(runtime.ids()), "failure.runtime.ids contains an unknown case");
-    assertEquals(26, ids.stream().filter(id -> id.startsWith("TEXT-N")).count(), "N7 count");
-    assertEquals(30, ids.stream().filter(id -> id.startsWith("TEXT-F")).count(), "F7 count");
+    assertEquals(27, ids.stream().filter(id -> id.startsWith("TEXT-N")).count(), "TEXT-N count");
+    assertEquals(32, ids.stream().filter(id -> id.startsWith("TEXT-F")).count(), "TEXT-F count");
     properties.assertFullyConsumed();
     return new CaseCatalog(
         List.copyOf(cases), syntax.ids(), staticallyRejected.ids(), runtime.ids());
   }
 
-  /** F7の全30構造化診断を規定順で読み込みます。 */
+  /** TEXT-Fの全32構造化診断を規定順で読み込みます。 */
   public static Map<String, DiagnosticSpec> loadDiagnostics() throws IOException {
     List<List<String>> rows =
         loadTsv(

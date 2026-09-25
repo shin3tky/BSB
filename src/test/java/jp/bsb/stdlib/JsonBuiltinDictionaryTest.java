@@ -51,7 +51,7 @@ class JsonBuiltinDictionaryTest {
             .filter(word -> word.featureGroup().equals("JSON"))
             .toList();
 
-    assertEquals(217, BuiltinDictionary.words().size());
+    assertEquals(226, BuiltinDictionary.words().size());
     assertEquals(NAMES, words.stream().map(BuiltinWord::canonicalName).toList());
     assertEquals(33, words.stream().map(BuiltinWord::operation).distinct().count());
     assertTrue(words.stream().allMatch(word -> word.typeRule() == BuiltinTypeRule.FIXED));

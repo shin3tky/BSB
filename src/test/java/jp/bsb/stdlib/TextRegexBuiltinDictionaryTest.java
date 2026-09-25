@@ -61,4 +61,28 @@ class TextRegexBuiltinDictionaryTest {
             .allMatch(word -> word.typeRule() == BuiltinTypeRule.FIXED));
     assertTrue(words.subList(184, 187).stream().allMatch(word -> word.sideEffects().isEmpty()));
   }
+
+  @Test
+  void appendsNineStringConvenienceWordsWithoutRenumberingExistingWords() {
+    List<BuiltinWord> words = BuiltinDictionary.words();
+
+    assertEquals(
+        List.of(
+            "文字列が空である",
+            "文字列が空白だけである",
+            "文字列を含む",
+            "指定文字列で始まる",
+            "指定文字列で終わる",
+            "文字列を繰り返す",
+            "文字列配列を区切ってつなぐ",
+            "開始位置から文字列を探す",
+            "後ろから文字列を探す"),
+        words.subList(217, 226).stream().map(BuiltinWord::canonicalName).toList());
+    assertTrue(
+        words.subList(217, 226).stream().allMatch(word -> word.featureGroup().equals("TEXT")));
+    assertTrue(
+        words.subList(217, 226).stream()
+            .allMatch(word -> word.typeRule() == BuiltinTypeRule.FIXED));
+    assertTrue(words.subList(217, 226).stream().allMatch(word -> word.sideEffects().isEmpty()));
+  }
 }

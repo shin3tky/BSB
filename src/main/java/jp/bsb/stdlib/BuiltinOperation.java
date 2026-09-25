@@ -412,5 +412,23 @@ public enum BuiltinOperation {
   /** 文字列二次元配列をapplication/x-www-form-urlencodedへ符号化する。 */
   HTTP_FORM_URL_ENCODE,
   /** HTTP応答を2xx成功とそれ以外へ分類する。 */
-  HTTP_RESPONSE_REQUIRE_SUCCESS
+  HTTP_RESPONSE_REQUIRE_SUCCESS,
+  /** 文字列の空判定。 */
+  STRING_IS_EMPTY,
+  /** Unicode White_Spaceだけからなる文字列の判定。 */
+  STRING_IS_BLANK,
+  /** 書記素境界に一致する部分文字列の包含判定。 */
+  STRING_CONTAINS,
+  /** 書記素境界に一致する接頭辞判定。 */
+  STRING_STARTS_WITH,
+  /** 書記素境界に一致する接尾辞判定。 */
+  STRING_ENDS_WITH,
+  /** 文字列の指定回数反復。 */
+  STRING_REPEAT,
+  /** 文字列配列の区切り付き連結。 */
+  STRING_JOIN,
+  /** 指定書記素位置以降の文字列検索。 */
+  GRAPHEME_FIND_FROM,
+  /** 最後に一致する書記素位置の文字列検索。 */
+  GRAPHEME_FIND_LAST
 }

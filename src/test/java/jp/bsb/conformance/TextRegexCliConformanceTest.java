@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.io.TempDir;
 
-/** N7/F7の全コマンドを公開CLIへ通す、文字列・正規表現の中央適合ハーネスです。 */
+/** TEXTのN/F全コマンドを公開CLIへ通す中央適合ハーネスです。 */
 class TextRegexCliConformanceTest {
   @TempDir Path temporaryDirectory;
 
@@ -34,7 +34,7 @@ class TextRegexCliConformanceTest {
     ConformanceData.validateMessages();
     CaseCatalog catalog = TextRegexConformanceData.loadCases();
     Map<String, DiagnosticSpec> diagnostics = TextRegexConformanceData.loadDiagnostics();
-    assertEquals(30, diagnostics.size(), "diagnostics.tsv must cover every F7 case");
+    assertEquals(32, diagnostics.size(), "diagnostics.tsv must cover every TEXT-F case");
     assertEquals(
         catalog.cases().stream().map(CaseSpec::id).filter(id -> id.startsWith("TEXT-F")).toList(),
         diagnostics.keySet().stream().toList(),

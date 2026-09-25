@@ -70,6 +70,21 @@ class TextRegexUnicodeTextTest {
   }
 
   @Test
+  void searchesOnlyAtWholeGraphemeBoundariesFromEitherDirection() {
+    UnicodeText text = UnicodeText.of("か\u3099山か\u3099");
+
+    assertFalse(text.containsAtGraphemeBoundary("か"));
+    assertTrue(text.containsAtGraphemeBoundary("か\u3099"));
+    assertTrue(text.startsWithAtGraphemeBoundary("か\u3099"));
+    assertFalse(text.startsWithAtGraphemeBoundary("か"));
+    assertTrue(text.endsWithAtGraphemeBoundary("か\u3099"));
+    assertFalse(text.endsWithAtGraphemeBoundary("\u3099"));
+    assertEquals(2, text.findAtGraphemeBoundary("か\u3099", 1));
+    assertEquals(2, text.findLastAtGraphemeBoundary("か\u3099"));
+    assertEquals(3, text.findLastAtGraphemeBoundary(""));
+  }
+
+  @Test
   void measuresUtf8WithoutAByteArrayAndStopsImmediatelyPastTheLimit() {
     assertEquals(new Utf8Length.Measurement(7, false), Utf8Length.measureUpTo("a𠮷é", 7));
     assertEquals(new Utf8Length.Measurement(7, true), Utf8Length.measureUpTo("a𠮷éx", 6));

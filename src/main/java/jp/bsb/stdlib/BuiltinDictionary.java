@@ -1389,7 +1389,35 @@ public final class BuiltinDictionary {
               "小数を指定した有効桁数へ丸めます。",
               List.of("小数", "整数", "丸め方法"),
               List.of("小数"),
-              "123.45 と 3 と 最近接偶数丸め で 有効桁で丸める"));
+              "123.45 と 3 と 最近接偶数丸め で 有効桁で丸める"),
+          fixedText("文字列が空である", BuiltinOperation.STRING_IS_EMPTY, List.of("文字列"), List.of("真偽")),
+          fixedText("文字列が空白だけである", BuiltinOperation.STRING_IS_BLANK, List.of("文字列"), List.of("真偽")),
+          fixedText(
+              "文字列を含む", BuiltinOperation.STRING_CONTAINS, List.of("文字列", "文字列"), List.of("真偽")),
+          fixedText(
+              "指定文字列で始まる",
+              BuiltinOperation.STRING_STARTS_WITH,
+              List.of("文字列", "文字列"),
+              List.of("真偽")),
+          fixedText(
+              "指定文字列で終わる", BuiltinOperation.STRING_ENDS_WITH, List.of("文字列", "文字列"), List.of("真偽")),
+          fixedText(
+              "文字列を繰り返す", BuiltinOperation.STRING_REPEAT, List.of("文字列", "整数"), List.of("文字列")),
+          fixedText(
+              "文字列配列を区切ってつなぐ",
+              BuiltinOperation.STRING_JOIN,
+              List.of("配列<文字列>", "文字列"),
+              List.of("文字列")),
+          fixedText(
+              "開始位置から文字列を探す",
+              BuiltinOperation.GRAPHEME_FIND_FROM,
+              List.of("文字列", "文字列", "整数"),
+              List.of("整数")),
+          fixedText(
+              "後ろから文字列を探す",
+              BuiltinOperation.GRAPHEME_FIND_LAST,
+              List.of("文字列", "文字列"),
+              List.of("整数")));
 
   private static final Map<String, BuiltinWord> BY_NAME = indexByName();
   private static final Set<String> CANONICAL_NAMES = canonicalNameSet();
@@ -1830,6 +1858,15 @@ public final class BuiltinDictionary {
       case REGEX_NAMED_GROUP -> "最初の一致から指定した名前付き部分を返します。";
       case REGEX_REPLACE -> "正規表現に一致する部分をテンプレートで置き換えます。";
       case REGEX_SPLIT -> "正規表現の一致を区切りとして文字列を分割します。";
+      case STRING_IS_EMPTY -> "文字列が空かを調べます。";
+      case STRING_IS_BLANK -> "文字列が空またはUnicode空白だけかを調べます。";
+      case STRING_CONTAINS -> "書記素境界に一致する文字列を含むかを調べます。";
+      case STRING_STARTS_WITH -> "書記素境界に一致する指定文字列で始まるかを調べます。";
+      case STRING_ENDS_WITH -> "書記素境界に一致する指定文字列で終わるかを調べます。";
+      case STRING_REPEAT -> "文字列を指定した回数だけ繰り返します。";
+      case STRING_JOIN -> "文字列配列を指定した区切りで連結します。";
+      case GRAPHEME_FIND_FROM -> "指定した書記素位置以降で文字列を探します。";
+      case GRAPHEME_FIND_LAST -> "最後に一致する文字列の書記素位置を返します。";
       default -> throw new IllegalArgumentException("not a text/regex operation: " + operation);
     };
   }
@@ -1862,6 +1899,15 @@ public final class BuiltinDictionary {
       case REGEX_NAMED_GROUP -> "「番号42」と 正規表現「(?<number>[0-9]+)」と「number」を 正規表現の名前付き部分を取り出す";
       case REGEX_REPLACE -> "「番号42」と 正規表現「[0-9]+」と「番号」を 正規表現で置き換える";
       case REGEX_SPLIT -> "「赤,青」と 正規表現「,」を 正規表現で分割する";
+      case STRING_IS_EMPTY -> "「」を 文字列が空である";
+      case STRING_IS_BLANK -> "「　」を 文字列が空白だけである";
+      case STRING_CONTAINS -> "「赤青緑」と「青」を 文字列を含む";
+      case STRING_STARTS_WITH -> "「赤青緑」と「赤」を 指定文字列で始まる";
+      case STRING_ENDS_WITH -> "「赤青緑」と「緑」を 指定文字列で終わる";
+      case STRING_REPEAT -> "「赤」と 3 を 文字列を繰り返す";
+      case STRING_JOIN -> "【「赤」、「青」】と「,」を 文字列配列を区切ってつなぐ";
+      case GRAPHEME_FIND_FROM -> "「赤青赤」と「赤」と 1 を 開始位置から文字列を探す";
+      case GRAPHEME_FIND_LAST -> "「赤青赤」と「赤」を 後ろから文字列を探す";
       default -> throw new IllegalArgumentException("not a text/regex operation: " + operation);
     };
   }

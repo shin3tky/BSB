@@ -108,21 +108,81 @@ public final class UnicodeText {
    * @return 0始まり書記素位置。見つからなければ-1
    */
   public int findAtGraphemeBoundary(String needle) {
+    return findAtGraphemeBoundary(needle, 0);
+  }
+
+  /**
+   * 指定位置以降で、両端が書記素境界に一致する最初の部分列を探します。
+   *
+   * @param needle 検索文字列
+   * @param startIndex 0以上書記素数以下の開始位置
+   * @return 0始まり書記素位置。見つからなければ-1
+   */
+  public int findAtGraphemeBoundary(String needle, int startIndex) {
     validateScalars(Objects.requireNonNull(needle, "needle"));
-    if (needle.isEmpty()) {
-      return 0;
-    }
     int[] boundaries = graphemeBoundaries();
-    for (int index = 0; index < boundaries.length - 1; index++) {
-      int start = boundaries[index];
-      int end = start + needle.length();
-      if (end <= value.length()
-          && value.regionMatches(start, needle, 0, needle.length())
-          && Arrays.binarySearch(boundaries, end) >= 0) {
+    int count = boundaries.length - 1;
+    if (startIndex < 0 || startIndex > count) {
+      throw new IndexOutOfBoundsException("a Unicode text search start is outside its boundaries");
+    }
+    if (needle.isEmpty()) {
+      return startIndex;
+    }
+    for (int index = startIndex; index < count; index++) {
+      if (matchingEndBoundary(boundaries, index, needle) >= 0) {
         return index;
       }
     }
     return -1;
+  }
+
+  /**
+   * 両端が書記素境界に一致する最後の部分列を探します。
+   *
+   * @param needle 検索文字列
+   * @return 0始まり書記素位置。見つからなければ-1
+   */
+  public int findLastAtGraphemeBoundary(String needle) {
+    validateScalars(Objects.requireNonNull(needle, "needle"));
+    int[] boundaries = graphemeBoundaries();
+    int count = boundaries.length - 1;
+    if (needle.isEmpty()) {
+      return count;
+    }
+    for (int index = count - 1; index >= 0; index--) {
+      if (matchingEndBoundary(boundaries, index, needle) >= 0) {
+        return index;
+      }
+    }
+    return -1;
+  }
+
+  /** 両端が書記素境界に一致する部分列を含むかを返します。 */
+  public boolean containsAtGraphemeBoundary(String needle) {
+    return findAtGraphemeBoundary(needle) >= 0;
+  }
+
+  /** 書記素境界に一致する指定文字列で始まるかを返します。 */
+  public boolean startsWithAtGraphemeBoundary(String prefix) {
+    validateScalars(Objects.requireNonNull(prefix, "prefix"));
+    if (prefix.isEmpty()) {
+      return true;
+    }
+    return matchingEndBoundary(graphemeBoundaries(), 0, prefix) >= 0;
+  }
+
+  /** 書記素境界に一致する指定文字列で終わるかを返します。 */
+  public boolean endsWithAtGraphemeBoundary(String suffix) {
+    validateScalars(Objects.requireNonNull(suffix, "suffix"));
+    int[] boundaries = graphemeBoundaries();
+    if (suffix.isEmpty()) {
+      return true;
+    }
+    int start = value.length() - suffix.length();
+    int startIndex = Arrays.binarySearch(boundaries, start);
+    return startIndex >= 0
+        && value.regionMatches(start, suffix, 0, suffix.length())
+        && matchingEndBoundary(boundaries, startIndex, suffix) == boundaries.length - 1;
   }
 
   /**
@@ -267,6 +327,19 @@ public final class UnicodeText {
       end -= Character.charCount(codePoint);
     }
     return input.substring(start, end);
+  }
+
+  /** Unicode 16.0 White_Spaceだけからなるか、空である場合にtrueを返します。 */
+  public static boolean isUnicodeBlank(String input) {
+    validateScalars(Objects.requireNonNull(input, "input"));
+    for (int index = 0; index < input.length(); ) {
+      int codePoint = input.codePointAt(index);
+      if (!UnicodeRules.isUnicodeWhitespace(codePoint)) {
+        return false;
+      }
+      index += Character.charCount(codePoint);
+    }
+    return true;
   }
 
   private String slice(int[] boundaries, int start, int end) {

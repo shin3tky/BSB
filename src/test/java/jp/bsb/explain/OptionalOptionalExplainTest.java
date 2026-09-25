@@ -25,7 +25,7 @@ class OptionalOptionalExplainTest {
             .filter(word -> word.featureGroup().equals("OPT"))
             .toList();
 
-    assertEquals(217, explanation.builtinWords().size());
+    assertEquals(226, explanation.builtinWords().size());
     assertEquals(
         List.of("optionalWrap", "optionalPredicate", "optionalUnwrap", "optionalDrop", "fixed"),
         optionalWords.stream().map(ProgramExplanation.BuiltinWordEntry::typeRule).toList());

@@ -192,6 +192,16 @@ final class BuiltinExecutor {
       case DECIMAL_TO_STRING -> numericToString(stack);
       case STRING_TO_INTEGER -> stringToInteger(word, stack, span);
       case STRING_TO_DECIMAL -> stringToDecimal(word, stack, span);
+      case STRING_IS_EMPTY -> stringPredicate(stack, StringPredicate.EMPTY);
+      case STRING_IS_BLANK -> stringPredicate(stack, StringPredicate.BLANK);
+      case STRING_CONTAINS -> stringBoundaryPredicate(stack, StringBoundaryPredicate.CONTAINS);
+      case STRING_STARTS_WITH ->
+          stringBoundaryPredicate(stack, StringBoundaryPredicate.STARTS_WITH);
+      case STRING_ENDS_WITH -> stringBoundaryPredicate(stack, StringBoundaryPredicate.ENDS_WITH);
+      case STRING_REPEAT -> repeatString(word, stack, span);
+      case STRING_JOIN -> joinStrings(word, stack, span);
+      case GRAPHEME_FIND_FROM -> findStringFrom(word, stack, span);
+      case GRAPHEME_FIND_LAST -> findStringLast(stack);
       case REGEX_FULL_MATCH -> regexPredicate(word, stack, span, true);
       case REGEX_CONTAINS -> regexPredicate(word, stack, span, false);
       case REGEX_FIRST -> regexFirst(word, stack, span);
@@ -4122,6 +4132,141 @@ final class BuiltinExecutor {
     return new byte[0];
   }
 
+  private static byte[] stringPredicate(ArrayList<RuntimeValue> stack, StringPredicate predicate) {
+    int index = stack.size() - 1;
+    String input = ((StringValue) stack.get(index)).value();
+    boolean result =
+        switch (predicate) {
+          case EMPTY -> input.isEmpty();
+          case BLANK -> UnicodeText.isUnicodeBlank(input);
+        };
+    stack.set(index, new BooleanValue(result));
+    return new byte[0];
+  }
+
+  private static byte[] stringBoundaryPredicate(
+      ArrayList<RuntimeValue> stack, StringBoundaryPredicate predicate) {
+    int targetIndex = stack.size() - 2;
+    UnicodeText target = UnicodeText.of(((StringValue) stack.get(targetIndex)).value());
+    String operand = ((StringValue) stack.get(targetIndex + 1)).value();
+    boolean result =
+        switch (predicate) {
+          case CONTAINS -> target.containsAtGraphemeBoundary(operand);
+          case STARTS_WITH -> target.startsWithAtGraphemeBoundary(operand);
+          case ENDS_WITH -> target.endsWithAtGraphemeBoundary(operand);
+        };
+    stack.removeLast();
+    stack.set(targetIndex, new BooleanValue(result));
+    return new byte[0];
+  }
+
+  private byte[] repeatString(BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span)
+      throws RuntimeFailure {
+    int stringIndex = stack.size() - 2;
+    String input = ((StringValue) stack.get(stringIndex)).value();
+    BigInteger count = ((IntegerValue) stack.get(stringIndex + 1)).value();
+    if (count.signum() < 0) {
+      throw new RuntimeFailure(
+          Diagnostic.builder(
+                  DiagnosticCode.E_NEGATIVE_REPEAT_COUNT,
+                  Severity.ERROR,
+                  DiagnosticStage.RUNTIME,
+                  sourcePath,
+                  span)
+              .field("count", count.toString())
+              .field("word", word.canonicalName())
+              .expected("0以上")
+              .actual(count.toString())
+              .fix("反復回数を0以上にしてください")
+              .build());
+    }
+    long inputBytes = Utf8Length.measureUpTo(input, StringLimits.MAX_UTF8_BYTES).bytes();
+    BigInteger maximumBytes = BigInteger.valueOf(StringLimits.MAX_UTF8_BYTES);
+    BigInteger resultBytes = BigInteger.valueOf(inputBytes).multiply(count);
+    if (resultBytes.compareTo(maximumBytes) > 0) {
+      throw stringUtf8Limit(word, span, (long) StringLimits.MAX_UTF8_BYTES + 1);
+    }
+    String result =
+        input.isEmpty() || count.signum() == 0 ? "" : input.repeat(count.intValueExact());
+    stack.removeLast();
+    stack.set(stringIndex, new StringValue(result));
+    return new byte[0];
+  }
+
+  private byte[] joinStrings(BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span)
+      throws RuntimeFailure {
+    int arrayIndex = stack.size() - 2;
+    ArrayValue array = (ArrayValue) stack.get(arrayIndex);
+    String delimiter = ((StringValue) stack.get(arrayIndex + 1)).value();
+    long delimiterBytes = Utf8Length.measureUpTo(delimiter, StringLimits.MAX_UTF8_BYTES).bytes();
+    long observed = 0;
+    for (int index = 0; index < array.size(); index++) {
+      if (index > 0) {
+        observed = Math.min((long) StringLimits.MAX_UTF8_BYTES + 1, observed + delimiterBytes);
+      }
+      RuntimeValue element = array.get(index);
+      String value = ((StringValue) element).value();
+      long bytes = Utf8Length.measureUpTo(value, StringLimits.MAX_UTF8_BYTES).bytes();
+      observed = Math.min((long) StringLimits.MAX_UTF8_BYTES + 1, observed + bytes);
+    }
+    if (observed > StringLimits.MAX_UTF8_BYTES) {
+      throw stringUtf8Limit(word, span, observed);
+    }
+    budget.beforeArrayWork(0, array.size(), span, "joinStrings");
+    var result = new StringBuilder((int) observed);
+    for (int index = 0; index < array.size(); index++) {
+      if (index > 0) {
+        result.append(delimiter);
+      }
+      result.append(((StringValue) array.get(index)).value());
+    }
+    stack.removeLast();
+    stack.set(arrayIndex, new StringValue(result.toString()));
+    return new byte[0];
+  }
+
+  private byte[] findStringFrom(BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span)
+      throws RuntimeFailure {
+    int stringIndex = stack.size() - 3;
+    UnicodeText text = UnicodeText.of(((StringValue) stack.get(stringIndex)).value());
+    String needle = ((StringValue) stack.get(stringIndex + 1)).value();
+    BigInteger requested = ((IntegerValue) stack.get(stringIndex + 2)).value();
+    int length = text.graphemeCount();
+    if (requested.signum() < 0 || requested.compareTo(BigInteger.valueOf(length)) > 0) {
+      throw new RuntimeFailure(
+          Diagnostic.builder(
+                  DiagnosticCode.E_STRING_SEARCH_START_OUT_OF_BOUNDS,
+                  Severity.ERROR,
+                  DiagnosticStage.RUNTIME,
+                  sourcePath,
+                  span)
+              .field("word", word.canonicalName())
+              .field("unit", "grapheme")
+              .field("index", requested.toString())
+              .field("length", Integer.toString(length))
+              .field("validRange", "[0," + length + "]")
+              .expected("0以上" + length + "以下")
+              .actual(requested.toString())
+              .fix("開始位置を0から文字列の長さまでにしてください")
+              .build());
+    }
+    int found = text.findAtGraphemeBoundary(needle, requested.intValueExact());
+    stack.removeLast();
+    stack.removeLast();
+    stack.set(stringIndex, new IntegerValue(BigInteger.valueOf(found)));
+    return new byte[0];
+  }
+
+  private static byte[] findStringLast(ArrayList<RuntimeValue> stack) {
+    int stringIndex = stack.size() - 2;
+    UnicodeText text = UnicodeText.of(((StringValue) stack.get(stringIndex)).value());
+    String needle = ((StringValue) stack.get(stringIndex + 1)).value();
+    int found = text.findLastAtGraphemeBoundary(needle);
+    stack.removeLast();
+    stack.set(stringIndex, new IntegerValue(BigInteger.valueOf(found)));
+    return new byte[0];
+  }
+
   private byte[] replaceString(BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span)
       throws RuntimeFailure {
     int targetIndex = stack.size() - 3;
@@ -6489,5 +6634,16 @@ final class BuiltinExecutor {
     QUOTIENT,
     REMAINDER,
     BOTH
+  }
+
+  private enum StringPredicate {
+    EMPTY,
+    BLANK
+  }
+
+  private enum StringBoundaryPredicate {
+    CONTAINS,
+    STARTS_WITH,
+    ENDS_WITH
   }
 }

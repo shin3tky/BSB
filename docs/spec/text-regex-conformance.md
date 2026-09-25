@@ -23,8 +23,8 @@ tests/conformance/text-regex/
 
 ## 2. ケース体系
 
-- 正常例: `TEXT-N001`〜`TEXT-N026`
-- 失敗・警告例: `TEXT-F001`〜`TEXT-F030`
+- 正常例: `TEXT-N001`〜`TEXT-N027`
+- 失敗・警告例: `TEXT-F001`〜`TEXT-F032`
 - 資源・内部境界: `TEXT-R001`〜`TEXT-R011`
 
 CORE〜NUM機能グループの全1,942テストを同じ実行で維持します。
@@ -59,6 +59,7 @@ CORE〜NUM機能グループの全1,942テストを同じ実行で維持しま�
 | TEXT-N024 | 氏名整形と請求番号抽出の章末統合 |
 | TEXT-N025 | Unicode 16.0の完全大文字・小文字写像と複数コードポイントへの展開 |
 | TEXT-N026 | ケースフォールド比較、ギリシャ語sigma、Turkic非採用、正規化非適用 |
+| TEXT-N027 | 空・空白判定、境界付き包含・前方・後方検索、反復、区切り付き連結の9語 |
 
 ## 4. 失敗・警告例
 
@@ -94,6 +95,8 @@ CORE〜NUM機能グループの全1,942テストを同じ実行で維持しま�
 | TEXT-F028 | 実行時 | 不正な置換テンプレート | `E_REGEX_REPLACEMENT_TEMPLATE` |
 | TEXT-F029 | 実行時 | 失敗前stdout・スタックの原子性 | `E_REGEX_NO_MATCH` |
 | TEXT-F030 | 警告 | 到達不能操作の派生診断抑止 | `W_UNREACHABLE_CODE` |
+| TEXT-F031 | 実行時 | 範囲外の検索開始書記素位置 | `E_STRING_SEARCH_START_OUT_OF_BOUNDS` |
+| TEXT-F032 | 実行時 | 負の文字列反復回数 | `E_NEGATIVE_REPEAT_COUNT` |
 
 ## 5. 資源・内部境界
 

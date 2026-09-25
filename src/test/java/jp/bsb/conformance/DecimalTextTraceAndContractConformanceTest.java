@@ -46,7 +46,7 @@ class DecimalTextTraceAndContractConformanceTest {
     assertArrayEquals(
         DecimalTextConformanceData.resourceBytes("sources/DTXT-N-independent.stdout"),
         output.bytes());
-    assertEquals(217, BuiltinDictionary.words().size());
+    assertEquals(226, BuiltinDictionary.words().size());
   }
 
   @Test

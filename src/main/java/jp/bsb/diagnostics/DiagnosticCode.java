@@ -369,6 +369,8 @@ public enum DiagnosticCode {
   E_CODE_POINT_INDEX_OUT_OF_BOUNDS,
   /** コードポイント単位の文字列半開区間が不正 */
   E_CODE_POINT_RANGE_OUT_OF_BOUNDS,
+  /** 開始位置付き文字列検索の書記素位置が範囲外 */
+  E_STRING_SEARCH_START_OUT_OF_BOUNDS,
   /** 通常置換の検索文字列が空 */
   E_EMPTY_SEARCH_TEXT,
   /** 通常分割の区切り文字列が空 */
