@@ -40,6 +40,9 @@ public final class SourceText {
   /** 事前計算されたチェックポイントのリスト（二分探索用） */
   private final List<Checkpoint> checkpoints;
 
+  /** 各物理行のUTF-16開始位置 */
+  private final LineIndex lineIndex;
+
   /**
    * ソーステキストインスタンスを構築し、位置計算用のチェックポイントテーブルを構築します。
    *
@@ -58,6 +61,7 @@ public final class SourceText {
     }
     validateUnicodeScalars(text);
     checkpoints = buildCheckpoints(text, initialUtf8Offset);
+    lineIndex = buildLineIndex(text);
   }
 
   /**
@@ -98,6 +102,103 @@ public final class SourceText {
       return checkpoint.position();
     }
     return scanPosition(checkpoint, utf16Index);
+  }
+
+  /**
+   * UTF-8バイト位置を、デコード済み文字列内のUTF-16インデックスへ変換します。
+   *
+   * <p>位置はBOMを含む元ファイル基準です。BOM自体の内部、UTF-8符号化されたコードポイントの途中、またはソース範囲外の位置は拒否します。
+   *
+   * @param utf8Offset BOMを含む元ファイル先頭からのバイト位置
+   * @return デコード済み文字列内のUTF-16インデックス
+   */
+  public int utf16IndexAtUtf8Offset(long utf8Offset) {
+    long contentStart = checkpoints.getFirst().position().utf8Offset();
+    long contentEnd = checkpoints.getLast().position().utf8Offset();
+    if (utf8Offset < contentStart || utf8Offset > contentEnd) {
+      throw new IllegalArgumentException("utf8Offset must be within decoded source content");
+    }
+
+    Checkpoint checkpoint = checkpointAtOrBeforeUtf8(utf8Offset);
+    int index = checkpoint.utf16Index();
+    long currentOffset = checkpoint.position().utf8Offset();
+    while (index < text.length()) {
+      if (currentOffset == utf8Offset) {
+        return index;
+      }
+      int codePoint = text.codePointAt(index);
+      long nextOffset = currentOffset + utf8Length(codePoint);
+      if (utf8Offset < nextOffset) {
+        throw new IllegalArgumentException("utf8Offset must be on a code point boundary");
+      }
+      currentOffset = nextOffset;
+      index += Character.charCount(codePoint);
+    }
+    if (currentOffset == utf8Offset) {
+      return index;
+    }
+    throw new IllegalStateException("UTF-8 scan ended before the requested offset");
+  }
+
+  /**
+   * BSB内部位置を0始まりの行・UTF-16文字位置へ変換します。
+   *
+   * @param position このソースのUTF-8位置を持つ内部位置
+   * @return UTF-16座標
+   */
+  public Utf16Position utf16PositionAt(SourcePosition position) {
+    Objects.requireNonNull(position, "position");
+    int utf16Index = utf16IndexAtUtf8Offset(position.utf8Offset());
+    int line = lineAt(utf16Index);
+    int lineEnd = lineEnd(line);
+    if (utf16Index > lineEnd) {
+      throw new IllegalArgumentException("position must not be inside a line ending");
+    }
+    return new Utf16Position(line, utf16Index - lineIndex.starts()[line]);
+  }
+
+  /**
+   * BSB内部範囲を0始まりの行・UTF-16文字位置による半開区間へ変換します。
+   *
+   * @param span このソース上の内部範囲
+   * @return UTF-16範囲
+   */
+  public Utf16Range utf16RangeOf(SourceSpan span) {
+    Objects.requireNonNull(span, "span");
+    return new Utf16Range(utf16PositionAt(span.start()), utf16PositionAt(span.end()));
+  }
+
+  /**
+   * 0始まりの行・UTF-16文字位置を、デコード済み文字列内のUTF-16インデックスへ変換します。
+   *
+   * @param position UTF-16座標
+   * @return デコード済み文字列内のUTF-16インデックス
+   */
+  public int utf16IndexAt(Utf16Position position) {
+    Objects.requireNonNull(position, "position");
+    if (position.line() >= lineIndex.starts().length) {
+      throw new IllegalArgumentException("line is outside source content");
+    }
+    int start = lineIndex.starts()[position.line()];
+    int end = lineEnd(position.line());
+    if (position.character() > end - start) {
+      throw new IllegalArgumentException("character is outside the line");
+    }
+    int index = start + position.character();
+    if (index > 0 && index < text.length() && Character.isLowSurrogate(text.charAt(index))) {
+      throw new IllegalArgumentException("character must not split a surrogate pair");
+    }
+    return index;
+  }
+
+  /**
+   * 0始まりの行・UTF-16文字位置をBSB内部位置へ変換します。
+   *
+   * @param position UTF-16座標
+   * @return UTF-8位置、1始まり行、書記素クラスタ列を持つ内部位置
+   */
+  public SourcePosition positionAt(Utf16Position position) {
+    return positionAt(utf16IndexAt(position));
   }
 
   /**
@@ -201,6 +302,49 @@ public final class SourceText {
     return checkpoints.get(high);
   }
 
+  private Checkpoint checkpointAtOrBeforeUtf8(long utf8Offset) {
+    int low = 0;
+    int high = checkpoints.size() - 1;
+    while (low <= high) {
+      int middle = (low + high) >>> 1;
+      Checkpoint candidate = checkpoints.get(middle);
+      if (candidate.position().utf8Offset() <= utf8Offset) {
+        low = middle + 1;
+      } else {
+        high = middle - 1;
+      }
+    }
+    return checkpoints.get(high);
+  }
+
+  private int lineAt(int utf16Index) {
+    int low = 0;
+    int high = lineIndex.starts().length - 1;
+    while (low <= high) {
+      int middle = (low + high) >>> 1;
+      if (lineIndex.starts()[middle] <= utf16Index) {
+        low = middle + 1;
+      } else {
+        high = middle - 1;
+      }
+    }
+    return high;
+  }
+
+  private int lineEnd(int line) {
+    if (line + 1 == lineIndex.starts().length) {
+      return text.length();
+    }
+    int end = lineIndex.starts()[line + 1];
+    if (end > 0 && text.charAt(end - 1) == '\n') {
+      end--;
+    }
+    if (end > 0 && text.charAt(end - 1) == '\r') {
+      end--;
+    }
+    return end;
+  }
+
   /** チェックポイントの位置から目的のインデックスまでを走査し、正確な位置を計算します。 */
   private SourcePosition scanPosition(Checkpoint checkpoint, int targetIndex) {
     GraphemeCursor iterator = IcuUnicodeAdapter.graphemeCursor(text);
@@ -280,6 +424,36 @@ public final class SourceText {
       result.add(new Checkpoint(text.length(), new SourcePosition(utf8Offset, line, column)));
     }
     return List.copyOf(result);
+  }
+
+  private static LineIndex buildLineIndex(String text) {
+    int lineCount = 1;
+    for (int index = 0; index < text.length(); index++) {
+      char current = text.charAt(index);
+      if (current == '\r') {
+        lineCount++;
+        if (index + 1 < text.length() && text.charAt(index + 1) == '\n') {
+          index++;
+        }
+      } else if (current == '\n') {
+        lineCount++;
+      }
+    }
+
+    int[] starts = new int[lineCount];
+    int line = 1;
+    for (int index = 0; index < text.length(); index++) {
+      char current = text.charAt(index);
+      if (current == '\r') {
+        if (index + 1 < text.length() && text.charAt(index + 1) == '\n') {
+          index++;
+        }
+        starts[line++] = index + 1;
+      } else if (current == '\n') {
+        starts[line++] = index + 1;
+      }
+    }
+    return new LineIndex(starts);
   }
 
   /** 改行（CR, LF, または CRLF の2文字クラスタ）であるかを判定します。 */
@@ -378,4 +552,7 @@ public final class SourceText {
 
   /** チェックポイント（事前計算された特定インデックスとその位置情報のペア） */
   private record Checkpoint(int utf16Index, SourcePosition position) {}
+
+  /** 0始まりの物理行ごとのUTF-16開始位置です。 */
+  private record LineIndex(int[] starts) {}
 }
