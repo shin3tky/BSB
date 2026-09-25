@@ -167,6 +167,20 @@ final class IrVerifier {
           inputs.size() == 1
               && inputs.getFirst() instanceof ArrayType
               && outputs.equals(List.of(ValueType.BOOLEAN));
+      case ARRAY_EDGE_OPTIONAL ->
+          inputs.size() == 1
+              && inputs.getFirst() instanceof ArrayType array
+              && outputs.equals(List.of(ValueType.optionalOf(array.elementType())));
+      case ARRAY_DELETE_EDGE ->
+          inputs.size() == 1
+              && inputs.getFirst() instanceof ArrayType array
+              && outputs.equals(List.of(array));
+      case ARRAY_DELETE_RANGE ->
+          inputs.size() == 3
+              && inputs.getFirst() instanceof ArrayType array
+              && inputs.get(1).equals(ValueType.INTEGER)
+              && inputs.get(2).equals(ValueType.INTEGER)
+              && outputs.equals(List.of(array));
       case OPTIONAL_WRAP ->
           inputs.size() == 1 && outputs.equals(List.of(ValueType.optionalOf(inputs.getFirst())));
       case OPTIONAL_PREDICATE ->

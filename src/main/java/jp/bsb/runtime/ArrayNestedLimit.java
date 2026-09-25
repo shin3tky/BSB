@@ -55,6 +55,14 @@ final class ArrayNestedLimit {
     return Math.addExact(first.logicalLeafCount(), second.logicalLeafCount());
   }
 
+  static long deleteRange(ArrayValue array, int start, int end) {
+    if (ValueType.arrayConstructorDepth(array.elementType()) == 0) {
+      return array.size() - (long) (end - start);
+    }
+    long removed = measure(array.elementType(), array.elements().subList(start, end));
+    return Math.subtractExact(array.logicalLeafCount(), removed);
+  }
+
   static void requireAllowed(
       String sourcePath, SourceSpan span, String operation, ValueType elementType, long observed)
       throws RuntimeFailure {

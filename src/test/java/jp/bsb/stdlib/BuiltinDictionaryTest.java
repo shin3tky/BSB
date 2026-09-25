@@ -150,6 +150,25 @@ class BuiltinDictionaryTest {
   }
 
   @Test
+  void appendsFiveSelectionAndDeletionOperationsAfterTheFirstArrayExtension() {
+    List<BuiltinWord> words = BuiltinDictionary.words().subList(195, 200);
+
+    assertEquals(
+        List.of("配列の先頭を任意で取り出す", "配列の末尾を任意で取り出す", "配列の先頭を削除する", "配列の末尾を削除する", "配列の一部を削除する"),
+        words.stream().map(BuiltinWord::canonicalName).toList());
+    assertEquals(
+        List.of(
+            BuiltinTypeRule.ARRAY_EDGE_OPTIONAL,
+            BuiltinTypeRule.ARRAY_EDGE_OPTIONAL,
+            BuiltinTypeRule.ARRAY_DELETE_EDGE,
+            BuiltinTypeRule.ARRAY_DELETE_EDGE,
+            BuiltinTypeRule.ARRAY_DELETE_RANGE),
+        words.stream().map(BuiltinWord::typeRule).toList());
+    assertTrue(words.stream().allMatch(word -> word.featureGroup().equals("ARRAY")));
+    assertTrue(words.stream().allMatch(word -> word.sideEffects().isEmpty()));
+  }
+
+  @Test
   void publishesConcreteTypesForAllTypedEmptyArrayValues() {
     assertEquals(
         List.of(

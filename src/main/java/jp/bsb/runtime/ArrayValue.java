@@ -105,6 +105,14 @@ public record ArrayValue(ValueType elementType, List<RuntimeValue> elements, lon
     return new ArrayValue(elementType, result, logicalLeafCount);
   }
 
+  /** 指定した半開区間を除き、元の値を変更しない新しい配列を返します。 */
+  ArrayValue deletedRange(int start, int end, long resultLogicalLeafCount) {
+    var result = new ArrayList<RuntimeValue>(elements.size() - (end - start));
+    result.addAll(elements.subList(0, start));
+    result.addAll(elements.subList(end, elements.size()));
+    return new ArrayValue(elementType, result, resultLogicalLeafCount);
+  }
+
   @Override
   public ValueType type() {
     return new ArrayType(elementType);

@@ -10,6 +10,13 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar check samples/27-array-operation
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/27-array-operations.bsb
 ```
 
+配列の先頭・末尾を任意値として安全に取得し、端または半開区間を不変に削除する例です。
+
+```shell
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar check samples/28-array-selection-deletion.bsb
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/28-array-selection-deletion.bsb
+```
+
 ## 検査と実行
 
 ```shell

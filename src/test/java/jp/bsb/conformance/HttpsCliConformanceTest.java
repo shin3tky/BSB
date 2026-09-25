@@ -105,7 +105,7 @@ class HttpsCliConformanceTest {
             chapter,
             "explain-json",
             0,
-            bytes(73_683, "3ec17985a022ccaa1fa18ccd51b6d325652e889416a97c66132fcbbefbb24fb3"),
+            bytes(75_671, "bed01b2dff2c7184e43bc404a770013511c42104e970abd0937300564a260613"),
             bytes(0, EMPTY_SHA256)),
         expected(sample, "check", 0, bytes(0, EMPTY_SHA256), bytes(0, EMPTY_SHA256)),
         expected(
@@ -130,7 +130,7 @@ class HttpsCliConformanceTest {
             sample,
             "explain-json",
             0,
-            bytes(79_154, "7f0c085cefccf8b18346338ed68ec643ce00f74add980aa3cac23befc75f89a8"),
+            bytes(81_142, "653eecfc992f23d082fa4c89aeb8d03cabcfb41f1646d2d62efe7395e74dc6fe"),
             bytes(0, EMPTY_SHA256)));
   }
 

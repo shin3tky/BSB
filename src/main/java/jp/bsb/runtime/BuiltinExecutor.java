@@ -201,6 +201,11 @@ final class BuiltinExecutor {
       case ARRAY_CONTAINS -> arraySearch(word, stack, span, true);
       case ARRAY_FIND -> arraySearch(word, stack, span, false);
       case ARRAY_IS_EMPTY -> arrayIsEmpty(stack, span);
+      case ARRAY_FIRST_OPTIONAL -> arrayEdgeOptional(stack, span, true);
+      case ARRAY_LAST_OPTIONAL -> arrayEdgeOptional(stack, span, false);
+      case ARRAY_DELETE_FIRST -> arrayDeleteEdge(stack, span, true);
+      case ARRAY_DELETE_LAST -> arrayDeleteEdge(stack, span, false);
+      case ARRAY_DELETE_RANGE -> arrayDeleteRange(stack, span);
       case DISPLAY -> display(word, stack, span, false, output);
       case DISPLAY_LINE -> display(word, stack, span, true, output);
       case NEWLINE -> newline(word, span, output);
@@ -5663,6 +5668,49 @@ final class BuiltinExecutor {
     ArrayValue array = (ArrayValue) stack.get(arrayIndex);
     budget.beforeArrayWork(0, 1, span, "isEmpty");
     stack.set(arrayIndex, new BooleanValue(array.size() == 0));
+    return new byte[0];
+  }
+
+  private byte[] arrayEdgeOptional(ArrayList<RuntimeValue> stack, SourceSpan span, boolean first)
+      throws RuntimeFailure {
+    int arrayIndex = stack.size() - 1;
+    ArrayValue array = (ArrayValue) stack.get(arrayIndex);
+    budget.beforeArrayWork(0, 1, span, first ? "firstOptional" : "lastOptional");
+    OptionalValue result =
+        array.size() == 0
+            ? OptionalValue.absent(array.elementType())
+            : OptionalValue.present(array.get(first ? 0 : array.size() - 1));
+    stack.set(arrayIndex, result);
+    return new byte[0];
+  }
+
+  private byte[] arrayDeleteEdge(ArrayList<RuntimeValue> stack, SourceSpan span, boolean first)
+      throws RuntimeFailure {
+    int arrayIndex = stack.size() - 1;
+    ArrayValue array = (ArrayValue) stack.get(arrayIndex);
+    int start = array.size() == 0 || first ? 0 : array.size() - 1;
+    int end = array.size() == 0 || !first ? array.size() : 1;
+    int resultLength = array.size() == 0 ? 0 : array.size() - 1;
+    long logicalLeafCount = ArrayNestedLimit.deleteRange(array, start, end);
+    budget.beforeArrayWork(0, resultLength, span, first ? "deleteFirst" : "deleteLast");
+    stack.set(arrayIndex, array.deletedRange(start, end, logicalLeafCount));
+    return new byte[0];
+  }
+
+  private byte[] arrayDeleteRange(ArrayList<RuntimeValue> stack, SourceSpan span)
+      throws RuntimeFailure {
+    int arrayIndex = stack.size() - 3;
+    ArrayValue array = (ArrayValue) stack.get(arrayIndex);
+    BigInteger startValue = ((IntegerValue) stack.get(arrayIndex + 1)).value();
+    BigInteger endValue = ((IntegerValue) stack.get(arrayIndex + 2)).value();
+    int[] range = checkedRange(array, startValue, endValue, span);
+    int resultLength = array.size() - (range[1] - range[0]);
+    long logicalLeafCount = ArrayNestedLimit.deleteRange(array, range[0], range[1]);
+    budget.beforeArrayWork(0, resultLength, span, "deleteRange");
+    ArrayValue result = array.deletedRange(range[0], range[1], logicalLeafCount);
+    stack.removeLast();
+    stack.removeLast();
+    stack.set(arrayIndex, result);
     return new byte[0];
   }
 

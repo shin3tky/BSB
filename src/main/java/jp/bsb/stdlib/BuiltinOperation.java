@@ -117,6 +117,16 @@ public enum BuiltinOperation {
   ARRAY_FIND,
   /** 配列の空判定。 */
   ARRAY_IS_EMPTY,
+  /** 配列先頭の安全な取得。 */
+  ARRAY_FIRST_OPTIONAL,
+  /** 配列末尾の安全な取得。 */
+  ARRAY_LAST_OPTIONAL,
+  /** 配列先頭の削除。 */
+  ARRAY_DELETE_FIRST,
+  /** 配列末尾の削除。 */
+  ARRAY_DELETE_LAST,
+  /** 配列の半開区間削除。 */
+  ARRAY_DELETE_RANGE,
   /** 改行なし表示。 */
   DISPLAY,
   /** 表示後にLFを出力。 */

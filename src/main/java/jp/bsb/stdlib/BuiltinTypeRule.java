@@ -50,6 +50,15 @@ public enum BuiltinTypeRule {
   /** {@code 配列<T> -- 真偽}です。 */
   ARRAY_IS_EMPTY,
 
+  /** {@code 配列<T> -- 任意<T>}です。 */
+  ARRAY_EDGE_OPTIONAL,
+
+  /** {@code 配列<T> -- 配列<T>}です。 */
+  ARRAY_DELETE_EDGE,
+
+  /** {@code 配列<T> 整数 整数 -- 配列<T>}です。 */
+  ARRAY_DELETE_RANGE,
+
   /** {@code T -- 任意<T>}です。 */
   OPTIONAL_WRAP,
 

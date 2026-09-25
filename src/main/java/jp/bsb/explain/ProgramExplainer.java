@@ -564,6 +564,9 @@ public final class ProgramExplainer {
       case ARRAY_CONTAINS -> "arrayContains";
       case ARRAY_FIND -> "arrayFind";
       case ARRAY_IS_EMPTY -> "arrayIsEmpty";
+      case ARRAY_EDGE_OPTIONAL -> "arrayEdgeOptional";
+      case ARRAY_DELETE_EDGE -> "arrayDeleteEdge";
+      case ARRAY_DELETE_RANGE -> "arrayDeleteRange";
       case OPTIONAL_WRAP -> "optionalWrap";
       case OPTIONAL_PREDICATE -> "optionalPredicate";
       case OPTIONAL_UNWRAP -> "optionalUnwrap";

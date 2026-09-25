@@ -61,6 +61,17 @@ class ArrayValueTest {
   }
 
   @Test
+  void deleteRangeNeverChangesTheOriginalValue() {
+    ArrayValue original = integers(1, 2, 3, 4);
+
+    ArrayValue deleted = original.deletedRange(1, 3, 2);
+
+    assertEquals("【1、4】", deleted.displayText());
+    assertEquals(2, deleted.logicalLeafCount());
+    assertEquals("【1、2、3、4】", original.displayText());
+  }
+
+  @Test
   void rendersCharacterAndStringElementsAsCanonicalArrayLiterals() {
     ArrayValue characters =
         new ArrayValue(

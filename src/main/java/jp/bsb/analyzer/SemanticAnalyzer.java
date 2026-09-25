@@ -2699,6 +2699,9 @@ public final class SemanticAnalyzer {
             case ARRAY_CONTAINS -> applyArraySearch(call, stack, ValueType.BOOLEAN);
             case ARRAY_FIND -> applyArraySearch(call, stack, ValueType.INTEGER);
             case ARRAY_IS_EMPTY -> applyArrayIsEmpty(call, stack);
+            case ARRAY_EDGE_OPTIONAL -> applyArrayEdgeOptional(call, stack);
+            case ARRAY_DELETE_EDGE -> applyArrayDeleteEdge(call, stack);
+            case ARRAY_DELETE_RANGE -> applyArrayDeleteRange(call, stack);
             case OPTIONAL_WRAP -> applyOptionalWrap(call, stack);
             case OPTIONAL_PREDICATE -> applyOptionalPredicate(call, stack);
             case OPTIONAL_UNWRAP -> applyOptionalUnwrap(call, stack);
@@ -3025,6 +3028,48 @@ public final class SemanticAnalyzer {
       return arrayType == null ? null : stack.removeTop(1).push(ValueType.BOOLEAN, call.span());
     }
 
+    private AbstractStack applyArrayEdgeOptional(WordCall call, AbstractStack stack) {
+      ValueType arrayType = requireArrayInputs(call, List.of("配列<T>"), stack);
+      if (arrayType == null) {
+        return null;
+      }
+      ValueType elementType = arrayType.arrayElementType().orElseThrow();
+      int observedDepth = ValueType.constructorDepth(elementType) + 1;
+      if (observedDepth > ValueType.MAX_TYPE_CONSTRUCTOR_DEPTH) {
+        reportTypeDepthLimit(call, "任意", observedDepth);
+        return null;
+      }
+      return stack.removeTop(1).push(ValueType.optionalOf(elementType), call.span());
+    }
+
+    private AbstractStack applyArrayDeleteEdge(WordCall call, AbstractStack stack) {
+      ValueType arrayType = requireArrayInputs(call, List.of("配列<T>"), stack);
+      return arrayType == null ? null : stack.removeTop(1).push(arrayType, call.span());
+    }
+
+    private AbstractStack applyArrayDeleteRange(WordCall call, AbstractStack stack) {
+      ValueType arrayType = requireArrayInputs(call, List.of("配列<T>", "整数", "整数"), stack);
+      if (arrayType == null) {
+        return null;
+      }
+      int inputStart = stack.size() - 3;
+      if (!requireArrayOperationType(
+              call,
+              2,
+              ValueType.INTEGER,
+              stack.slots().get(inputStart + 1).type(),
+              "開始位置を整数にしてください")
+          || !requireArrayOperationType(
+              call,
+              3,
+              ValueType.INTEGER,
+              stack.slots().get(inputStart + 2).type(),
+              "終了位置を整数にしてください")) {
+        return null;
+      }
+      return stack.removeTop(3).push(arrayType, call.span());
+    }
+
     /** 入力数と第1入力の配列制約を検査し、具体化した配列型を返します。 */
     private ValueType requireArrayInputs(
         WordCall call, List<String> requiredTypes, AbstractStack stack) {
@@ -3060,6 +3105,7 @@ public final class SemanticAnalyzer {
               case "配列をつなぐ" -> "同じ要素型の配列を追加してください";
               case "配列の先頭へ追加する" -> "追加値を置いてください";
               case "配列に含まれる", "配列から検索する" -> "検索値を置いてください";
+              case "配列の一部を削除する" -> missingInput == 2 ? "開始位置を追加してください" : "終了位置を追加してください";
               default -> "配列値を追加してください";
             };
       }

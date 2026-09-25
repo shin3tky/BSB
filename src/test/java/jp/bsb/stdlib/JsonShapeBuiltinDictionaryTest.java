@@ -14,7 +14,7 @@ class JsonShapeBuiltinDictionaryTest {
             .filter(word -> word.featureGroup().equals("JSHAPE"))
             .toList();
 
-    assertEquals(195, BuiltinDictionary.words().size());
+    assertEquals(200, BuiltinDictionary.words().size());
     assertEquals(
         List.of(
             "JSONヌルの形状",

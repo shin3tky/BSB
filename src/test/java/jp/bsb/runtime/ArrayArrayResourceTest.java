@@ -137,9 +137,14 @@ class ArrayArrayResourceTest {
     execute("配列に含まれる", stack(array(1, 2, 3), integer(2)), budget);
     execute("配列から検索する", stack(array(1, 2, 3), integer(9)), budget);
     execute("配列が空である", stack(integers(0)), budget);
+    execute("配列の先頭を任意で取り出す", stack(array(1, 2, 3)), budget);
+    execute("配列の末尾を任意で取り出す", stack(array(1, 2, 3)), budget);
+    execute("配列の先頭を削除する", stack(array(1, 2, 3)), budget);
+    execute("配列の末尾を削除する", stack(array(1, 2, 3)), budget);
+    execute("配列の一部を削除する", stack(array(1, 2, 3), integer(1), integer(3)), budget);
 
     assertEquals(8, budget.arrayConstructionUnits());
-    assertEquals(22, budget.arrayElementOperationUnits());
+    assertEquals(29, budget.arrayElementOperationUnits());
   }
 
   @Test
@@ -188,6 +193,21 @@ class ArrayArrayResourceTest {
     assertEquals(DiagnosticCode.E_ARRAY_ELEMENT_OPERATION_LIMIT, failure.diagnostic().code());
     assertEquals(java.util.List.of(original, sought), rejectedStack);
     assertEquals(ArrayLimits.MAX_ELEMENT_OPERATION_UNITS - 2, budget.arrayElementOperationUnits());
+  }
+
+  @Test
+  void deleteRangeRejectsInvalidBoundsBeforeChangingTheStackOrBudget() {
+    ArrayValue original = array(1, 2, 3);
+    var rejectedStack = stack(original, integer(2), integer(1));
+    var budget = new ExecutionBudget(SOURCE_PATH, () -> 0L);
+
+    RuntimeFailure failure =
+        assertThrows(RuntimeFailure.class, () -> execute("配列の一部を削除する", rejectedStack, budget));
+
+    assertEquals(DiagnosticCode.E_ARRAY_RANGE_OUT_OF_BOUNDS, failure.diagnostic().code());
+    assertEquals(java.util.List.of(original, integer(2), integer(1)), rejectedStack);
+    assertEquals(0, budget.arrayConstructionUnits());
+    assertEquals(0, budget.arrayElementOperationUnits());
   }
 
   private static ExecutionBudget budget(long construction, long operations) {

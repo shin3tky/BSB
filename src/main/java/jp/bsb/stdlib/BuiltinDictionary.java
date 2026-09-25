@@ -1214,7 +1214,47 @@ public final class BuiltinDictionary {
               "配列の要素数が0かを調べます。",
               List.of("配列<T>"),
               List.of("真偽"),
-              "空の整数配列 を 配列が空である"));
+              "空の整数配列 を 配列が空である"),
+          arrayOperation(
+              "配列の先頭を任意で取り出す",
+              BuiltinOperation.ARRAY_FIRST_OPTIONAL,
+              BuiltinTypeRule.ARRAY_EDGE_OPTIONAL,
+              "先頭要素を値ありで返し、空配列なら値なしを返します。",
+              List.of("配列<T>"),
+              List.of("任意<T>"),
+              "【1、2】を 配列の先頭を任意で取り出す"),
+          arrayOperation(
+              "配列の末尾を任意で取り出す",
+              BuiltinOperation.ARRAY_LAST_OPTIONAL,
+              BuiltinTypeRule.ARRAY_EDGE_OPTIONAL,
+              "末尾要素を値ありで返し、空配列なら値なしを返します。",
+              List.of("配列<T>"),
+              List.of("任意<T>"),
+              "【1、2】を 配列の末尾を任意で取り出す"),
+          arrayOperation(
+              "配列の先頭を削除する",
+              BuiltinOperation.ARRAY_DELETE_FIRST,
+              BuiltinTypeRule.ARRAY_DELETE_EDGE,
+              "先頭要素を除いた新しい配列を返し、空配列はそのまま返します。",
+              List.of("配列<T>"),
+              List.of("配列<T>"),
+              "【1、2、3】を 配列の先頭を削除する"),
+          arrayOperation(
+              "配列の末尾を削除する",
+              BuiltinOperation.ARRAY_DELETE_LAST,
+              BuiltinTypeRule.ARRAY_DELETE_EDGE,
+              "末尾要素を除いた新しい配列を返し、空配列はそのまま返します。",
+              List.of("配列<T>"),
+              List.of("配列<T>"),
+              "【1、2、3】を 配列の末尾を削除する"),
+          arrayOperation(
+              "配列の一部を削除する",
+              BuiltinOperation.ARRAY_DELETE_RANGE,
+              BuiltinTypeRule.ARRAY_DELETE_RANGE,
+              "指定した半開区間を除いた新しい配列を返します。",
+              List.of("配列<T>", "整数", "整数"),
+              List.of("配列<T>"),
+              "【1、2、3、4】 と 1 と 3 を 配列の一部を削除する"));
 
   private static final Map<String, BuiltinWord> BY_NAME = indexByName();
   private static final Set<String> CANONICAL_NAMES = canonicalNameSet();
