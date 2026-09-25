@@ -14,7 +14,7 @@ class HttpApiBuiltinDictionaryTest {
             .filter(word -> word.featureGroup().equals("HTTP-API"))
             .toList();
 
-    assertEquals(206, BuiltinDictionary.words().size());
+    assertEquals(208, BuiltinDictionary.words().size());
     assertEquals(
         List.of("文字列表をフォームURL符号化する", "HTTP応答を成功状態として検査する"),
         words.stream().map(BuiltinWord::canonicalName).toList());

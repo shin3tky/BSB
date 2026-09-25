@@ -77,6 +77,12 @@ public enum BuiltinTypeRule {
   /** 配列要素にできる{@code T}について、{@code T 整数 -- 配列<T>}です。 */
   ARRAY_REPEAT_VALUE,
 
+  /** {@code 配列<T> 整数 -- 任意<T>}です。 */
+  ARRAY_GET_OPTIONAL,
+
+  /** {@code 配列<配列<T>> 整数 -- 任意<配列<T>>}です。 */
+  ARRAY_COLUMN_OPTIONAL,
+
   /** {@code T -- 任意<T>}です。 */
   OPTIONAL_WRAP,
 

@@ -14,7 +14,7 @@ class OptionalBuiltinDictionaryTest {
             .filter(word -> word.featureGroup().equals("OPT"))
             .toList();
 
-    assertEquals(206, BuiltinDictionary.words().size());
+    assertEquals(208, BuiltinDictionary.words().size());
     assertEquals(
         List.of("任意にする", "任意に値がある", "任意から値を取り出す", "任意を捨てる", "JSONオブジェクトから任意値を取り出す"),
         words.stream().map(BuiltinWord::canonicalName).toList());

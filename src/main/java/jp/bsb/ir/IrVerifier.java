@@ -215,6 +215,17 @@ final class IrVerifier {
               && inputs.getFirst().isArrayElementType()
               && inputs.get(1).equals(ValueType.INTEGER)
               && outputs.equals(List.of(ValueType.arrayOf(inputs.getFirst())));
+      case ARRAY_GET_OPTIONAL ->
+          inputs.size() == 2
+              && inputs.getFirst() instanceof ArrayType array
+              && inputs.get(1).equals(ValueType.INTEGER)
+              && outputs.equals(List.of(ValueType.optionalOf(array.elementType())));
+      case ARRAY_COLUMN_OPTIONAL ->
+          inputs.size() == 2
+              && inputs.getFirst() instanceof ArrayType outer
+              && outer.elementType() instanceof ArrayType row
+              && inputs.get(1).equals(ValueType.INTEGER)
+              && outputs.equals(List.of(ValueType.optionalOf(row)));
       case OPTIONAL_WRAP ->
           inputs.size() == 1 && outputs.equals(List.of(ValueType.optionalOf(inputs.getFirst())));
       case OPTIONAL_PREDICATE ->

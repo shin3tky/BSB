@@ -148,9 +148,11 @@ class ArrayArrayResourceTest {
     execute("開始位置から配列を検索する", stack(array(1, 2, 3), integer(3), integer(1)), budget);
     execute("配列の重複を除く", stack(array(1, 2, 1)), budget);
     execute("同じ値で配列を作る", stack(integer(7), integer(3)), budget);
+    execute("配列から任意で取り出す", stack(array(1, 2, 3), integer(1)), budget);
+    execute("二次元配列から列を任意で取り出す", stack(rows(array(1, 2), 2), integer(1)), budget);
 
-    assertEquals(12, budget.arrayConstructionUnits());
-    assertEquals(42, budget.arrayElementOperationUnits());
+    assertEquals(14, budget.arrayConstructionUnits());
+    assertEquals(45, budget.arrayElementOperationUnits());
   }
 
   @Test

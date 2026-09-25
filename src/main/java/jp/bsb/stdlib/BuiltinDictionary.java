@@ -1302,7 +1302,23 @@ public final class BuiltinDictionary {
               "同じ値を指定個数並べた新しい配列を返します。",
               List.of("T", "整数"),
               List.of("配列<T>"),
-              "7 と 3 を 同じ値で配列を作る"));
+              "7 と 3 を 同じ値で配列を作る"),
+          arrayOperation(
+              "配列から任意で取り出す",
+              BuiltinOperation.ARRAY_GET_OPTIONAL,
+              BuiltinTypeRule.ARRAY_GET_OPTIONAL,
+              "指定位置の要素を値ありで返し、範囲外なら値なしを返します。",
+              List.of("配列<T>", "整数"),
+              List.of("任意<T>"),
+              "【10、20】 と 1 を 配列から任意で取り出す"),
+          arrayOperation(
+              "二次元配列から列を任意で取り出す",
+              BuiltinOperation.ARRAY_COLUMN_OPTIONAL,
+              BuiltinTypeRule.ARRAY_COLUMN_OPTIONAL,
+              "全行に存在する指定列を値ありで返し、空表または列が欠ける場合は値なしを返します。",
+              List.of("配列<配列<T>>", "整数"),
+              List.of("任意<配列<T>>"),
+              "【【「a」、「b」】、【「c」、「d」】】 と 1 を 二次元配列から列を任意で取り出す"));
 
   private static final Map<String, BuiltinWord> BY_NAME = indexByName();
   private static final Set<String> CANONICAL_NAMES = canonicalNameSet();

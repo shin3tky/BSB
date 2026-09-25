@@ -189,6 +189,20 @@ class BuiltinDictionaryTest {
   }
 
   @Test
+  void appendsTwoSafeArrayAccessOperations() {
+    List<BuiltinWord> words = BuiltinDictionary.words().subList(206, 208);
+
+    assertEquals(
+        List.of("配列から任意で取り出す", "二次元配列から列を任意で取り出す"),
+        words.stream().map(BuiltinWord::canonicalName).toList());
+    assertEquals(
+        List.of(BuiltinTypeRule.ARRAY_GET_OPTIONAL, BuiltinTypeRule.ARRAY_COLUMN_OPTIONAL),
+        words.stream().map(BuiltinWord::typeRule).toList());
+    assertTrue(words.stream().allMatch(word -> word.featureGroup().equals("ARRAY")));
+    assertTrue(words.stream().allMatch(word -> word.sideEffects().isEmpty()));
+  }
+
+  @Test
   void publishesConcreteTypesForAllTypedEmptyArrayValues() {
     assertEquals(
         List.of(

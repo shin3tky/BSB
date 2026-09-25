@@ -139,6 +139,10 @@ public enum BuiltinOperation {
   ARRAY_UNIQUE,
   /** 同じ値を指定数並べた配列の構築。 */
   ARRAY_REPEAT_VALUE,
+  /** 配列の指定位置の安全な取得。 */
+  ARRAY_GET_OPTIONAL,
+  /** 二次元配列の指定列の安全な取得。 */
+  ARRAY_COLUMN_OPTIONAL,
   /** 改行なし表示。 */
   DISPLAY,
   /** 表示後にLFを出力。 */

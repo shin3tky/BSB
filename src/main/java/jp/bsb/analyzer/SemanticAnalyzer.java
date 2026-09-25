@@ -2708,6 +2708,8 @@ public final class SemanticAnalyzer {
             case ARRAY_FIND_FROM -> applyArrayFindFrom(call, stack);
             case ARRAY_UNIQUE -> applyArrayUnique(call, stack);
             case ARRAY_REPEAT_VALUE -> applyArrayRepeatValue(call, stack);
+            case ARRAY_GET_OPTIONAL -> applyArrayGetOptional(call, stack);
+            case ARRAY_COLUMN_OPTIONAL -> applyArrayColumnOptional(call, stack);
             case OPTIONAL_WRAP -> applyOptionalWrap(call, stack);
             case OPTIONAL_PREDICATE -> applyOptionalPredicate(call, stack);
             case OPTIONAL_UNWRAP -> applyOptionalUnwrap(call, stack);
@@ -3172,6 +3174,48 @@ public final class SemanticAnalyzer {
       return stack.removeTop(2).push(ValueType.arrayOf(elementType), call.span());
     }
 
+    private AbstractStack applyArrayGetOptional(WordCall call, AbstractStack stack) {
+      ValueType arrayType = requireArrayInputs(call, List.of("配列<T>", "整数"), stack);
+      if (arrayType == null) {
+        return null;
+      }
+      int inputStart = stack.size() - 2;
+      if (!requireArrayOperationType(
+          call, 2, ValueType.INTEGER, stack.slots().get(inputStart + 1).type(), "整数の添字を渡してください")) {
+        return null;
+      }
+      ValueType elementType = arrayType.arrayElementType().orElseThrow();
+      int observedDepth = ValueType.constructorDepth(elementType) + 1;
+      if (observedDepth > ValueType.MAX_TYPE_CONSTRUCTOR_DEPTH) {
+        reportTypeDepthLimit(call, "任意", observedDepth);
+        return null;
+      }
+      return stack.removeTop(2).push(ValueType.optionalOf(elementType), call.span());
+    }
+
+    private AbstractStack applyArrayColumnOptional(WordCall call, AbstractStack stack) {
+      ValueType outerType = requireArrayInputs(call, List.of("配列<配列<T>>", "整数"), stack);
+      if (outerType == null) {
+        return null;
+      }
+      int inputStart = stack.size() - 2;
+      if (!requireArrayOperationType(
+          call, 2, ValueType.INTEGER, stack.slots().get(inputStart + 1).type(), "整数の列位置を渡してください")) {
+        return null;
+      }
+      ValueType rowType = outerType.arrayElementType().orElseThrow();
+      if (!rowType.isArray()) {
+        reportArrayOperationTypeMismatch(call, 1, "配列<配列<T>>", outerType, "二次元配列を渡してください");
+        return null;
+      }
+      int observedDepth = ValueType.constructorDepth(rowType) + 1;
+      if (observedDepth > ValueType.MAX_TYPE_CONSTRUCTOR_DEPTH) {
+        reportTypeDepthLimit(call, "任意", observedDepth);
+        return null;
+      }
+      return stack.removeTop(2).push(ValueType.optionalOf(rowType), call.span());
+    }
+
     /** 入力数と第1入力の配列制約を検査し、具体化した配列型を返します。 */
     private ValueType requireArrayInputs(
         WordCall call, List<String> requiredTypes, AbstractStack stack) {
@@ -3211,6 +3255,8 @@ public final class SemanticAnalyzer {
               case "配列の位置へ挿入する" -> missingInput == 2 ? "挿入位置を追加してください" : "挿入値を追加してください";
               case "配列の位置を削除する" -> "削除位置を追加してください";
               case "開始位置から配列を検索する" -> missingInput == 2 ? "検索値を追加してください" : "開始位置を追加してください";
+              case "配列から任意で取り出す" -> "整数の添字を追加してください";
+              case "二次元配列から列を任意で取り出す" -> "整数の列位置を追加してください";
               default -> "配列値を追加してください";
             };
       }

@@ -41,6 +41,7 @@ import jp.bsb.numeric.DecimalLexemeAnalyzer.Valid;
 import jp.bsb.regex.RegexMatch;
 import jp.bsb.regex.RegexMatchCursor;
 import jp.bsb.stdlib.ArrayLimits;
+import jp.bsb.stdlib.ArrayType;
 import jp.bsb.stdlib.BuiltinWord;
 import jp.bsb.stdlib.ResultType;
 import jp.bsb.stdlib.ScalarType;
@@ -212,6 +213,8 @@ final class BuiltinExecutor {
       case ARRAY_FIND_FROM -> arrayFindFrom(word, stack, span);
       case ARRAY_UNIQUE -> arrayUnique(word, stack, span);
       case ARRAY_REPEAT_VALUE -> arrayRepeatValue(stack, span);
+      case ARRAY_GET_OPTIONAL -> arrayGetOptional(stack, span);
+      case ARRAY_COLUMN_OPTIONAL -> arrayColumnOptional(stack, span);
       case DISPLAY -> display(word, stack, span, false, output);
       case DISPLAY_LINE -> display(word, stack, span, true, output);
       case NEWLINE -> newline(word, span, output);
@@ -5864,6 +5867,56 @@ final class BuiltinExecutor {
         new ArrayValue(value.type(), java.util.Collections.nCopies(count, value), logicalLeafCount);
     stack.removeLast();
     stack.set(valueIndex, result);
+    return new byte[0];
+  }
+
+  private byte[] arrayGetOptional(ArrayList<RuntimeValue> stack, SourceSpan span)
+      throws RuntimeFailure {
+    int arrayIndex = stack.size() - 2;
+    ArrayValue array = (ArrayValue) stack.get(arrayIndex);
+    BigInteger index = ((IntegerValue) stack.get(arrayIndex + 1)).value();
+    budget.beforeArrayWork(0, 1, span, "getOptional");
+    OptionalValue result =
+        index.signum() < 0 || index.compareTo(BigInteger.valueOf(array.size())) >= 0
+            ? OptionalValue.absent(array.elementType())
+            : OptionalValue.present(array.get(index.intValueExact()));
+    stack.removeLast();
+    stack.set(arrayIndex, result);
+    return new byte[0];
+  }
+
+  private byte[] arrayColumnOptional(ArrayList<RuntimeValue> stack, SourceSpan span)
+      throws RuntimeFailure {
+    int arrayIndex = stack.size() - 2;
+    ArrayValue table = (ArrayValue) stack.get(arrayIndex);
+    BigInteger column = ((IntegerValue) stack.get(arrayIndex + 1)).value();
+    var rowType = (ArrayType) table.elementType();
+    boolean present = table.size() > 0 && column.signum() >= 0;
+    int columnIndex = -1;
+    if (present && column.compareTo(BigInteger.valueOf(ArrayLimits.MAX_LENGTH)) < 0) {
+      columnIndex = column.intValueExact();
+      for (RuntimeValue value : table.elements()) {
+        if (((ArrayValue) value).size() <= columnIndex) {
+          present = false;
+          break;
+        }
+      }
+    } else {
+      present = false;
+    }
+    budget.beforeArrayWork(present ? table.size() : 0, table.size(), span, "columnOptional");
+    OptionalValue result;
+    if (!present) {
+      result = OptionalValue.absent(rowType);
+    } else {
+      var elements = new ArrayList<RuntimeValue>(table.size());
+      for (RuntimeValue value : table.elements()) {
+        elements.add(((ArrayValue) value).get(columnIndex));
+      }
+      result = OptionalValue.present(new ArrayValue(rowType.elementType(), elements));
+    }
+    stack.removeLast();
+    stack.set(arrayIndex, result);
     return new byte[0];
   }
 

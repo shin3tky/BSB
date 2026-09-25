@@ -78,4 +78,28 @@ class ArrayConvenienceOperationsRuntimeTest {
     assertEquals(DiagnosticCode.E_ARRAY_LENGTH_LIMIT, result.diagnostics().getFirst().code());
     assertEquals(2, result.finalDataStack().size());
   }
+
+  @Test
+  void safelyGetsElementsAndColumns() {
+    String source =
+        "メインとは （--）\n"
+            + "    【10、20】 と 1 を 配列から任意で取り出す 一行表示する\n"
+            + "    【10、20】 と -1 を 配列から任意で取り出す 一行表示する\n"
+            + "    【10、20】 と 2 を 配列から任意で取り出す 一行表示する\n"
+            + "    【【「a」、「b」】、【「c」、「d」】】 と 1 を 二次元配列から列を任意で取り出す 一行表示する\n"
+            + "    【【1、2】、【3】】 と 1 を 二次元配列から列を任意で取り出す 一行表示する\n"
+            + "    空の整数二次元配列 と 0 を 二次元配列から列を任意で取り出す 一行表示する\n"
+            + "こと。\n";
+    var output = new MemoryOutputSink();
+
+    ProgramRunResult result =
+        new ProgramRunner()
+            .run(
+                "array-safe-access.bsb",
+                source.getBytes(StandardCharsets.UTF_8),
+                new ExecutionContext(output, () -> 0L, TraceSink.none()));
+
+    assertTrue(result.successful(), result.diagnostics().toString());
+    assertEquals("ある（20）\nない\nない\nある（【「b」、「d」】）\nない\nない\n", output.utf8Text());
+  }
 }

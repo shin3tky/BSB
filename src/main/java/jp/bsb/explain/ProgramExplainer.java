@@ -573,6 +573,8 @@ public final class ProgramExplainer {
       case ARRAY_FIND_FROM -> "arrayFindFrom";
       case ARRAY_UNIQUE -> "arrayUnique";
       case ARRAY_REPEAT_VALUE -> "arrayRepeatValue";
+      case ARRAY_GET_OPTIONAL -> "arrayGetOptional";
+      case ARRAY_COLUMN_OPTIONAL -> "arrayColumnOptional";
       case OPTIONAL_WRAP -> "optionalWrap";
       case OPTIONAL_PREDICATE -> "optionalPredicate";
       case OPTIONAL_UNWRAP -> "optionalUnwrap";
