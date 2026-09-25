@@ -3,6 +3,7 @@ package jp.bsb.frontend;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.List;
 import jp.bsb.diagnostics.SourcePosition;
 import jp.bsb.diagnostics.SourceSpan;
 import org.junit.jupiter.api.Test;
@@ -122,6 +123,18 @@ class SourceTextTest {
     assertEquals(4095, source.utf16IndexAtUtf8Offset(4098));
     assertEquals(4097, source.utf16IndexAtUtf8Offset(4102));
     assertEquals(new Utf16Position(0, 4097), source.utf16PositionAt(source.positionAt(4097)));
+  }
+
+  @Test
+  void forwardCursorMatchesRandomAccessAcrossUnicodeAndCheckpointBoundaries() {
+    String text = "a".repeat(4094) + "\tか\u3099𠮷\r\n終";
+    var source = new SourceText("長文.bsb", text, 3);
+    SourceText.PositionCursor cursor = source.positionCursor();
+
+    for (int index : List.of(0, 1, 4094, 4095, 4096, 4097, 4099, 4100, 4101, 4102)) {
+      assertEquals(source.positionAt(index), cursor.positionAt(index), "UTF-16 index " + index);
+    }
+    assertThrows(IllegalArgumentException.class, () -> cursor.positionAt(4101));
   }
 
   @Test

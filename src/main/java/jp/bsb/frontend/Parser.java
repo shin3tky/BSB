@@ -96,6 +96,7 @@ public final class Parser {
    */
   private static List<LocatedToken> locateTokens(SourceText source, List<Token> tokens) {
     var located = new ArrayList<LocatedToken>(tokens.size());
+    SourceText.PositionCursor positionCursor = source.positionCursor();
     int cursor = 0;
     for (Token token : tokens) {
       int start = source.text().indexOf(token.lexeme(), cursor);
@@ -103,7 +104,8 @@ public final class Parser {
         throw new IllegalStateException("token lexeme cannot be located in its source");
       }
       int end = start + token.lexeme().length();
-      SourceSpan computed = source.span(start, end);
+      SourceSpan computed =
+          new SourceSpan(positionCursor.positionAt(start), positionCursor.positionAt(end));
       if (computed.start().utf8Offset() != token.span().start().utf8Offset()
           || computed.end().utf8Offset() != token.span().end().utf8Offset()) {
         throw new IllegalStateException("token span does not match its source lexeme");
