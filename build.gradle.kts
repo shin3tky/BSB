@@ -36,7 +36,7 @@ application {
 dependencies {
     implementation("com.ibm.icu:icu4j:76.1")
     implementation("com.google.re2j:re2j:1.8")
-    implementation("org.tomlj:tomlj:1.1.1")
+    implementation("org.tomlj:tomlj:1.3.0")
 
     testImplementation(platform("org.junit:junit-bom:6.1.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
