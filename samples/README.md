@@ -24,6 +24,12 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar check samples/29-array-convenien
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/29-array-convenience-operations.bsb
 ```
 
+整数乱数のサンプルです。最初の2行の値は実行時に生成され、最後の行は必ず42になります。
+
+```shell
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/30-integer-random.bsb
+```
+
 ## 検査と実行
 
 ```shell

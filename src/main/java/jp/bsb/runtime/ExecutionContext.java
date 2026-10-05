@@ -26,12 +26,19 @@ public record ExecutionContext(
   }
 
   /**
-   * 指定出力、実時計、トレースなしの通常実行環境を作ります。
+   * 指定出力、実時計、通常の疑似乱数源、トレースなしの実行環境を作ります。
    *
    * @param output UTF-8バイト出力先
    * @return 標準的な実行環境
    */
   public static ExecutionContext standard(OutputSink output) {
-    return new ExecutionContext(output, MonotonicClock.system(), TraceSink.none());
+    MonotonicClock clock = MonotonicClock.system();
+    ExecutionEnvironment environment =
+        ExecutionEnvironment.builder(clock)
+            .consoleOutput(ConsoleOutput.fromOutputSink(output))
+            .programControl(ProgramControl.accepting())
+            .randomSource(RandomSource.standard())
+            .build();
+    return new ExecutionContext(output, clock, TraceSink.none(), environment);
   }
 }

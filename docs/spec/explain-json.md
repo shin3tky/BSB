@@ -198,6 +198,7 @@ program.identity
 time.sleep
 time.monotonic
 time.wall
+random.bytes
 connection.resolve
 ```
 

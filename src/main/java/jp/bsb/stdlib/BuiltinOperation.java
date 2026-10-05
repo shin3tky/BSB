@@ -199,6 +199,8 @@ public enum BuiltinOperation {
   MONOTONIC_MILLISECONDS,
   /** 現在日時の取得。 */
   WALL_TIME,
+  /** 下限・上限を含む一様整数乱数の取得。 */
+  RANDOM_INTEGER,
   /** 日時の固定ASCII文字列化。 */
   DATE_TIME_TO_STRING,
   /** JSON null値の構築。 */

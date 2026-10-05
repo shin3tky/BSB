@@ -253,6 +253,7 @@ final class BuiltinExecutor {
       case SLEEP -> sleep(word, stack, span);
       case MONOTONIC_MILLISECONDS -> monotonicMilliseconds(word, stack, span);
       case WALL_TIME -> wallTime(word, stack, span);
+      case RANDOM_INTEGER -> randomInteger(word, stack, span);
       case DATE_TIME_TO_STRING -> dateTimeToString(stack);
       case JSON_NULL -> jsonConstant(word, stack, span, JsonNull.INSTANCE, "null");
       case JSON_EMPTY_ARRAY ->
@@ -3517,6 +3518,18 @@ final class BuiltinExecutor {
     RuntimeValue value = stack.get(valueIndex);
     RuntimeValue lower = stack.get(valueIndex + 1);
     RuntimeValue upper = stack.get(valueIndex + 2);
+    requireNumericRange(word, lower, upper, span);
+    RuntimeValue result =
+        compareNumeric(value, lower) < 0 ? lower : compareNumeric(value, upper) > 0 ? upper : value;
+    stack.removeLast();
+    stack.removeLast();
+    stack.set(valueIndex, result);
+    return new byte[0];
+  }
+
+  private void requireNumericRange(
+      BuiltinWord word, RuntimeValue lower, RuntimeValue upper, SourceSpan span)
+      throws RuntimeFailure {
     if (compareNumeric(lower, upper) > 0) {
       NumericPreview lowerPreview = NumericPreview.ofValue(lower);
       NumericPreview upperPreview = NumericPreview.ofValue(upper);
@@ -3539,11 +3552,72 @@ final class BuiltinExecutor {
               .fix("下限と上限を入れ替えるか、同じ値にしてください")
               .build());
     }
-    RuntimeValue result =
-        compareNumeric(value, lower) < 0 ? lower : compareNumeric(value, upper) > 0 ? upper : value;
+  }
+
+  private byte[] randomInteger(BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span)
+      throws RuntimeFailure {
+    int lowerIndex = stack.size() - 2;
+    IntegerValue lower = (IntegerValue) stack.get(lowerIndex);
+    IntegerValue upper = (IntegerValue) stack.get(lowerIndex + 1);
+    requireNumericRange(word, lower, upper, span);
+    RandomSource source =
+        environment
+            .randomSource()
+            .orElseThrow(
+                () ->
+                    capabilityUnavailable(
+                        word, span, RuntimeCapability.RANDOM_BYTES, "乱数能力を持つ実行環境で実行してください"));
+    BigInteger width = upper.value().subtract(lower.value()).add(BigInteger.ONE);
+    BigInteger candidate = BigInteger.ZERO;
+    int bits = width.subtract(BigInteger.ONE).bitLength();
+    if (bits != 0) {
+      byte[] bytes = new byte[(bits + 7) / 8];
+      int mask = 0xff >>> (bytes.length * 8 - bits);
+      boolean accepted = false;
+      for (int attempt = 0; attempt < RuntimeLimits.RANDOM_ATTEMPTS; attempt++) {
+        budget.checkElapsedTime(span);
+        try {
+          source.nextBytes(bytes);
+        } catch (CapabilityException failure) {
+          throw capabilityFailure(
+              word,
+              span,
+              failure,
+              RuntimeCapability.RANDOM_BYTES,
+              "成功する乱数バイト源",
+              "実行環境の乱数能力を確認してください");
+        } catch (RuntimeException failure) {
+          throw capabilityFailure(
+              word,
+              span,
+              RuntimeCapability.RANDOM_BYTES,
+              "nextBytes",
+              "成功する乱数バイト源",
+              "実行環境の乱数能力を確認してください");
+        }
+        budget.checkElapsedTime(span);
+        // 余分な上位ビットを捨て、kビットの候補を符号なし整数へ変換します。
+        bytes[0] = (byte) (bytes[0] & mask);
+        candidate = new BigInteger(1, bytes);
+        if (candidate.compareTo(width) < 0) {
+          accepted = true;
+          break;
+        }
+      }
+      if (!accepted) {
+        throw capabilityFailure(
+            word,
+            span,
+            RuntimeCapability.RANDOM_BYTES,
+            "sample",
+            RuntimeLimits.RANDOM_ATTEMPTS + "候補以内の採用",
+            "実行環境の乱数源を確認して再実行してください");
+      }
+    }
+    // 採用後だけスタックを変更します。範囲幅は整数値の桁数上限を超えても構いません。
+    stack.set(lowerIndex, new IntegerValue(lower.value().add(candidate)));
     stack.removeLast();
-    stack.removeLast();
-    stack.set(valueIndex, result);
+    effect = RuntimeCapability.RANDOM_BYTES.sourceName();
     return new byte[0];
   }
 

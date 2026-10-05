@@ -17,6 +17,7 @@ public final class ExecutionEnvironment {
   private final Optional<SleepCapability> sleepCapability;
   private final Optional<MonotonicTime> monotonicTime;
   private final Optional<WallTime> wallTime;
+  private final Optional<RandomSource> randomSource;
   private final Optional<ConnectionResolver> connectionResolver;
   private final Optional<HttpTransport> httpTransport;
   private final Optional<HttpFinalFailureSink> httpFinalFailureSink;
@@ -38,6 +39,7 @@ public final class ExecutionEnvironment {
     sleepCapability = Optional.ofNullable(builder.sleepCapability);
     monotonicTime = Optional.ofNullable(builder.monotonicTime);
     wallTime = Optional.ofNullable(builder.wallTime);
+    randomSource = Optional.ofNullable(builder.randomSource);
     connectionResolver = Optional.ofNullable(builder.connectionResolver);
     httpTransport = Optional.ofNullable(builder.httpTransport);
     httpFinalFailureSink = Optional.ofNullable(builder.httpFinalFailureSink);
@@ -57,6 +59,7 @@ public final class ExecutionEnvironment {
     sleepCapability.ifPresent(ignored -> present.add(RuntimeCapability.TIME_SLEEP));
     monotonicTime.ifPresent(ignored -> present.add(RuntimeCapability.TIME_MONOTONIC));
     wallTime.ifPresent(ignored -> present.add(RuntimeCapability.TIME_WALL));
+    randomSource.ifPresent(ignored -> present.add(RuntimeCapability.RANDOM_BYTES));
     connectionResolver.ifPresent(ignored -> present.add(RuntimeCapability.CONNECTION_RESOLVE));
     httpTransport.ifPresent(ignored -> present.add(RuntimeCapability.HTTP_SEND));
     httpFinalFailureSink.ifPresent(ignored -> present.add(RuntimeCapability.HTTP_FINAL_FAILURE));
@@ -148,6 +151,13 @@ public final class ExecutionEnvironment {
   }
 
   /**
+   * @return 整数乱数用の乱数バイト源
+   */
+  public Optional<RandomSource> randomSource() {
+    return randomSource;
+  }
+
+  /**
    * @return 論理接続解決能力
    */
   public Optional<ConnectionResolver> connectionResolver() {
@@ -229,6 +239,7 @@ public final class ExecutionEnvironment {
     private SleepCapability sleepCapability;
     private MonotonicTime monotonicTime;
     private WallTime wallTime;
+    private RandomSource randomSource;
     private ConnectionResolver connectionResolver;
     private HttpTransport httpTransport;
     private HttpFinalFailureSink httpFinalFailureSink;
@@ -311,6 +322,12 @@ public final class ExecutionEnvironment {
      */
     public Builder wallTime(WallTime value) {
       wallTime = Objects.requireNonNull(value, "value");
+      return this;
+    }
+
+    /** 整数乱数用の乱数バイト源を追加します。 */
+    public Builder randomSource(RandomSource value) {
+      randomSource = Objects.requireNonNull(value, "value");
       return this;
     }
 

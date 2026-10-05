@@ -20,6 +20,8 @@ public enum RuntimeCapability {
   TIME_MONOTONIC("time.monotonic"),
   /** 現在日時です。 */
   TIME_WALL("time.wall"),
+  /** 整数乱数の候補を作る乱数バイト源です。 */
+  RANDOM_BYTES("random.bytes"),
   /** 論理接続定義の解決です。 */
   CONNECTION_RESOLVE("connection.resolve"),
   /** 検証済みHTTPS要求の同期送信です。 */

@@ -26,6 +26,7 @@ import jp.bsb.runtime.ProcessArguments;
 import jp.bsb.runtime.ProgramControl;
 import jp.bsb.runtime.ProgramIdentity;
 import jp.bsb.runtime.ProgramMetadata;
+import jp.bsb.runtime.RandomSource;
 import jp.bsb.runtime.RuntimeCapability;
 import jp.bsb.runtime.SleepCapability;
 import jp.bsb.runtime.StreamConsoleInput;
@@ -410,7 +411,8 @@ public final class BsbCli {
                     ProgramMetadata.located(programName, absoluteSource.toUri().toASCIIString())))
             .sleepCapability(SleepCapability.system())
             .monotonicTime(MonotonicTime.elapsed(clock))
-            .wallTime(WallTime.systemUtc());
+            .wallTime(WallTime.systemUtc())
+            .randomSource(RandomSource.standard());
     connections.ifPresent(
         configured ->
             environmentBuilder

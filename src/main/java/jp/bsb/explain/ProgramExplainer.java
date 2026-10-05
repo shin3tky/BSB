@@ -47,6 +47,7 @@ public final class ProgramExplainer {
           BuiltinDictionary.TIME_SLEEP,
           BuiltinDictionary.TIME_MONOTONIC,
           BuiltinDictionary.TIME_WALL,
+          BuiltinDictionary.RANDOM_BYTES,
           BuiltinDictionary.CONNECTION_RESOLVE,
           BuiltinDictionary.HTTP_SEND,
           BuiltinDictionary.WORKSPACE_RESOLVE,

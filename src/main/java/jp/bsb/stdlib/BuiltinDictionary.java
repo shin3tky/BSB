@@ -37,6 +37,9 @@ public final class BuiltinDictionary {
   /** 現在日時を表す能力名です。 */
   public static final String TIME_WALL = "time.wall";
 
+  /** 整数乱数用の乱数バイト源を表す能力名です。 */
+  public static final String RANDOM_BYTES = "random.bytes";
+
   /** 論理接続の解決・認可を表す能力名です。 */
   public static final String CONNECTION_RESOLVE = "connection.resolve";
 
@@ -1417,7 +1420,18 @@ public final class BuiltinDictionary {
               "後ろから文字列を探す",
               BuiltinOperation.GRAPHEME_FIND_LAST,
               List.of("文字列", "文字列"),
-              List.of("整数")));
+              List.of("整数")),
+          new BuiltinWord(
+              "整数乱数を得る",
+              Set.of(),
+              "下限と上限を含む範囲から一様な整数乱数を取得します。",
+              List.of("整数", "整数"),
+              List.of("整数"),
+              BuiltinTypeRule.FIXED,
+              BuiltinOperation.RANDOM_INTEGER,
+              Set.of(RANDOM_BYTES),
+              "RNG",
+              "1 と 6 から 整数乱数を得る"));
 
   private static final Map<String, BuiltinWord> BY_NAME = indexByName();
   private static final Set<String> CANONICAL_NAMES = canonicalNameSet();

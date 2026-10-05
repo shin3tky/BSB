@@ -280,6 +280,12 @@ final class ExecutionBudget {
               .build());
     }
 
+    checkElapsedTime(span);
+    executed++;
+  }
+
+  /** 組み込み語内の反復でも、IR命令数を増やさず能動実行時間を検査します。 */
+  void checkElapsedTime(SourceSpan span) throws RuntimeFailure {
     long now = clock.nanoTime();
     if (now < startNanos) {
       throw new IllegalStateException("resource clock moved backwards");
@@ -308,7 +314,6 @@ final class ExecutionBudget {
               .fix("終了しない処理または過大な処理を見直してください。")
               .build());
     }
-    executed++;
   }
 
   long executed() {

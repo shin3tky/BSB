@@ -24,6 +24,7 @@ BSB の実装、仕様、適合データは次の機能グループ ID で対応
 | `HTTPS` | HTTPS要求・応答・通信失敗 | `tests/conformance/https` |
 | `NARRAY` | 二次元配列 | `tests/conformance/nested-arrays` |
 | `WST` | 名前付き作業領域、ファイル、CSV/TSV | `tests/conformance/workspace-tables` |
+| `RNG` | 一様整数乱数 | `tests/conformance/integer-random` |
 
 ケース ID は `<GROUP>-<KIND><NUMBER>` の形式です。`KIND` は次を表します。
 
