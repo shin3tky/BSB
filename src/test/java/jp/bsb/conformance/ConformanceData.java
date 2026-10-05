@@ -250,6 +250,11 @@ public final class ConformanceData {
     String WorkspaceTableText =
         strictUtf8(WorkspaceTableBytes, "WorkspaceTable/messages.properties");
     String jsonShapesText = strictUtf8(jsonShapesBytes, "json-shapes/messages.properties");
+    String randomText =
+        strictUtf8(
+            absoluteResourceBytes("/conformance/decimal-random/messages.properties"),
+            "decimal-random/messages.properties");
+    assertFalse(randomText.startsWith("\uFEFF"), "Random messages must not have a BOM");
     assertFalse(CoreText.startsWith("\uFEFF"), "Core messages must not have a BOM");
     assertFalse(ControlFlowText.startsWith("\uFEFF"), "ControlFlow messages must not have a BOM");
     assertFalse(bindingsText.startsWith("\uFEFF"), "bindings messages must not have a BOM");
@@ -282,7 +287,8 @@ public final class ConformanceData {
         Reader httpsReader = new java.io.StringReader(httpsText);
         Reader NestedArrayReader = new java.io.StringReader(NestedArrayText);
         Reader WorkspaceTableReader = new java.io.StringReader(WorkspaceTableText);
-        Reader jsonShapesReader = new java.io.StringReader(jsonShapesText)) {
+        Reader jsonShapesReader = new java.io.StringReader(jsonShapesText);
+        Reader randomReader = new java.io.StringReader(randomText)) {
       // 機能グループごとの断片を統合し、重複と全コードの欠落をまとめて検査する。
       DiagnosticMessageCatalog.load(
           CoreReader,
@@ -300,7 +306,8 @@ public final class ConformanceData {
           httpsReader,
           NestedArrayReader,
           WorkspaceTableReader,
-          jsonShapesReader);
+          jsonShapesReader,
+          randomReader);
     }
   }
 

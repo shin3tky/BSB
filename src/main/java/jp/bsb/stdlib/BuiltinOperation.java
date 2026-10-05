@@ -201,6 +201,8 @@ public enum BuiltinOperation {
   WALL_TIME,
   /** 下限・上限を含む一様整数乱数の取得。 */
   RANDOM_INTEGER,
+  /** 指定した10進格子上の一様小数乱数の取得。 */
+  RANDOM_DECIMAL,
   /** 日時の固定ASCII文字列化。 */
   DATE_TIME_TO_STRING,
   /** JSON null値の構築。 */

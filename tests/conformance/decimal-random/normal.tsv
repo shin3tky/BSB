@@ -1,0 +1,7 @@
+case_id	source	output_json	random_calls
+RNG-N004	RNG-N004.bsb	"0.0\n"	1
+RNG-N005	RNG-N005.bsb	"-1.0\n"	1
+RNG-N006	RNG-N006.bsb	"-2.0\n"	1
+RNG-N007	RNG-N007.bsb	"0.25\n"	0
+RNG-N008	RNG-N008.bsb	"【0.25】\n"	1
+RNG-N009	RNG-N009.bsb	"0.0\n"	1

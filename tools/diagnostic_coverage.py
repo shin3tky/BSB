@@ -3,7 +3,8 @@
 
 目的
 ----
-`docs/spec/*diagnostics*.md`・`docs/spec/cli-json.md`・`docs/spec/explain-json.md` が定義する
+`docs/spec/*diagnostics*.md`・`docs/spec/cli-json.md`・`docs/spec/explain-json.md`・
+`docs/spec/decimal-random.md` が定義する
 診断コード（`E_*` / `W_*`）それぞれについて、次の3種類のソースのどこで実際に踏まれているかを
 機械的に集計し、人間およびコーディングエージェントが客観的に参照できるレポートを出力する。
 
@@ -140,7 +141,7 @@ def collect_spec_codes(root: Path) -> tuple[Evidence, list[str]]:
     ev = Evidence()
     spec_dir = root / "docs" / "spec"
     candidates = sorted(spec_dir.glob("*diagnostics*.md"))
-    for extra in ("cli-json.md", "explain-json.md"):
+    for extra in ("cli-json.md", "explain-json.md", "decimal-random.md"):
         p = spec_dir / extra
         if p.is_file():
             candidates.append(p)

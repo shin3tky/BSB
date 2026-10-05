@@ -361,6 +361,12 @@ public enum DiagnosticCode {
   E_NEGATIVE_EXPONENT,
   /** 丸めの小数桁数または有効桁数が許容範囲外だった */
   E_ROUNDING_DIGITS_OUT_OF_RANGE,
+  /** 小数乱数の格子桁数が0から65,536の範囲外だった */
+  E_RANDOM_DIGITS_OUT_OF_RANGE,
+  /** 小数乱数の境界が指定した10進格子上にない */
+  E_RANDOM_BOUND_NOT_ALIGNED,
+  /** 小数乱数の格子点すべてを既存の小数精度内で表現できない */
+  E_RANDOM_RANGE_PRECISION_LIMIT,
   /** 書記素単位の文字列位置が範囲外 */
   E_STRING_INDEX_OUT_OF_BOUNDS,
   /** 書記素単位の文字列半開区間が不正 */

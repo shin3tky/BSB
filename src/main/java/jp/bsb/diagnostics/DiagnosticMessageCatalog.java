@@ -80,6 +80,9 @@ public final class DiagnosticMessageCatalog {
   private static final String JSON_SHAPES_RESOURCE =
       "/jp/bsb/diagnostics/json-shapes-messages.properties";
 
+  /** 小数乱数で追加したメッセージファイルへのパス */
+  private static final String RNG_RESOURCE = "/jp/bsb/diagnostics/random-messages.properties";
+
   /** テンプレート内のプレースホルダー（例: "{candidate}", "{limit}"）にマッチする正規表現 */
   private static final Pattern PLACEHOLDER = Pattern.compile("\\{([A-Za-z][A-Za-z0-9]*)}");
 
@@ -119,6 +122,7 @@ public final class DiagnosticMessageCatalog {
         DiagnosticMessageCatalog.class.getResourceAsStream(WST_RESOURCE);
     InputStream jsonShapesInput =
         DiagnosticMessageCatalog.class.getResourceAsStream(JSON_SHAPES_RESOURCE);
+    InputStream randomInput = DiagnosticMessageCatalog.class.getResourceAsStream(RNG_RESOURCE);
     if (baseInput == null
         || ControlFlowInput == null
         || bindingsInput == null
@@ -134,7 +138,8 @@ public final class DiagnosticMessageCatalog {
         || httpsInput == null
         || NestedArrayInput == null
         || WorkspaceTableInput == null
-        || jsonShapesInput == null) {
+        || jsonShapesInput == null
+        || randomInput == null) {
       if (baseInput != null) {
         baseInput.close();
       }
@@ -183,6 +188,9 @@ public final class DiagnosticMessageCatalog {
       if (jsonShapesInput != null) {
         jsonShapesInput.close();
       }
+      if (randomInput != null) {
+        randomInput.close();
+      }
       String missing =
           baseInput == null
               ? DEFAULT_RESOURCE
@@ -214,7 +222,9 @@ public final class DiagnosticMessageCatalog {
                                                                   ? NARRAY_RESOURCE
                                                                   : WorkspaceTableInput == null
                                                                       ? WST_RESOURCE
-                                                                      : JSON_SHAPES_RESOURCE;
+                                                                      : jsonShapesInput == null
+                                                                          ? JSON_SHAPES_RESOURCE
+                                                                          : RNG_RESOURCE;
       throw new IllegalStateException("diagnostic message resource is missing: " + missing);
     }
     try (Reader baseReader = new InputStreamReader(baseInput, StandardCharsets.UTF_8);
@@ -234,7 +244,8 @@ public final class DiagnosticMessageCatalog {
         Reader NestedArrayReader = new InputStreamReader(NestedArrayInput, StandardCharsets.UTF_8);
         Reader WorkspaceTableReader =
             new InputStreamReader(WorkspaceTableInput, StandardCharsets.UTF_8);
-        Reader jsonShapesReader = new InputStreamReader(jsonShapesInput, StandardCharsets.UTF_8)) {
+        Reader jsonShapesReader = new InputStreamReader(jsonShapesInput, StandardCharsets.UTF_8);
+        Reader randomReader = new InputStreamReader(randomInput, StandardCharsets.UTF_8)) {
       return load(
           baseReader,
           ControlFlowReader,
@@ -251,7 +262,8 @@ public final class DiagnosticMessageCatalog {
           httpsReader,
           NestedArrayReader,
           WorkspaceTableReader,
-          jsonShapesReader);
+          jsonShapesReader,
+          randomReader);
     }
   }
 

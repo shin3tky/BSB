@@ -254,6 +254,7 @@ final class BuiltinExecutor {
       case MONOTONIC_MILLISECONDS -> monotonicMilliseconds(word, stack, span);
       case WALL_TIME -> wallTime(word, stack, span);
       case RANDOM_INTEGER -> randomInteger(word, stack, span);
+      case RANDOM_DECIMAL -> randomDecimal(word, stack, span);
       case DATE_TIME_TO_STRING -> dateTimeToString(stack);
       case JSON_NULL -> jsonConstant(word, stack, span, JsonNull.INSTANCE, "null");
       case JSON_EMPTY_ARRAY ->
@@ -3560,14 +3561,19 @@ final class BuiltinExecutor {
     IntegerValue lower = (IntegerValue) stack.get(lowerIndex);
     IntegerValue upper = (IntegerValue) stack.get(lowerIndex + 1);
     requireNumericRange(word, lower, upper, span);
-    RandomSource source =
-        environment
-            .randomSource()
-            .orElseThrow(
-                () ->
-                    capabilityUnavailable(
-                        word, span, RuntimeCapability.RANDOM_BYTES, "乱数能力を持つ実行環境で実行してください"));
-    BigInteger width = upper.value().subtract(lower.value()).add(BigInteger.ONE);
+    RandomSource source = randomSource(word, span);
+    BigInteger result = sampleInteger(word, span, source, lower.value(), upper.value());
+    stack.set(lowerIndex, new IntegerValue(result));
+    stack.removeLast();
+    effect = RuntimeCapability.RANDOM_BYTES.sourceName();
+    return new byte[0];
+  }
+
+  /** 利用者のスタックへ中間値を積まず、整数・小数乱数に同じ棄却法を使います。 */
+  private BigInteger sampleInteger(
+      BuiltinWord word, SourceSpan span, RandomSource source, BigInteger lower, BigInteger upper)
+      throws RuntimeFailure {
+    BigInteger width = upper.subtract(lower).add(BigInteger.ONE);
     BigInteger candidate = BigInteger.ZERO;
     int bits = width.subtract(BigInteger.ONE).bitLength();
     if (bits != 0) {
@@ -3614,11 +3620,138 @@ final class BuiltinExecutor {
             "実行環境の乱数源を確認して再実行してください");
       }
     }
-    // 採用後だけスタックを変更します。範囲幅は整数値の桁数上限を超えても構いません。
-    stack.set(lowerIndex, new IntegerValue(lower.value().add(candidate)));
+    return lower.add(candidate);
+  }
+
+  private RandomSource randomSource(BuiltinWord word, SourceSpan span) throws RuntimeFailure {
+    return environment
+        .randomSource()
+        .orElseThrow(
+            () ->
+                capabilityUnavailable(
+                    word, span, RuntimeCapability.RANDOM_BYTES, "乱数能力を持つ実行環境で実行してください"));
+  }
+
+  private byte[] randomDecimal(BuiltinWord word, ArrayList<RuntimeValue> stack, SourceSpan span)
+      throws RuntimeFailure {
+    int lowerIndex = stack.size() - 3;
+    DecimalValue lower = (DecimalValue) stack.get(lowerIndex);
+    DecimalValue upper = (DecimalValue) stack.get(lowerIndex + 1);
+    BigInteger requestedDigits = ((IntegerValue) stack.get(lowerIndex + 2)).value();
+    int digits = checkedRandomDigits(word, span, requestedDigits);
+    requireNumericRange(word, lower, upper, span);
+    requireRandomGrid(word, span, lower, digits, "lower");
+    requireRandomGrid(word, span, upper, digits, "upper");
+    boolean singleton = lower.equals(upper);
+    if (!singleton) {
+      requireRandomPrecision(word, span, lower, upper, digits);
+    }
+    RandomSource source = randomSource(word, span);
+    DecimalValue result = lower;
+    if (!singleton) {
+      BigInteger minimum = randomGridCoefficient(lower, digits);
+      BigInteger maximum = randomGridCoefficient(upper, digits);
+      budget.checkElapsedTime(span);
+      BigInteger coefficient = sampleInteger(word, span, source, minimum, maximum);
+      result = new DecimalValue(coefficient, digits);
+    }
+    // 正規化後も時間を検査し、成功する場合だけ3入力を結果へ置き換えます。
+    budget.checkElapsedTime(span);
+    stack.set(lowerIndex, result);
+    stack.removeLast();
     stack.removeLast();
     effect = RuntimeCapability.RANDOM_BYTES.sourceName();
     return new byte[0];
+  }
+
+  private int checkedRandomDigits(BuiltinWord word, SourceSpan span, BigInteger digits)
+      throws RuntimeFailure {
+    int maximum = Math.min(RuntimeLimits.DECIMAL_PRECISION, RuntimeLimits.DECIMAL_ABSOLUTE_SCALE);
+    if (digits.signum() >= 0 && digits.compareTo(BigInteger.valueOf(maximum)) <= 0) {
+      return digits.intValueExact();
+    }
+    NumericPreview preview = NumericPreview.ofInteger(digits);
+    var builder =
+        Diagnostic.builder(
+                DiagnosticCode.E_RANDOM_DIGITS_OUT_OF_RANGE,
+                Severity.ERROR,
+                DiagnosticStage.RUNTIME,
+                sourcePath,
+                span)
+            .field("word", word.canonicalName())
+            .field("digitsPreview", preview.text())
+            .field("minimum", "0")
+            .field("maximum", Integer.toString(maximum));
+    addPreviewLength(builder, "digits", preview);
+    throw new RuntimeFailure(
+        builder
+            .expected("0以上" + maximum + "以下")
+            .actual(preview.text())
+            .fix("桁数を0から" + maximum + "にしてください")
+            .build());
+  }
+
+  private void requireRandomGrid(
+      BuiltinWord word, SourceSpan span, DecimalValue value, int digits, String bound)
+      throws RuntimeFailure {
+    if (value.scale() <= digits) return;
+    NumericPreview preview = NumericPreview.ofValue(value);
+    var builder =
+        Diagnostic.builder(
+                DiagnosticCode.E_RANDOM_BOUND_NOT_ALIGNED,
+                Severity.ERROR,
+                DiagnosticStage.RUNTIME,
+                sourcePath,
+                span)
+            .field("word", word.canonicalName())
+            .field("bound", bound)
+            .field("digits", Integer.toString(digits))
+            .field("scale", Integer.toString(value.scale()))
+            .field("valuePreview", preview.text());
+    addPreviewLength(builder, "value", preview);
+    throw new RuntimeFailure(
+        builder
+            .expected("小数" + digits + "桁の10進格子上の境界")
+            .actual(preview.text())
+            .fix("境界を指定格子に揃えるか桁数を増やしてください")
+            .build());
+  }
+
+  private void requireRandomPrecision(
+      BuiltinWord word, SourceSpan span, DecimalValue lower, DecimalValue upper, int digits)
+      throws RuntimeFailure {
+    int maximumExponent = RuntimeLimits.DECIMAL_PRECISION - digits;
+    BigDecimal maximum = new BigDecimal(BigInteger.ONE, -maximumExponent);
+    if (lower.value().abs().compareTo(maximum) <= 0 && upper.value().abs().compareTo(maximum) <= 0)
+      return;
+    NumericPreview lowerPreview = NumericPreview.ofValue(lower);
+    NumericPreview upperPreview = NumericPreview.ofValue(upper);
+    var builder =
+        Diagnostic.builder(
+                DiagnosticCode.E_RANDOM_RANGE_PRECISION_LIMIT,
+                Severity.ERROR,
+                DiagnosticStage.RUNTIME,
+                sourcePath,
+                span)
+            .field("word", word.canonicalName())
+            .field("digits", Integer.toString(digits))
+            .field("precisionLimit", Integer.toString(RuntimeLimits.DECIMAL_PRECISION))
+            .field("maximumAbsoluteBoundExponent", Integer.toString(maximumExponent))
+            .field("lowerPreview", lowerPreview.text())
+            .field("upperPreview", upperPreview.text());
+    addPreviewLength(builder, "lower", lowerPreview);
+    addPreviewLength(builder, "upper", upperPreview);
+    throw new RuntimeFailure(
+        builder
+            .expected("両端の絶対値が10^" + maximumExponent + "以下")
+            .actual(lowerPreview.text() + ".." + upperPreview.text())
+            .fix("境界の絶対値を小さくするか桁数を減らしてください")
+            .build());
+  }
+
+  private static BigInteger randomGridCoefficient(DecimalValue value, int digits) {
+    if (value.coefficient().signum() == 0) return BigInteger.ZERO;
+    return value.coefficient().multiply(BigInteger.TEN.pow(digits - value.scale()));
   }
 
   private static byte[] greatestCommonDivisor(ArrayList<RuntimeValue> stack) {

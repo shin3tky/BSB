@@ -43,7 +43,7 @@ public final class RuntimeLimits {
   /** 1実行で正常完了できる待機要求の累積上限です。 */
   public static final long WAIT_TOTAL_MILLISECONDS = 604_800_000L;
 
-  /** 1回の整数乱数取得で生成できる候補数の上限です。 */
+  /** 1回の整数・小数乱数取得で生成できる候補数の上限です。 */
   public static final int RANDOM_ATTEMPTS = 1_024;
 
   private RuntimeLimits() {}

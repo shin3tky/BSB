@@ -37,7 +37,7 @@ public final class BuiltinDictionary {
   /** 現在日時を表す能力名です。 */
   public static final String TIME_WALL = "time.wall";
 
-  /** 整数乱数用の乱数バイト源を表す能力名です。 */
+  /** 整数乱数と小数乱数の乱数バイト源を表す能力名です。 */
   public static final String RANDOM_BYTES = "random.bytes";
 
   /** 論理接続の解決・認可を表す能力名です。 */
@@ -1431,7 +1431,18 @@ public final class BuiltinDictionary {
               BuiltinOperation.RANDOM_INTEGER,
               Set.of(RANDOM_BYTES),
               "RNG",
-              "1 と 6 から 整数乱数を得る"));
+              "1 と 6 から 整数乱数を得る"),
+          new BuiltinWord(
+              "小数乱数を得る",
+              Set.of(),
+              "下限と上限を含む指定桁の10進格子から一様な小数乱数を取得します。",
+              List.of("小数", "小数", "整数"),
+              List.of("小数"),
+              BuiltinTypeRule.FIXED,
+              BuiltinOperation.RANDOM_DECIMAL,
+              Set.of(RANDOM_BYTES),
+              "RNG",
+              "0.0 と 1.0 と 2 で 小数乱数を得る"));
 
   private static final Map<String, BuiltinWord> BY_NAME = indexByName();
   private static final Set<String> CANONICAL_NAMES = canonicalNameSet();

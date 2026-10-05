@@ -172,6 +172,10 @@ tasks.processResources {
         into("jp/bsb/diagnostics")
         rename { "workspace-tables-messages.properties" }
     }
+    from("tests/conformance/decimal-random/messages.properties") {
+        into("jp/bsb/diagnostics")
+        rename { "random-messages.properties" }
+    }
     from("tests/conformance/json-shapes/messages.properties") {
         into("jp/bsb/diagnostics")
         rename { "json-shapes-messages.properties" }

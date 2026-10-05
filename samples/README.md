@@ -30,6 +30,12 @@ java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/29-array-convenience
 java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/30-integer-random.bsb
 ```
 
+小数乱数は下限・上限・小数桁数を指定します。両端を含む正確な10進格子から選びます。
+
+```shell
+java -jar build/libs/bsb-0.1.0-SNAPSHOT-all.jar run samples/31-decimal-random.bsb
+```
+
 ## 検査と実行
 
 ```shell

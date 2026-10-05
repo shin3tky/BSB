@@ -1,0 +1,9 @@
+case_id	source	exit_code	code	fields_json	message_json
+RNG-F004	RNG-F004.bsb	10	E_RANDOM_DIGITS_OUT_OF_RANGE	{"digitsPreview":"-1","minimum":"0","maximum":"65536"}	"「小数乱数を得る」の小数桁数は0以上65536以下ですが、-1です。"
+RNG-F005	RNG-F005.bsb	10	E_RANDOM_DIGITS_OUT_OF_RANGE	{"digitsPreview":"65537"}	"「小数乱数を得る」の小数桁数は0以上65536以下ですが、65537です。"
+RNG-F006	RNG-F006.bsb	10	E_RANDOM_BOUND_NOT_ALIGNED	{"bound":"lower","digits":"2","scale":"3","valuePreview":"0.005"}	"「小数乱数を得る」の境界0.005は小数2桁の10進格子上にありません。"
+RNG-F007	RNG-F007.bsb	10	E_RANDOM_BOUND_NOT_ALIGNED	{"bound":"upper","valuePreview":"0.015"}	"「小数乱数を得る」の境界0.015は小数2桁の10進格子上にありません。"
+RNG-F008	RNG-F008.bsb	10	E_NUMERIC_RANGE_INVALID	{"lowerPreview":"1.0","upperPreview":"0.0"}	null
+RNG-F009	RNG-F009.bsb	10	E_RANDOM_RANGE_PRECISION_LIMIT	{"digits":"65536","precisionLimit":"65536","maximumAbsoluteBoundExponent":"0","lowerPreview":"0.0","upperPreview":"2.0"}	"「小数乱数を得る」の範囲には有効桁数65536桁を超える格子点があります。"
+RNG-F010	RNG-F010.bsb	8	E_TYPE_MISMATCH	{"word":"小数乱数を得る"}	null
+RNG-F011	RNG-F011.bsb	8	E_STACK_UNDERFLOW	{"word":"小数乱数を得る"}	null

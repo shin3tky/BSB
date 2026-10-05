@@ -28,7 +28,7 @@
 | `NARRAY` | 二次元配列 | [二次元配列](nested-arrays.md) | [診断](nested-arrays-diagnostics.md) | [適合性](nested-arrays-conformance.md) |
 | `WST` | 作業領域・ファイル・CSV/TSV | [統合仕様](workspace-tables.md) | [診断](workspace-tables-diagnostics.md) | [適合性](workspace-tables-conformance.md) |
 | `JERG` | JSON参照・構築 | [JSON参照・構築](json-access-construction.md) | [診断](json-access-construction-diagnostics.md) | [適合性](json-access-construction-conformance.md) |
-| `RNG` | 一様整数乱数 | [整数乱数](integer-random.md) | [診断と資源](integer-random.md#4-診断資源原子性) | [適合性](integer-random.md#6-適合性) |
+| `RNG` | 一様整数・小数乱数 | [整数乱数](integer-random.md) / [小数乱数](decimal-random.md) | [整数診断](integer-random.md#4-診断資源原子性) / [小数診断](decimal-random.md#6-診断と判定順) | [整数適合性](integer-random.md#6-適合性) / [小数適合性](decimal-random.md#9-実装と適合性) |
 
 CLI の公開 JSON 契約は [診断 JSON](cli-json.md) と [説明 JSON](explain-json.md)、接続設定は
 [CLI 接続設定](cli-connection-config.md)を参照してください。整形規則は各機能グループの

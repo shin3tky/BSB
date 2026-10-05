@@ -209,7 +209,8 @@ class DiagnosticMessageCatalogTest {
             new StringReader(httpsMessages),
             new StringReader(NestedArrayMessages),
             new StringReader(WorkspaceTableMessages),
-            new StringReader(jsonShapesMessages));
+            new StringReader(jsonShapesMessages),
+            new StringReader(resourceText("/conformance/decimal-random/messages.properties")));
     var diagnostic =
         Diagnostic.builder(
                 DiagnosticCode.E_MISSING_MAIN,
