@@ -7,7 +7,7 @@
 
 - Java Toolchain とコンパイル対象は JDK 25
 - ビルド定義は Gradle Kotlin DSL の `build.gradle.kts`
-- Gradle Wrapper は 9.7.1
+- Gradle Wrapper は 9.8.2
 - 基底パッケージは `jp.bsb`、成果物座標は `jp.bsb:bsb`
 - CLI のメインクラスは `jp.bsb.cli.BsbMain`
 - `application` と `com.gradleup.shadow` 9.6.1 で実行可能な fat JAR を生成
