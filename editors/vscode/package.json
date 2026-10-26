@@ -94,7 +94,7 @@
     "package:vsix": "vsce package --out bsb-language-support.vsix"
   },
   "dependencies": {
-    "vscode-languageclient": "10.1.2"
+    "vscode-languageclient": "11.0.0"
   },
   "devDependencies": {
     "@types/node": "20.19.43",
