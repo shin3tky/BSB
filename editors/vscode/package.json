@@ -102,5 +102,10 @@
     "@vscode/vsce": "4.0.0",
     "esbuild": "0.28.2",
     "typescript": "7.0.2"
+  },
+  "overrides": {
+    "@azure/identity": {
+      "@azure/msal-node": "7.1.1"
+    }
   }
 }
