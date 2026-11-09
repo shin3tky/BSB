@@ -17,10 +17,6 @@ updates:
       - dependency-name: com.ibm.icu:icu4j
         versions:
           - ">=77.0"
-      # LSP4J 1.0はDiagnostic.message等に破壊的変更があるため、移行を別途行う。
-      - dependency-name: org.eclipse.lsp4j:org.eclipse.lsp4j
-        versions:
-          - ">=1.0.0"
 
   - package-ecosystem: npm
     directory: /editors/vscode

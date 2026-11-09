@@ -59,7 +59,7 @@ class BsbLanguageServerTest {
     assertEquals(1, opened.getDiagnostics().size());
     var diagnostic = opened.getDiagnostics().getFirst();
     assertEquals("E_UNDEFINED_WORD", diagnostic.getCode().getLeft());
-    assertEquals("「未定義」は定義されていない単語です。", diagnostic.getMessage());
+    assertEquals("「未定義」は定義されていない単語です。", diagnostic.getMessage().getLeft());
     assertEquals(1, diagnostic.getRange().getStart().getLine());
     assertEquals(9, diagnostic.getRange().getStart().getCharacter());
     assertEquals(12, diagnostic.getRange().getEnd().getCharacter());
