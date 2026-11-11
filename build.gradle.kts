@@ -26,7 +26,7 @@ java {
 // JDK 25(クラスファイルバージョン69)のカバレッジ計測にはJava 25公式対応版が必要。
 // 0.8.14でJava 25の公式対応が入った(JaCoCoのリリース履歴を参照)。
 jacoco {
-    toolVersion = "0.8.15"
+    toolVersion = "0.8.16"
 }
 
 application {
